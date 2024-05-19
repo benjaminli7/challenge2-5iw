@@ -37,8 +37,15 @@ func Signup(c *gin.Context){
 		return
 	}
 
+	emailToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": body.Email,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+
+
 	// Create the user
-	user := models.User{Email: body.Email, Password: string(hash)}
+	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken.Raw}
 
 	result := db.DB.Create(&user)
 

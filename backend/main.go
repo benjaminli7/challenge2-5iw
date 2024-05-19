@@ -4,7 +4,6 @@ import (
 	"backend/controllers"
 	"backend/db"
 	middleware "backend/milddleware"
-
 	"github.com/gin-gonic/gin"
 )
 
