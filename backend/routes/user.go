@@ -1,14 +1,11 @@
 package routes
 
 import (
-    "net/http"
-
-    "backend/controllers"
+	"backend/controllers"
+	"github.com/gorilla/mux"
 )
 
-// SetUserRoutes définit les routes liées aux utilisateurs
-func SetUserRoutes(mux *http.ServeMux) {
-    mux.HandleFunc("/users", controllers.CreateUserHandler).Methods("POST")
-    mux.HandleFunc("/users/{id}", controllers.GetUserHandler).Methods("GET")
-    // Ajoutez d'autres routes utilisateur selon les besoins de votre application
+func SetUserRoutes(r *mux.Router) {
+	r.HandleFunc("/users", controllers.CreateUserHandler).Methods("POST")
+	r.HandleFunc("/users/{id}", controllers.GetUserHandler).Methods("GET")
 }

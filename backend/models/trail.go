@@ -1,9 +1,11 @@
-package models 
+package models
+
+import "gorm.io/gorm"
 
 type Trail struct {
-	Id       		int
-	Name     		string
-	Location		string
-	Distance		float64
-	Difficulty		string
+	gorm.Model
+	Name       string  `gorm:"size:255;not null"`
+	Location   string  `gorm:"size:255;not null"`
+	Distance   float64 `gorm:"not null"`
+	Difficulty string  `gorm:"size:50;not null"`
 }
