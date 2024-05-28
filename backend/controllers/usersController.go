@@ -177,3 +177,79 @@ func GetUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
+
+
+//ChangePassword godoc
+// @Summary Change password
+// @Description Send email to change password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body models.User true "Email for change password"
+//@Success 200 {object} models.SuccessResponse
+// @Router /changePassword [patch]
+func ChangePassword(c *gin.Context) {
+
+	var body struct {
+		Email    string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	var user models.User
+	db.DB.First(&user, "email = ?", body.Email)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email"})
+		return
+	}
+	emailToken,_ := services.GenerateRandomToken(32)
+	db.DB.Model(&user).Update("Token", emailToken)
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour modifier votre mot de passe<p><a href='localhost/resetPassword?token=" + emailToken+ "'> cliquer ici</a>"
+	services.SendEmail(body.Email , content , "Validation de compte")
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Email sent successfully"})
+	
+}
+
+//ResetPassword godoc
+// @Summary Reset password
+// @Description Reset password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body models.User true "Reset password"
+// @Success 200 {object} models.SuccessResponse
+// @Router /resetPassword [patch]
+func ResetPassword(c *gin.Context) {
+	var body struct {
+		Token    string
+		Password string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	var user models.User
+	db.DB.First(&user, "token = ?", body.Token)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid token"})
+		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
+		return
+	}
+
+	db.DB.Model(&user).Update("Password", string(hash))
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Password changed successfully"})
+}
+
+	

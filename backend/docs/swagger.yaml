@@ -71,6 +71,28 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /changePassword:
+    patch:
+      consumes:
+      - application/json
+      description: Send email to change password
+      parameters:
+      - description: Email for change password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+      summary: Change password
+      tags:
+      - auth
   /hikes:
     get:
       consumes:
@@ -233,6 +255,28 @@ paths:
       summary: Log out a user
       tags:
       - auth
+  /resetPassword:
+    patch:
+      consumes:
+      - application/json
+      description: Reset password
+      parameters:
+      - description: Reset password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+      summary: Reset password
+      tags:
+      - auth
   /signup:
     post:
       consumes:
@@ -275,7 +319,7 @@ paths:
       tags:
       - users
   /validate:
-    get:
+    patch:
       consumes:
       - application/json
       description: Validate the current user token
