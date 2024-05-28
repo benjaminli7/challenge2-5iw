@@ -3,10 +3,11 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -91,8 +92,11 @@ func Login(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"sub":      user.ID,
+		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"email":    user.Email,
+		"roles":    user.Role,
+		"verified": user.IsVerified,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))

@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       appBar: const NavBar(),
       body: Center(
         child: Text(
-          'Welcome ${user?.email}!',
+          'Welcome ${user?.email}! Role is ${user?.role} verified: ${user?.isVerified}',
           style: const TextStyle(fontSize: 24),
         ),
       ),
