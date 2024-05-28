@@ -46,5 +46,15 @@ func main() {
 	// Users route
 	r.GET("/users", middleware.RequireAuth(true), controllers.GetUsers)
 
-	r.Run()
+	// Hike routes
+	r.POST("/hikes", controllers.CreateHike)
+	r.GET("/hikes", controllers.GetAllHikes)
+	r.GET("/hikes/:id", controllers.GetHike)
+	r.PUT("/hikes/:id", controllers.UpdateHike)
+	r.DELETE("/hikes/:id", controllers.DeleteHike)
+
+	err := r.Run()
+	if err != nil {
+		return
+	}
 }
