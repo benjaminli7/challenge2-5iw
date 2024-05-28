@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/api_service.dart';
-import '../providers/user_provider.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/navbar.dart';
 import '../widgets/footer.dart';

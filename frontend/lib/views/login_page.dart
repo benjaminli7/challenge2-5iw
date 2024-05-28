@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/models/user.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 import '../providers/user_provider.dart';
 import '../services/api_service.dart';
 import '../widgets/custom_text_field.dart';
@@ -30,14 +31,25 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       // Handle successful login
-      print('Login successful');
+      // get the user from the response Authorization header and decode it
+      // print(response.headers);
+      final token = response.headers['set-cookie']!;
+      // print(token);
+      Map<String, dynamic> parseJwt = jsonDecode(
+        ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
+      );
+      // print("!!!! JWT !!!!");
+      // print(parseJwt);
       Provider.of<UserProvider>(context, listen: false).setUser(
         User(
-          email: _emailController.text,
-          password: _passwordController.text,
-          role: 'user',
-        ),
+            email: parseJwt['email'],
+            password: "",
+            token: token,
+            role: parseJwt['roles'],
+            isVerified: parseJwt['verified']),
       );
+      //print user info
+      print('Login successful');
       Fluttertoast.showToast(
         msg: 'Login successful',
         toastLength: Toast.LENGTH_SHORT,
