@@ -6,10 +6,12 @@ import (
 	"net/http"
 	"os"
 	"time"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"backend/services"
+
 )
 
 func Signup(c *gin.Context){
@@ -53,8 +55,11 @@ func Signup(c *gin.Context){
 		c.JSON(http.StatusBadRequest,gin.H{
 			"error": "Failed to create user.",
 		})
+		return
 	}
-
+	fmt.Println(emailToken.Raw)
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='url/" + emailToken.Raw+ "'> cliquer ici</a>"
+	services.SendEmail(body.Email , content , "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
 }
@@ -120,10 +125,28 @@ func Login (c *gin.Context){
 }
 
 func Validate(c *gin.Context){
-	user,_ := c.Get("user")
+	var body struct{
+		Token string
+	}
 
-	// user.(models.User).Email    -->   to access specific data
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
 
+		return
+	}
+	var user models.User
+	db.DB.First(&user, "token = ?", body.Token)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid token",
+		})
+		return
+	}
+
+	db.DB.Model(&user).Update("is_verified", true)
 	c.JSON(http.StatusOK, gin.H{
 		"message": user,
 	})
