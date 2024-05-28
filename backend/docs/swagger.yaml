@@ -5,6 +5,25 @@ definitions:
       error:
         type: string
     type: object
+  models.Hike:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      organizer_id:
+        type: integer
+      start_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
   models.SuccessResponse:
     properties:
       message:
@@ -52,6 +71,127 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /hikes:
+    get:
+      consumes:
+      - application/json
+      description: Get all hikes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Hike'
+            type: array
+      summary: Get all hikes
+      tags:
+      - hikes
+    post:
+      consumes:
+      - application/json
+      description: Create a new hike
+      parameters:
+      - description: Create hike
+        in: body
+        name: hike
+        required: true
+        schema:
+          $ref: '#/definitions/models.Hike'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new hike
+      tags:
+      - hikes
+  /hikes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an hike by ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an hike
+      tags:
+      - hikes
+    get:
+      consumes:
+      - application/json
+      description: Get a single hike by ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a single hike
+      tags:
+      - hikes
+    put:
+      consumes:
+      - application/json
+      description: Update an hike by ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update hike
+        in: body
+        name: hike
+        required: true
+        schema:
+          $ref: '#/definitions/models.Hike'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an hike
+      tags:
+      - hikes
   /login:
     post:
       consumes:
