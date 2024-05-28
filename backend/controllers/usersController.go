@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"os"
 	"time"
-
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"backend/services"
+
 )
 
 // Signup godoc
@@ -40,20 +41,24 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	emailToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": body.Email,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(),
-	})
-
-	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken.Raw}
+	emailToken,_ := services.GenerateRandomToken(32)
+	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
 
 	result := db.DB.Create(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to create user"})
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error": "Failed to create user.",
+		})
 		return
 	}
+	fmt.Println("token"+emailToken)
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken+ "'> cliquer ici</a>"
+	services.SendEmail(body.Email , content , "Validation de compte")
+	// Respond
+	c.JSON(http.StatusOK, gin.H{})
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User created successfully"})
+
 }
 
 // Login godoc
@@ -118,13 +123,31 @@ func Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.SuccessResponse
-// @Router /validate [get]
-func Validate(c *gin.Context) {
-	user, _ := c.Get("user")
+// @Router /validate [patch]
+func Validate(c *gin.Context){
+	var body struct{
+		Token string
+	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": user,
-	})
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
+	fmt.Println("body",body)
+	var user models.User
+	db.DB.First(&user, "token = ?", body.Token)
+	fmt.Println("user",user)
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid token",
+		})
+		return
+	}
+
+	db.DB.Model(&user).Update("IsVerified", true)
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "verify in successfully"})
 }
 
 // Logout godoc
