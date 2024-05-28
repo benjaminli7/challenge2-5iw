@@ -41,7 +41,7 @@ func main() {
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
 	r.GET("/logout", controllers.Logout)
-	r.GET("/validate", middleware.RequireAuth(false), controllers.Validate)
+	r.PATCH("/validate", controllers.Validate)
 
 	// Users route
 	r.GET("/users", middleware.RequireAuth(true), controllers.GetUsers)

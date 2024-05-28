@@ -7,10 +7,7 @@ import (
 	"os"
 	"time"
 	"fmt"
-	"github.com/gin-gonic/gin"
-
 	"github.com/golang-jwt/jwt/v5"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"backend/services"
@@ -44,12 +41,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	emailToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": body.Email,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(),
-	})
-
-	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken.Raw}
+	emailToken,_ := services.GenerateRandomToken(32)
+	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
 
 	result := db.DB.Create(&user)
 	if result.Error != nil {
@@ -58,8 +51,8 @@ func Signup(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(emailToken.Raw)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='url/" + emailToken.Raw+ "'> cliquer ici</a>"
+	fmt.Println("token"+emailToken)
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken+ "'> cliquer ici</a>"
 	services.SendEmail(body.Email , content , "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
@@ -130,7 +123,7 @@ func Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.SuccessResponse
-// @Router /validate [get]
+// @Router /validate [patch]
 func Validate(c *gin.Context){
 	var body struct{
 		Token string
@@ -142,9 +135,10 @@ func Validate(c *gin.Context){
 		})
 		return
 	}
+	fmt.Println("body",body)
 	var user models.User
 	db.DB.First(&user, "token = ?", body.Token)
-
+	fmt.Println("user",user)
 	if user.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid token",
@@ -152,10 +146,8 @@ func Validate(c *gin.Context){
 		return
 	}
 
-	db.DB.Model(&user).Update("is_verified", true)
-	c.JSON(http.StatusOK, gin.H{
-		"message": user,
-	})
+	db.DB.Model(&user).Update("IsVerified", true)
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "verify in successfully"})
 }
 
 // Logout godoc
