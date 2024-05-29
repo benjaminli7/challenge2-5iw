@@ -208,8 +208,8 @@ func ChangePassword(c *gin.Context) {
 	}
 	emailToken,_ := services.GenerateRandomToken(32)
 	db.DB.Model(&user).Update("Token", emailToken)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour modifier votre mot de passe<p><a href='localhost/resetPassword?token=" + emailToken+ "'> cliquer ici</a>"
-	services.SendEmail(body.Email , content , "Validation de compte")
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour modifier votre mot de passe<p><a href='http://challenge/resetPassword?token=" + emailToken+ "'> cliquer ici</a>"
+	services.SendEmail(body.Email , content , "Modification de mot de passe")
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Email sent successfully"})
 	
 }

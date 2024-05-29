@@ -116,6 +116,19 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: const Text('No account yet? Sign up'),
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/forgetPassword');
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+              child: const Text('Mot de passe oublié'),
+            ),
           ],
         ),
       ),
