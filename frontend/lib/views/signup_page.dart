@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/api_service.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/navbar.dart';
 import '../widgets/footer.dart';
@@ -38,7 +39,7 @@ class _SignupPageState extends State<SignupPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      Navigator.pushReplacementNamed(context, '/login');
+      GoRouter.of(context).go('/login');
     } else {
       // Handle signup error
       Fluttertoast.showToast(
@@ -80,14 +81,19 @@ class _SignupPageState extends State<SignupPage> {
             ),
             ElevatedButton(
               onPressed: _signup,
-              child: const Text('Signup'),
+              child: const Text('Register',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                GoRouter.of(context).go('/login');
               },
               style: TextButton.styleFrom(
-                foregroundColor: Colors.black,
+                foregroundColor: Colors.white,
                 textStyle: const TextStyle(
                   fontSize: 16,
                   decoration: TextDecoration.underline,
@@ -98,7 +104,6 @@ class _SignupPageState extends State<SignupPage> {
           ],
         ),
       ),
-      bottomNavigationBar: const Footer(),
     );
   }
 }

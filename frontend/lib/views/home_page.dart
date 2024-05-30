@@ -10,16 +10,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-
+    print(user);
     return Scaffold(
       appBar: const NavBar(),
       body: Center(
         child: Text(
-          'Welcome ${user?.email}! Role is ${user?.role} verified: ${user?.isVerified}',
+          'Welcome ${user?.email}! ${user!.isVerified ? 'Your email is verified' : 'Please verify your email'}',
           style: const TextStyle(fontSize: 24),
         ),
       ),
-      bottomNavigationBar: const Footer(),
     );
   }
 }
