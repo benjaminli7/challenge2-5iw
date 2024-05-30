@@ -173,7 +173,63 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Find(&users)
-
+	db.DB.Select("email", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
+}
+
+//UpdateRole godoc
+// @Summary Update user role
+// @Description Update the role of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User.role true "User role"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [patch]
+func UpdateRole(c *gin.Context) {
+	var body struct {
+		Role string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	id := c.Param("id")
+	var user models.User
+	db.DB.First(&user, id)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	db.DB.Model(&user).Update("role", body.Role)
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Role updated successfully"})
+}
+
+// DeleteUser godoc
+// @Summary Delete user
+// @Description Delete a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [delete]
+func DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+	db.DB.First(&user, id)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	db.DB.Delete(&user)
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
 }

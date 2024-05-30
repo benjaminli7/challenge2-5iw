@@ -72,7 +72,7 @@ func RequireAuth(adminOnly bool) gin.HandlerFunc {
 
         // If adminOnly is true, check if the user is an admin
         if adminOnly && user.Role != "admin" {
-            c.AbortWithStatus(http.StatusForbidden)
+            c.AbortWithStatus(http.StatusUnauthorized)
             return
         }
 
