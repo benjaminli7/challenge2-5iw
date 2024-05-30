@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/models/user.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:convert';
 import '../providers/user_provider.dart';
 import '../services/api_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/navbar.dart';
-import '../widgets/footer.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,16 +30,11 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return; // Check if the widget is still mounted
 
     if (response.statusCode == 200) {
-      // Handle successful login
-      // get the user from the response Authorization header and decode it
-      // print(response.headers);
       final token = response.headers['set-cookie']!;
-      // print(token);
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
-      // print("!!!! JWT !!!!");
-      // print(parseJwt);
+
       Provider.of<UserProvider>(context, listen: false).setUser(
         User(
             email: parseJwt['email'],
@@ -49,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
       //print user info
-      print('Login successful');
       Fluttertoast.showToast(
         msg: 'Login successful',
         toastLength: Toast.LENGTH_SHORT,
@@ -59,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      Navigator.pushReplacementNamed(context, '/home');
+      GoRouter.of(context).go('/home');
     } else {
       // Handle login error
       Fluttertoast.showToast(
@@ -101,14 +95,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ElevatedButton(
               onPressed: _login,
-              child: const Text('Login'),
+              child: const Text('Login',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/signup');
+                GoRouter.of(context).go('/signup');
               },
               style: TextButton.styleFrom(
-                foregroundColor: Colors.black,
+                foregroundColor: Colors.white,
                 textStyle: const TextStyle(
                   fontSize: 16,
                   decoration: TextDecoration.underline,
@@ -119,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      bottomNavigationBar: const Footer(),
     );
   }
 }
