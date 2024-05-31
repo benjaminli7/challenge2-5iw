@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'views/login_page.dart';
 import 'views/signup_page.dart';
 import 'views/home_page.dart';
+import 'views/back/users_page.dart';
 import 'providers/user_provider.dart';
 
 void main() {
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => const SignupPage(),
           '/login': (context) => const LoginPage(),
           '/home': (context) => const HomePage(),
+          '/admin/users': (context) =>  UserListPage(),
+
         },
       ),
     );

@@ -19,4 +19,13 @@ class User {
         'token': token,
         'isVerified': isVerified,
       };
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      email: json['email'],
+      password: json['password'],
+      role: json['role'],
+      token: json['token'],
+      isVerified: json['isVerified']
+    );
+  }
 }
