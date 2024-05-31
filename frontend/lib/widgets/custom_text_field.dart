@@ -19,8 +19,16 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          border: const OutlineInputBorder(),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            //color: Colors.white,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(color: Colors.white),
+          ),
           labelText: labelText,
+          labelStyle: const TextStyle(color: Colors.white),
         ),
         obscureText: obscureText,
       ),
