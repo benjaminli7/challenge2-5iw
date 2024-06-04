@@ -117,6 +117,23 @@ class UserDetailsPage extends StatelessWidget {
                 backgroundColor: Colors.red,
               ),
             ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                final userProvider = Provider.of<UserProvider>(context, listen: false);
+                if (userProvider.user != null) {
+                  final token = userProvider.user!.token;
+                  await context.read<AdminProvider>().upgradeAdmin(token, user.id);
+
+                  // After deletion, navigate back to the previous page
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Devenir Admin'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+              ),
+            ),
           ],
         ),
       ),

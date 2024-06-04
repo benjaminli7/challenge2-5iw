@@ -369,7 +369,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/{id}/role": {
             "patch": {
                 "description": "Update the role of a user",
                 "consumes": [

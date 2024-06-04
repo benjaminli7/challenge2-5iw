@@ -187,13 +187,14 @@ func GetUsers(c *gin.Context) {
 // @Param body body models.User.role true "User role"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse
-// @Router /users/{id} [patch]
+// @Router /users/{id}/role [patch]
 func UpdateRole(c *gin.Context) {
 	var body struct {
 		Role string
 	}
-
+	println("body",body.Role)
 	if c.Bind(&body) != nil {
+		println("Failed to read body")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
 		return
 	}
@@ -203,11 +204,13 @@ func UpdateRole(c *gin.Context) {
 	db.DB.First(&user, id)
 
 	if user.ID == 0 {
+		fmt.Println("User not found")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
 		return
 	}
 
 	db.DB.Model(&user).Update("role", body.Role)
+	fmt.Println("Role updated successfully")
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Role updated successfully"})
 }
 

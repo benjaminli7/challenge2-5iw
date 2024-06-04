@@ -27,12 +27,10 @@ class AdminProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUser(String token, User user) async {
-    await _adminService.updateUser(token, user);
-    int index = _users.indexWhere((u) => u.email == user.email);
-    if (index != -1) {
-      _users[index] = user;
-      notifyListeners();
-    }
+  Future<void> upgradeAdmin(String token, int userId) async {
+    await _adminService.upgradeAdmin(token, userId);
+
+    notifyListeners();
+
   }
 }

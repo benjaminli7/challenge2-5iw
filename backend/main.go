@@ -45,7 +45,7 @@ func main() {
 
 	// Users route
 	r.GET("/users", middleware.RequireAuth(true), controllers.GetUsers)
-	r.PATCH("/users/:id", middleware.RequireAuth(true), controllers.UpdateRole)
+	r.PATCH("/users/:id/role", middleware.RequireAuth(true), controllers.UpdateRole)
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 
 	// Hike routes

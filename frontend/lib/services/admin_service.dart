@@ -40,14 +40,15 @@ class AdminService {
     }
   }
 
-  Future<void> updateUser(String token, User user) async {
-    final response = await http.put(
-      Uri.parse('$url/${user.email}'),
+  Future<void> upgradeAdmin(String token, int userId) async {
+    var body = jsonEncode({"role": "admin"});
+    final response = await http.patch(
+      Uri.parse('$url/${userId}/role'),
       headers: {
         'Cookie': token,
         'Content-Type': 'application/json',
       },
-      body: json.encode(user.toJson()),
+      body: body,
     );
     if (response.statusCode != 200) {
       throw Exception('Failed to update user');
