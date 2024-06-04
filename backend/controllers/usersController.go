@@ -95,7 +95,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
 		return
 	}
-
+	println("user",user.ID)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":      user.ID,
 		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
@@ -173,7 +173,7 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Select("email", "role", "is_verified").Find(&users)
+	db.DB.Select("id","email", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
 

@@ -5,11 +5,12 @@ import 'views/login_page.dart';
 import 'views/signup_page.dart';
 import 'views/home_page.dart';
 import 'views/back/users_page.dart';
+import 'views/back/admin_page.dart';
 import 'views/profile_page.dart';
 import 'views/explore_page.dart';
 import 'views/groups_page.dart';
-
 import 'providers/user_provider.dart';
+import 'providers/admin_provider.dart';
 import 'widgets/footer.dart';
 
 void main() {
@@ -83,6 +84,16 @@ final GoRouter _router = GoRouter(
           path: '/groups',
           builder: (context, state) => const GroupsPage(),
         ),
+        GoRoute(
+          path: '/admin',
+          builder: (context, state) => const AdminPage(),
+          routes: [
+            GoRoute(
+              path: 'users',
+              builder: (context, state) => const UserListPage(),
+            ),
+          ],
+        ),
       ],
     ),
     // Default route, redirects to login or home based on user state
@@ -94,15 +105,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<UserProvider>(
-      create: (context) => UserProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
+      ],
       child: MaterialApp.router(
         routerConfig: _router,
         theme: ThemeData(
-
-            //dark theme
-            brightness: Brightness.dark),
-
+          // Dark theme
+          brightness: Brightness.dark,
+        ),
       ),
     );
   }
