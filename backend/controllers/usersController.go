@@ -95,7 +95,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
 		return
 	}
-
+	println("user",user.ID)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":      user.ID,
 		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
@@ -173,7 +173,66 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Find(&users)
-
+	db.DB.Select("id","email", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
+}
+
+//UpdateRole godoc
+// @Summary Update user role
+// @Description Update the role of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User.role true "User role"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/role [patch]
+func UpdateRole(c *gin.Context) {
+	var body struct {
+		Role string
+	}
+	println("body",body.Role)
+	if c.Bind(&body) != nil {
+		println("Failed to read body")
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	id := c.Param("id")
+	var user models.User
+	db.DB.First(&user, id)
+
+	if user.ID == 0 {
+		fmt.Println("User not found")
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	db.DB.Model(&user).Update("role", body.Role)
+	fmt.Println("Role updated successfully")
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Role updated successfully"})
+}
+
+// DeleteUser godoc
+// @Summary Delete user
+// @Description Delete a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [delete]
+func DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+	db.DB.First(&user, id)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	db.DB.Delete(&user)
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
 }

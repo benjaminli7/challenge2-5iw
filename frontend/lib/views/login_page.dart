@@ -37,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Provider.of<UserProvider>(context, listen: false).setUser(
         User(
+            id: parseJwt['sub'],
             email: parseJwt['email'],
             password: "",
             token: token,
