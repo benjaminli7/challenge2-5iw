@@ -59,7 +59,43 @@
             }
         },
         "/advice/{id}": {
-            "put": {
+            "delete": {
+                "description": "Delete advice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Delete advice",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Advice ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update advice",
                 "consumes": [
                     "application/json"
@@ -87,42 +123,6 @@
                         "schema": {
                             "$ref": "#/definitions/models.Advice"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete advice",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "advice"
-                ],
-                "summary": "Delete advice",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Advice ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
