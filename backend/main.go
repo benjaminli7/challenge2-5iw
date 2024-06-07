@@ -53,6 +53,15 @@ func main() {
 	r.PUT("/hikes/:id", controllers.UpdateHike)
 	r.DELETE("/hikes/:id", controllers.DeleteHike)
 
+	// Advice routes
+	r.POST("/advice", middleware.RequireAuth(), controllers.CreateAdvice)
+	r.GET("/advice/:id/receiver", middleware.RequireAuth(), controllers.GetAdviceByReceiver)
+	r.GET("/advice/:id/donor", middleware.RequireAuth(), controllers.GetAdviceByDonor)
+	r.PATCH("/advice/:id", middleware.RequireAuth(), controllers.UpdateAdvice)
+	r.DELETE("/advice/:id", middleware.RequireAuth(), controllers.DeleteAdvice)
+
+	
+
 	err := r.Run()
 	if err != nil {
 		return
