@@ -27,3 +27,7 @@ a.**Accédez à Swagger UI**
 
 - Ouvrez votre navigateur et accédez à http://localhost:8080/swagger/index.html/
 - 
+
+### frontend
+
+Lancer la version web avec : flutter run -d chrome
