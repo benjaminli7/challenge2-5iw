@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'views/login_page.dart';
@@ -84,6 +85,7 @@ final GoRouter _router = GoRouter(
           path: '/groups',
           builder: (context, state) => const GroupsPage(),
         ),
+
         GoRoute(
           path: '/admin',
           builder: (context, state) => const AdminPage(),

@@ -1,5 +1,22 @@
 basePath: /
 definitions:
+  models.Advice:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      donor_id:
+        type: integer
+      id:
+        type: integer
+      rating:
+        type: integer
+      receiver_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
@@ -31,6 +48,10 @@ definitions:
     type: object
   models.User:
     properties:
+      advice_donor:
+        $ref: '#/definitions/models.Advice'
+      advice_receiver:
+        $ref: '#/definitions/models.Advice'
       created_at:
         type: string
       deleted_at:
@@ -71,6 +92,137 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /advice:
+    post:
+      consumes:
+      - application/json
+      description: Create a new advice
+      parameters:
+      - description: Create advice
+        in: body
+        name: advice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Advice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new advice
+      tags:
+      - advice
+  /advice/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete advice
+      parameters:
+      - description: Advice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete advice
+      tags:
+      - advice
+    patch:
+      consumes:
+      - application/json
+      description: Update advice
+      parameters:
+      - description: Advice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update advice
+        in: body
+        name: advice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Advice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update advice
+      tags:
+      - advice
+  /advice/{id}/donor:
+    get:
+      consumes:
+      - application/json
+      description: Get advice by donor
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get advice by donor
+      tags:
+      - advice
+  /advice/{id}/receiver:
+    get:
+      consumes:
+      - application/json
+      description: Get advice by receiver
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get advice by receiver
+      tags:
+      - advice
   /hikes:
     get:
       consumes:
