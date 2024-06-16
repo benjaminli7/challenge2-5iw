@@ -6,7 +6,6 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/joho/godotenv v1.5.1
-	github.com/lib/pq v1.10.9
 	github.com/mailjet/mailjet-apiv3-go/v4 v4.0.1
 	github.com/stretchr/testify v1.9.0
 	github.com/swaggo/files v1.0.1

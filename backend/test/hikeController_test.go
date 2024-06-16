@@ -8,126 +8,147 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
-var router *gin.Engine
-
-func TestMain(m *testing.M) {
-	db.TestDatabaseInit()
-
-	router = gin.Default()
+func setupRouter() *gin.Engine {
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
 	router.POST("/hikes", controllers.CreateHike)
 	router.GET("/hikes", controllers.GetAllHikes)
 	router.GET("/hikes/:id", controllers.GetHike)
 	router.PUT("/hikes/:id", controllers.UpdateHike)
 	router.DELETE("/hikes/:id", controllers.DeleteHike)
-
-	code := m.Run()
-
-	db.TestDatabaseDestroy()
-
-	os.Exit(code)
+	return router
 }
 
 func TestCreateHike(t *testing.T) {
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
+
+	router := setupRouter()
+
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		StartDate:   time.Now(),
-		EndDate:     time.Now().Add(2 * time.Hour),
-		OrganizerID: 1,
 	}
-	jsonValue, _ := json.Marshal(hike)
 
+	jsonValue, _ := json.Marshal(hike)
 	req, _ := http.NewRequest("POST", "/hikes", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Content-Type", "application/json")
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
-	assert.Equal(t, http.StatusOK, resp.Code)
+	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
 	var createdHike models.Hike
-	json.Unmarshal(resp.Body.Bytes(), &createdHike)
-	assert.Equal(t, hike.Name, createdHike.Name)
-	assert.Equal(t, hike.Description, createdHike.Description)
+	err := json.Unmarshal(resp.Body.Bytes(), &createdHike)
+	assert.NoError(t, err, "Error unmarshalling response body")
+	assert.Equal(t, hike.Name, createdHike.Name, "Hike names do not match")
+	assert.Equal(t, hike.Description, createdHike.Description, "Hike descriptions do not match")
+
+	if !t.Failed() {
+		t.Log("TestCreateHike: OK")
+	}
 }
 
-func TestGetHikes(t *testing.T) {
+func TestGetAllHikes(t *testing.T) {
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
+
+	router := setupRouter()
+
+	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	db.DB.Create(&hike)
+
 	req, _ := http.NewRequest("GET", "/hikes", nil)
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
-	assert.Equal(t, http.StatusOK, resp.Code)
+	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
 	var hikes []models.Hike
-	json.Unmarshal(resp.Body.Bytes(), &hikes)
-	assert.NotEmpty(t, hikes)
+	err := json.Unmarshal(resp.Body.Bytes(), &hikes)
+	assert.NoError(t, err, "Error unmarshalling response body")
+	assert.Greater(t, len(hikes), 0, "Expected at least one hike in response")
+
+	if !t.Failed() {
+		t.Log("TestGetAllHikes: OK")
+	}
 }
 
 func TestGetHike(t *testing.T) {
-	// First create an hike
-	hike := models.Hike{
-		Name:        "Test Hike",
-		Description: "This is a test hike",
-		StartDate:   time.Now(),
-		EndDate:     time.Now().Add(2 * time.Hour),
-		OrganizerID: 1,
-	}
-	db.TestDB.Create(&hike)
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
+
+	router := setupRouter()
+
+	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	db.DB.Create(&hike)
 
 	req, _ := http.NewRequest("GET", "/hikes/"+strconv.Itoa(int(hike.ID)), nil)
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
-	assert.Equal(t, http.StatusOK, resp.Code)
-	var fetchedHike models.Hike
-	json.Unmarshal(resp.Body.Bytes(), &fetchedHike)
-	assert.Equal(t, hike.Name, fetchedHike.Name)
-	assert.Equal(t, hike.Description, fetchedHike.Description)
+	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
+	var retrievedHike models.Hike
+	err := json.Unmarshal(resp.Body.Bytes(), &retrievedHike)
+	assert.NoError(t, err, "Error unmarshalling response body")
+	assert.Equal(t, hike.Name, retrievedHike.Name, "Hike names do not match")
+	assert.Equal(t, hike.Description, retrievedHike.Description, "Hike descriptions do not match")
+
+	if !t.Failed() {
+		t.Log("TestGetHike: OK")
+	}
 }
 
 func TestUpdateHike(t *testing.T) {
-	hike := models.Hike{
-		Name:        "Test Hike",
-		Description: "This is a test hike",
-		StartDate:   time.Now(),
-		EndDate:     time.Now().Add(2 * time.Hour),
-		OrganizerID: 1,
-	}
-	db.TestDB.Create(&hike)
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
 
-	hike.Name = "Updated Hike"
-	jsonValue, _ := json.Marshal(hike)
+	router := setupRouter()
 
+	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	db.DB.Create(&hike)
+
+	updatedHike := models.Hike{Name: "Updated Hike", Description: "This is an updated test hike"}
+	jsonValue, _ := json.Marshal(updatedHike)
 	req, _ := http.NewRequest("PUT", "/hikes/"+strconv.Itoa(int(hike.ID)), bytes.NewBuffer(jsonValue))
 	req.Header.Set("Content-Type", "application/json")
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
-	assert.Equal(t, http.StatusOK, resp.Code)
-	var updatedHike models.Hike
-	json.Unmarshal(resp.Body.Bytes(), &updatedHike)
-	assert.Equal(t, "Updated Hike", updatedHike.Name)
+	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
+	var retrievedHike models.Hike
+	err := json.Unmarshal(resp.Body.Bytes(), &retrievedHike)
+	assert.NoError(t, err, "Error unmarshalling response body")
+	assert.Equal(t, updatedHike.Name, retrievedHike.Name, "Hike names do not match")
+	assert.Equal(t, updatedHike.Description, retrievedHike.Description, "Hike descriptions do not match")
+
+	if !t.Failed() {
+		t.Log("TestUpdateHike: OK")
+	}
 }
 
 func TestDeleteHike(t *testing.T) {
-	hike := models.Hike{
-		Name:        "Test Hike",
-		Description: "This is a test hike",
-		StartDate:   time.Now(),
-		EndDate:     time.Now().Add(2 * time.Hour),
-		OrganizerID: 1,
-	}
-	db.TestDB.Create(&hike)
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
+
+	router := setupRouter()
+
+	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	db.DB.Create(&hike)
 
 	req, _ := http.NewRequest("DELETE", "/hikes/"+strconv.Itoa(int(hike.ID)), nil)
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
-	assert.Equal(t, http.StatusOK, resp.Code)
+	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
+	assert.NotNil(t, db.DB.First(&models.Hike{}, hike.ID).Error, "Hike should be deleted")
+
+	if !t.Failed() {
+		t.Log("TestDeleteHike: OK")
+	}
 }

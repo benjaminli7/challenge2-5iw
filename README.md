@@ -26,4 +26,13 @@ a.**Accédez à Swagger UI**
 
 
 - Ouvrez votre navigateur et accédez à http://localhost:8080/swagger/index.html/
-- 
+
+
+### 🛠️ Lancement des tests
+
+- Vérifiez que le docker est bien lancé avec le conteneur postgres_test
+
+**Dans le repertoire /backend**
+
+   ```bash
+    go test ./... --cover

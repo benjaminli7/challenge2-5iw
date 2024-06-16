@@ -227,7 +227,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all hikes
+      description: Get details of all hikes
       produces:
       - application/json
       responses:
@@ -237,15 +237,19 @@ paths:
             items:
               $ref: '#/definitions/models.Hike'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Get all hikes
       tags:
       - hikes
     post:
       consumes:
       - application/json
-      description: Create a new hike
+      description: Create a new hike with the input payload
       parameters:
-      - description: Create hike
+      - description: Hike Info
         in: body
         name: hike
         required: true
@@ -262,6 +266,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new hike
       tags:
       - hikes
@@ -269,7 +277,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete an hike by ID
+      description: Delete a hike by its ID
       parameters:
       - description: Hike ID
         in: path
@@ -283,17 +291,17 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.SuccessResponse'
-        "400":
-          description: Bad Request
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Delete an hike
+      summary: Delete a hike by ID
       tags:
       - hikes
     get:
       consumes:
       - application/json
-      description: Get a single hike by ID
+      description: Get details of a hike by its ID
       parameters:
       - description: Hike ID
         in: path
@@ -307,24 +315,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Hike'
-        "400":
-          description: Bad Request
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Get a single hike
+      summary: Get a hike by ID
       tags:
       - hikes
     put:
       consumes:
       - application/json
-      description: Update an hike by ID
+      description: Update details of a hike by its ID
       parameters:
       - description: Hike ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Update hike
+      - description: Hike Info
         in: body
         name: hike
         required: true
@@ -341,7 +349,11 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Update an hike
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a hike by ID
       tags:
       - hikes
   /login:

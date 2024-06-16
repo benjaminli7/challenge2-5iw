@@ -2,59 +2,51 @@ package db
 
 import (
 	"backend/models"
-	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
-	_ "github.com/lib/pq"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var TestDB *gorm.DB
-
 func TestDatabaseInit() {
-	var err error
+	fmt.Println("Loading .env.test file")
+	err := godotenv.Load(".env.test")
+	if err != nil {
+		log.Fatalf("Error loading .env.test file: %v", err)
+	}
 
 	dsn := os.Getenv("POSTGRES_DSN")
-	conn, err := sql.Open("postgres", dsn)
+	fmt.Println("DSN:", dsn)
+	fmt.Println("Connecting to test database")
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
-
-	_, err = conn.Exec("CREATE DATABASE test_db")
-	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to connect to test database: %v", err)
+	} else {
+		fmt.Println("Connected to test database successfully")
 	}
 
-	testDSN := dsn + " dbname=test_db"
-	TestDB, err = gorm.Open(postgres.Open(testDSN), &gorm.Config{})
+	fmt.Println("Migrating test database")
+	err = DB.AutoMigrate(&models.User{}, &models.Hike{})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to migrate test database: %v", err)
+	} else {
+		fmt.Println("Database migration completed successfully")
 	}
-
-	TestDB.AutoMigrate(&models.User{}, &models.Hike{})
 }
 
 func TestDatabaseDestroy() {
-	var err error
-
-	sqlDB, err := TestDB.DB()
+	fmt.Println("Closing test database connection")
+	sqlDB, err := DB.DB()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to get sqlDB: %v", err)
 	}
-	sqlDB.Close()
-
-	dsn := os.Getenv("POSTGRES_DSN")
-	conn, err := sql.Open("postgres", dsn)
+	err = sqlDB.Close()
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
-
-	_, err = conn.Exec("DROP DATABASE test_db")
-	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to close test database connection: %v", err)
+	} else {
+		fmt.Println("Test database connection closed successfully")
 	}
 }
