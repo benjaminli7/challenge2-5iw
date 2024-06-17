@@ -225,7 +225,7 @@ const docTemplate = `{
         },
         "/hikes": {
             "get": {
-                "description": "Get all hikes",
+                "description": "Get details of all hikes",
                 "consumes": [
                     "application/json"
                 ],
@@ -245,11 +245,17 @@ const docTemplate = `{
                                 "$ref": "#/definitions/models.Hike"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             },
             "post": {
-                "description": "Create a new hike",
+                "description": "Create a new hike with the input payload",
                 "consumes": [
                     "application/json"
                 ],
@@ -262,7 +268,7 @@ const docTemplate = `{
                 "summary": "Create a new hike",
                 "parameters": [
                     {
-                        "description": "Create hike",
+                        "description": "Hike Info",
                         "name": "hike",
                         "in": "body",
                         "required": true,
@@ -280,6 +286,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -289,7 +301,7 @@ const docTemplate = `{
         },
         "/hikes/{id}": {
             "get": {
-                "description": "Get a single hike by ID",
+                "description": "Get details of a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -299,7 +311,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Get a single hike",
+                "summary": "Get a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -316,8 +328,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.Hike"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -325,7 +337,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an hike by ID",
+                "description": "Update details of a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -335,7 +347,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Update an hike",
+                "summary": "Update a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -345,7 +357,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Update hike",
+                        "description": "Hike Info",
                         "name": "hike",
                         "in": "body",
                         "required": true,
@@ -366,11 +378,17 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete an hike by ID",
+                "description": "Delete a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -380,7 +398,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Delete an hike",
+                "summary": "Delete a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -397,8 +415,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }

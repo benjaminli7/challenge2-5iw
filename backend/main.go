@@ -26,7 +26,6 @@ import (
 // @BasePath /
 
 func init() {
-	db.LoadEnvVariables()
 	db.ConnectToDb()
 	db.SyncDatabase()
 }
@@ -61,8 +60,6 @@ func main() {
 	r.GET("/advice/:id/donor", middleware.RequireAuth(false), controllers.GetAdviceByDonor)
 	r.PATCH("/advice/:id", middleware.RequireAuth(false), controllers.UpdateAdvice)
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
-
-	
 
 	err := r.Run()
 	if err != nil {
