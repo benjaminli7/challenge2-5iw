@@ -4,10 +4,10 @@ import 'package:frontend/mobile/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:convert';
-import '../providers/user_provider.dart';
-import '../services/api_service.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/navbar.dart';
+import 'package:frontend/mobile/providers/user_provider.dart';
+import 'package:frontend/mobile/services/api_service.dart';
+import 'package:frontend/mobile/widgets/custom_text_field.dart';
+import 'package:frontend/mobile/widgets/navbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return; // Check if the widget is still mounted
 
     if (response.statusCode == 200) {
-      print(response.headers);
+      print (response.headers);
       final token = response.headers['set-cookie']!;
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
@@ -104,19 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   )),
             ),
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).go('/signup');
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-              child: const Text('No account yet? Sign up'),
-            ),
+
           ],
         ),
       ),

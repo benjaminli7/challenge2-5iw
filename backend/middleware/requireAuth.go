@@ -1,4 +1,4 @@
-package milddleware
+package middleware
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -15,6 +14,7 @@ import (
 func RequireAuth(adminOnly bool) gin.HandlerFunc {
     return func(c *gin.Context) {
         // Get the cookie off the request
+        println("RequireAuth middleware")
         tokenString, err := c.Cookie("Authorization")
 
         if err != nil {

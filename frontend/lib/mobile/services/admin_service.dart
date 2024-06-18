@@ -4,7 +4,7 @@ import 'package:frontend/mobile/models/user.dart';
 
 
 class AdminService {
-  static const String url = 'http://192.168.1.110:8080/users';
+  static const String url = 'http://192.168.1.94:8080/users';
 
   Future<List<User>> fetchUsers(String token) async {
 

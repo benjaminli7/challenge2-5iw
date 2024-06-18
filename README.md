@@ -30,4 +30,4 @@ a.**Accédez à Swagger UI**
 
 ### frontend
 
-Lancer la version web avec : flutter run -d chrome
+Lancer la version web avec : flutter run -d chrome --web-browser-flag "--disable-web-security"
