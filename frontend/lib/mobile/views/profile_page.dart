@@ -41,6 +41,7 @@ class ProfilePage extends StatelessWidget {
             // Second block with Filters, Security, Alerts, Theme, Advanced buttons
             buildMenuBlock([
               buildMenuItem(Icons.filter_list, 'Filters', () {}),
+
               buildMenuItem(Icons.security, 'Security', () {
                 // Handle Security tap
               }),

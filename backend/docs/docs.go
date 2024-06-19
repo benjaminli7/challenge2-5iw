@@ -24,9 +24,208 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/advice": {
+            "post": {
+                "description": "Create a new advice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Create a new advice",
+                "parameters": [
+                    {
+                        "description": "Create advice",
+                        "name": "advice",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Advice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Advice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advice/{id}": {
+            "delete": {
+                "description": "Delete advice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Delete advice",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Advice ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update advice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Update advice",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Advice ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update advice",
+                        "name": "advice",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Advice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advice/{id}/donor": {
+            "get": {
+                "description": "Get advice by donor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Get advice by donor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Advice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/advice/{id}/receiver": {
+            "get": {
+                "description": "Get advice by receiver",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "advice"
+                ],
+                "summary": "Get advice by receiver",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Advice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/hikes": {
             "get": {
-                "description": "Get all hikes",
+                "description": "Get details of all hikes",
                 "consumes": [
                     "application/json"
                 ],
@@ -46,11 +245,17 @@ const docTemplate = `{
                                 "$ref": "#/definitions/models.Hike"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             },
             "post": {
-                "description": "Create a new hike",
+                "description": "Create a new hike with the input payload",
                 "consumes": [
                     "application/json"
                 ],
@@ -63,7 +268,7 @@ const docTemplate = `{
                 "summary": "Create a new hike",
                 "parameters": [
                     {
-                        "description": "Create hike",
+                        "description": "Hike Info",
                         "name": "hike",
                         "in": "body",
                         "required": true,
@@ -81,6 +286,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -90,7 +301,7 @@ const docTemplate = `{
         },
         "/hikes/{id}": {
             "get": {
-                "description": "Get a single hike by ID",
+                "description": "Get details of a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -100,7 +311,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Get a single hike",
+                "summary": "Get a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -117,8 +328,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.Hike"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -126,7 +337,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an hike by ID",
+                "description": "Update details of a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -136,7 +347,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Update an hike",
+                "summary": "Update a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -146,7 +357,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Update hike",
+                        "description": "Hike Info",
                         "name": "hike",
                         "in": "body",
                         "required": true,
@@ -167,11 +378,17 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
                     }
                 }
             },
             "delete": {
-                "description": "Delete an hike by ID",
+                "description": "Delete a hike by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -181,7 +398,7 @@ const docTemplate = `{
                 "tags": [
                     "hikes"
                 ],
-                "summary": "Delete an hike",
+                "summary": "Delete a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -198,8 +415,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -443,6 +660,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Advice": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "donor_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer"
+                },
+                "receiver_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -491,6 +734,12 @@ const docTemplate = `{
         "models.User": {
             "type": "object",
             "properties": {
+                "advice_donor": {
+                    "$ref": "#/definitions/models.Advice"
+                },
+                "advice_receiver": {
+                    "$ref": "#/definitions/models.Advice"
+                },
                 "created_at": {
                     "type": "string"
                 },

@@ -26,7 +26,6 @@ import (
 // @BasePath /
 
 func init() {
-	db.LoadEnvVariables()
 	db.ConnectToDb()
 	db.SyncDatabase()
 }
@@ -54,6 +53,13 @@ func main() {
 	r.GET("/hikes/:id", controllers.GetHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
 	r.DELETE("/hikes/:id", controllers.DeleteHike)
+
+	// Advice routes
+	r.POST("/advice", middleware.RequireAuth(false), controllers.CreateAdvice)
+	r.GET("/advice/:id/receiver", middleware.RequireAuth(false), controllers.GetAdviceByReceiver)
+	r.GET("/advice/:id/donor", middleware.RequireAuth(false), controllers.GetAdviceByDonor)
+	r.PATCH("/advice/:id", middleware.RequireAuth(false), controllers.UpdateAdvice)
+	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	err := r.Run()
 	if err != nil {

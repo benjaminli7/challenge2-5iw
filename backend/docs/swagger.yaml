@@ -1,5 +1,22 @@
 basePath: /
 definitions:
+  models.Advice:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      donor_id:
+        type: integer
+      id:
+        type: integer
+      rating:
+        type: integer
+      receiver_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
@@ -31,6 +48,10 @@ definitions:
     type: object
   models.User:
     properties:
+      advice_donor:
+        $ref: '#/definitions/models.Advice'
+      advice_receiver:
+        $ref: '#/definitions/models.Advice'
       created_at:
         type: string
       deleted_at:
@@ -71,55 +92,39 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /hikes:
-    get:
-      consumes:
-      - application/json
-      description: Get all hikes
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Hike'
-            type: array
-      summary: Get all hikes
-      tags:
-      - hikes
+  /advice:
     post:
       consumes:
       - application/json
-      description: Create a new hike
+      description: Create a new advice
       parameters:
-      - description: Create hike
+      - description: Create advice
         in: body
-        name: hike
+        name: advice
         required: true
         schema:
-          $ref: '#/definitions/models.Hike'
+          $ref: '#/definitions/models.Advice'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Hike'
+            $ref: '#/definitions/models.Advice'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Create a new hike
+      summary: Create a new advice
       tags:
-      - hikes
-  /hikes/{id}:
+      - advice
+  /advice/{id}:
     delete:
       consumes:
       - application/json
-      description: Delete an hike by ID
+      description: Delete advice
       parameters:
-      - description: Hike ID
+      - description: Advice ID
         in: path
         name: id
         required: true
@@ -135,15 +140,46 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Delete an hike
+      summary: Delete advice
       tags:
-      - hikes
+      - advice
+    patch:
+      consumes:
+      - application/json
+      description: Update advice
+      parameters:
+      - description: Advice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update advice
+        in: body
+        name: advice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Advice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update advice
+      tags:
+      - advice
+  /advice/{id}/donor:
     get:
       consumes:
       - application/json
-      description: Get a single hike by ID
+      description: Get advice by donor
       parameters:
-      - description: Hike ID
+      - description: User ID
         in: path
         name: id
         required: true
@@ -154,25 +190,66 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Hike'
+            $ref: '#/definitions/models.Advice'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Get a single hike
+      summary: Get advice by donor
       tags:
-      - hikes
-    put:
+      - advice
+  /advice/{id}/receiver:
+    get:
       consumes:
       - application/json
-      description: Update an hike by ID
+      description: Get advice by receiver
       parameters:
-      - description: Hike ID
+      - description: User ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Update hike
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get advice by receiver
+      tags:
+      - advice
+  /hikes:
+    get:
+      consumes:
+      - application/json
+      description: Get details of all hikes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Hike'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all hikes
+      tags:
+      - hikes
+    post:
+      consumes:
+      - application/json
+      description: Create a new hike with the input payload
+      parameters:
+      - description: Hike Info
         in: body
         name: hike
         required: true
@@ -189,7 +266,94 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Update an hike
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new hike
+      tags:
+      - hikes
+  /hikes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a hike by ID
+      tags:
+      - hikes
+    get:
+      consumes:
+      - application/json
+      description: Get details of a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a hike by ID
+      tags:
+      - hikes
+    put:
+      consumes:
+      - application/json
+      description: Update details of a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Hike Info
+        in: body
+        name: hike
+        required: true
+        schema:
+          $ref: '#/definitions/models.Hike'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a hike by ID
       tags:
       - hikes
   /login:
