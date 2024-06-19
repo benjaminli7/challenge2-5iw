@@ -9,8 +9,8 @@ import 'package:frontend/mobile/views/back/admin_page.dart';
 import 'package:frontend/mobile/views/profile_page.dart';
 import 'package:frontend/mobile/views/explore_page.dart';
 import 'package:frontend/mobile/views/groups_page.dart';
-import 'package:frontend/mobile/providers/user_provider.dart';
-import 'package:frontend/mobile/providers/admin_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
 
 void main() {

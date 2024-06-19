@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
-import '../widgets/search_bar.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/mobile/widgets/search_bar.dart';
 
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});

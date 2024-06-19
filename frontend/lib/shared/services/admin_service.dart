@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:frontend/mobile/models/user.dart';
+import 'package:frontend/shared/models/user.dart';
 
 
 class AdminService {
@@ -8,12 +8,11 @@ class AdminService {
 
   Future<List<User>> fetchUsers(String token) async {
 
-
+    print('fetchUsers token: $token');
     final response = await http.get(
       Uri.parse(url),
       headers: {
-
-        'Cookie': token,
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -32,7 +31,7 @@ class AdminService {
     final response = await http.delete(
       Uri.parse('$url/$userId'),
       headers: {
-        'Cookie': token,
+        'Authorization': 'Bearer $token',
       },
     );
     if (response.statusCode != 200) {
@@ -45,7 +44,7 @@ class AdminService {
     final response = await http.patch(
       Uri.parse('$url/${userId}/role'),
       headers: {
-        'Cookie': token,
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: body,

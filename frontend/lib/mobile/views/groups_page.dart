@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 
 class GroupsPage extends StatelessWidget {
   const GroupsPage({super.key});

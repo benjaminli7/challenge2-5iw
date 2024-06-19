@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import '../models/user.dart';
+import 'package:frontend/shared/models/user.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 
 class Footer extends StatefulWidget {
   const Footer({super.key});

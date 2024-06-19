@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/web/views/login_page.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/web/providers/admin_provider.dart';
-import 'package:frontend/shared/views/home_page.dart';
-import 'package:frontend/shared/widgets/footer.dart';
+import 'package:frontend/shared/providers/admin_provider.dart';
+import 'package:frontend/web/views/home_page.dart';
+import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/web/views/admin_page.dart';
 import 'package:frontend/web/views/users_page.dart';
 void main() {

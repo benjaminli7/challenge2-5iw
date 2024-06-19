@@ -113,7 +113,7 @@ func Login(c *gin.Context) {
 	c.SetSameSite(http.SameSiteStrictMode)
 	c.SetCookie("Authorization", tokenString, 3600*24*30, "/", "", false, true)
 
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Logged in successfully"})
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: tokenString})
 }
 
 // Validate godoc

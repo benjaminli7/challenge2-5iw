@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/mobile/models/user.dart';
+import 'package:frontend/shared/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:convert';
-import 'package:frontend/mobile/providers/user_provider.dart';
-import 'package:frontend/mobile/services/api_service.dart';
-import 'package:frontend/mobile/widgets/custom_text_field.dart';
-import 'package:frontend/mobile/widgets/navbar.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/services/api_service.dart';
+import 'package:frontend/shared/widgets/custom_text_field.dart';
+import 'package:frontend/shared/widgets/navbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,39 +23,53 @@ class _LoginPageState extends State<LoginPage> {
   final ApiService _apiService = ApiService();
 
   void _login() async {
-    final response = await _apiService.login(
+    final String? token = await _apiService.login(
       _emailController.text,
       _passwordController.text,
     );
     if (!mounted) return; // Check if the widget is still mounted
 
-    if (response.statusCode == 200) {
-      print (response.headers);
-      final token = response.headers['set-cookie']!;
+    if (token != null) {
+
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
+      print('parseJwt, $parseJwt');
+      print(token);
+      if(parseJwt['roles'] == 'admin'){
+        Provider.of<UserProvider>(context, listen: false).setUser(
+          User(
+              id: parseJwt['sub'],
+              email: parseJwt['email'],
+              password: "",
+              token: token,
+              role: parseJwt['roles'],
+              isVerified: parseJwt['verified']),
+        );
+        //print user info
+        Fluttertoast.showToast(
+          msg: 'Login successful',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
 
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
-      );
-      //print user info
-      Fluttertoast.showToast(
-        msg: 'Login successful',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      GoRouter.of(context).go('/home');
+        GoRouter.of(context).go('/home');
+      } else {
+        Fluttertoast.showToast(
+          msg: 'Vous n\'avez pas les droits d\'accès',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
     } else {
       // Handle login error
       Fluttertoast.showToast(

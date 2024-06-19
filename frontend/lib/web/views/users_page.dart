@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/mobile/providers/admin_provider.dart';
-import 'package:frontend/mobile/providers/user_provider.dart';
-import 'package:frontend/mobile/models/user.dart';
+import 'package:frontend/shared/providers/admin_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/models/user.dart';
 
 class UserListPage extends StatefulWidget {
   const UserListPage({super.key});

@@ -15,14 +15,16 @@ func RequireAuth(adminOnly bool) gin.HandlerFunc {
     return func(c *gin.Context) {
         // Get the cookie off the request
         println("RequireAuth middleware")
-        tokenString, err := c.Cookie("Authorization")
-
-        if err != nil {
-            println("No token found")
+        authHeader := c.GetHeader("Authorization")
+        println(authHeader)
+        if authHeader == "" {
+            println("No Authorization header found")
             c.AbortWithStatus(http.StatusUnauthorized)
             return
         }
 
+        // Le token doit être dans le format "Bearer {token}"
+        tokenString := authHeader[len("Bearer "):]
         // Decode/validate it
         token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
             // Validate the alg is what you expect:
