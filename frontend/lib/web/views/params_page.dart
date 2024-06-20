@@ -4,14 +4,14 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/user.dart';
 
-class UserListPage extends StatefulWidget {
-  const UserListPage({super.key});
+class ParamsPage extends StatefulWidget {
+  const ParamsPage({super.key});
 
   @override
-  _UserListPageState createState() => _UserListPageState();
+  _ParamsPageState createState() => _ParamsPageState();
 }
 
-class _UserListPageState extends State<UserListPage> {
+class _ParamsPageState extends State<ParamsPage> {
   @override
   void initState() {
     super.initState();
@@ -39,15 +39,10 @@ class _UserListPageState extends State<UserListPage> {
           return DataTable(
             columns: [
               DataColumn(label: Text('Email')),
-              DataColumn(label: Text('IsVerified')),
               DataColumn(label: Text('Role')),
-              DataColumn(label: Text('Supprimer')),
             ],
             rows: adminProvider.users.map((user) {
               return DataRow(cells: [
-                DataCell(Text(user.email)),
-                DataCell(Text(user.isVerified.toString())),
-                DataCell(Text(user.role)),
                 DataCell(
                   GestureDetector(
                     onTap: () {
@@ -60,7 +55,7 @@ class _UserListPageState extends State<UserListPage> {
                       );
                     },
                     child: Text(
-                      "Voir les details",
+                      user.email,
                       style: TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
@@ -68,6 +63,7 @@ class _UserListPageState extends State<UserListPage> {
                     ),
                   ),
                 ),
+                DataCell(Text(user.role)),
               ]);
             }).toList(),
           );
@@ -97,7 +93,7 @@ class UserDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('User Details')),
       body: Padding(
-        padding: EdgeInsets.all(17.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

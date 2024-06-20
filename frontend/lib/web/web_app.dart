@@ -8,6 +8,9 @@ import 'package:frontend/web/views/home_page.dart';
 import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/web/views/admin_page.dart';
 import 'package:frontend/web/views/users_page.dart';
+import 'package:frontend/web/views/params_page.dart';
+import 'package:frontend/web/views/groups_page.dart';
+import 'package:frontend/web/views/hikes_page.dart';
 void main() {
   runApp(MyWebApp());
 }
@@ -52,6 +55,22 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => const HomePage(),
         ),
         GoRoute(
+          path: '/groups',
+          builder: (context, state) => const GroupsPage(),
+        ),
+        GoRoute(
+          path: '/hikes',
+          builder: (context, state) => const HikesPage(),
+        ),
+        GoRoute(
+            path: '/params',
+            builder: (context, state) => const ParamsPage()
+        ),
+        GoRoute(
+            path: '/users',
+            builder: (context, state) => const UserListPage()
+        ),
+        GoRoute(
           path: '/',
           builder: (context, state) {
             final userProvider = Provider.of<UserProvider>(context);
@@ -63,16 +82,7 @@ final GoRouter _router = GoRouter(
           },
         ),
 
-        GoRoute(
-          path: '/admin',
-          builder: (context, state) => const AdminPage(),
-          routes: [
-            GoRoute(
-              path: 'users',
-              builder: (context, state) => const UserListPage(),
-            ),
-          ],
-        ),
+
       ],
     ),
     // Default route, redirects to login or home based on user state
