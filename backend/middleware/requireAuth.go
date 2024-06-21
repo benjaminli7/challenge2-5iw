@@ -1,4 +1,4 @@
-package milddleware
+package middleware
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -15,14 +14,17 @@ import (
 func RequireAuth(adminOnly bool) gin.HandlerFunc {
     return func(c *gin.Context) {
         // Get the cookie off the request
-        tokenString, err := c.Cookie("Authorization")
-
-        if err != nil {
-            println("No token found")
+        println("RequireAuth middleware")
+        authHeader := c.GetHeader("Authorization")
+        println(authHeader)
+        if authHeader == "" {
+            println("No Authorization header found")
             c.AbortWithStatus(http.StatusUnauthorized)
             return
         }
 
+        // Le token doit être dans le format "Bearer {token}"
+        tokenString := authHeader[len("Bearer "):]
         // Decode/validate it
         token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
             // Validate the alg is what you expect:

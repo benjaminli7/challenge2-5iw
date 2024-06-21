@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 
 class Footer extends StatefulWidget {
   const Footer({super.key});
@@ -23,12 +23,9 @@ class _FooterState extends State<Footer> {
         GoRouter.of(context).go('/explore');
         break;
       case 1:
-        GoRouter.of(context).go('/groups');
-        break;
-      case 2:
         GoRouter.of(context).go('/profile');
         break;
-      case 3:
+      case 2:
         GoRouter.of(context).go('/admin');
         break;
     }
@@ -42,10 +39,6 @@ class _FooterState extends State<Footer> {
       BottomNavigationBarItem(
         icon: Icon(Icons.explore, color: Colors.white),
         label: 'Explore',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.group, color: Colors.white),
-        label: 'Groups',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.person, color: Colors.white),

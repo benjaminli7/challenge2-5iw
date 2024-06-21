@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/services/admin_service.dart';
-import 'package:frontend/models/user.dart';
+import 'package:frontend/shared/services/admin_service.dart';
+import 'package:frontend/shared/models/user.dart';
 
 class AdminProvider with ChangeNotifier {
   List<User> _users = [];

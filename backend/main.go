@@ -4,7 +4,7 @@ import (
 	"backend/controllers"
 	"backend/db"
 	_ "backend/docs"
-	middleware "backend/milddleware"
+	middleware "backend/middleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,13 +32,13 @@ func init() {
 
 func main() {
 	r := gin.Default()
-
+	
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Auth route
 	r.POST("/signup", controllers.Signup)
-	r.POST("/login", controllers.Login)
+	r.POST("/login",middleware.Cors(),controllers.Login)
 	r.GET("/logout", controllers.Logout)
 	r.PATCH("/validate", controllers.Validate)
 

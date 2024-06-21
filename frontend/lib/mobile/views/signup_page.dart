@@ -1,52 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:frontend/models/user.dart';
-import 'package:provider/provider.dart';
+import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:convert';
-import '../providers/user_provider.dart';
-import '../services/api_service.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/navbar.dart';
+import 'package:frontend/shared/widgets/custom_text_field.dart';
+import 'package:frontend/shared/widgets/navbar.dart';
+import '../widgets/footer.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final ApiService _apiService = ApiService();
 
-  void _login() async {
-    final response = await _apiService.login(
+  void _signup() async {
+    final response = await _apiService.signup(
       _emailController.text,
       _passwordController.text,
     );
+
     if (!mounted) return; // Check if the widget is still mounted
 
     if (response.statusCode == 200) {
-      final token = response.headers['set-cookie']!;
-      Map<String, dynamic> parseJwt = jsonDecode(
-        ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
-      );
-
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
-      );
-      //print user info
+      // Handle successful signup
+      print('Signup successful');
       Fluttertoast.showToast(
-        msg: 'Login successful',
+        msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -54,11 +39,11 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      GoRouter.of(context).go('/home');
+      GoRouter.of(context).go('/login');
     } else {
-      // Handle login error
+      // Handle signup error
       Fluttertoast.showToast(
-        msg: 'Login failed',
+        msg: 'Signup failed',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -66,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Login failed');
+      print('Signup failed');
     }
   }
 
@@ -80,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Login',
+              'Signup',
               style: TextStyle(
                 fontSize: 24,
               ),
@@ -95,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
             ),
             ElevatedButton(
-              onPressed: _login,
-              child: const Text('Login',
+              onPressed: _signup,
+              child: const Text('Register',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -105,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                GoRouter.of(context).go('/signup');
+                GoRouter.of(context).go('/login');
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -114,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: TextDecoration.underline,
                 ),
               ),
-              child: const Text('No account yet? Sign up'),
+              child: const Text('Already registered? Login here.'),
             ),
           ],
         ),
