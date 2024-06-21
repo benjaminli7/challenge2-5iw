@@ -20,14 +20,20 @@ class _FooterState extends State<Footer> {
 
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/explore');
+        GoRouter.of(context).go('/users');
         break;
       case 1:
-        GoRouter.of(context).go('/profile');
+        GoRouter.of(context).go('/groups');
         break;
       case 2:
-        GoRouter.of(context).go('/admin');
+        GoRouter.of(context).go('/hikes');
         break;
+      case 3:
+        GoRouter.of(context).go('/params');
+        break;
+        case 4:
+          GoRouter.of(context).go('/home');
+          break;
     }
   }
 
@@ -37,23 +43,27 @@ class _FooterState extends State<Footer> {
 
     List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
-        icon: Icon(Icons.explore, color: Colors.white),
-        label: 'Explore',
+        icon: Icon(Icons.person, color: Colors.white),
+        label: 'User',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.person, color: Colors.white),
-        label: 'Profile',
+        icon: Icon(Icons.group, color: Colors.white),
+        label: 'Group',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.hiking, color: Colors.white),
+        label: 'Hike',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.camera_outlined, color: Colors.white),
+        label: 'Params',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home, color: Colors.white),
+        label: 'Home',
       ),
     ];
 
-    if (user != null && user.role == 'admin') {
-      items.add(
-        BottomNavigationBarItem(
-          icon: Icon(Icons.admin_panel_settings, color: Colors.white),
-          label: 'Admin',
-        ),
-      );
-    }
 
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
