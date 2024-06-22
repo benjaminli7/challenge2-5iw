@@ -697,9 +697,6 @@
                 "description": {
                     "type": "string"
                 },
-                "end_date": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -708,9 +705,6 @@
                 },
                 "organizer_id": {
                     "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

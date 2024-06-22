@@ -703,9 +703,6 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "end_date": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -714,9 +711,6 @@ const docTemplate = `{
                 },
                 "organizer_id": {
                     "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
