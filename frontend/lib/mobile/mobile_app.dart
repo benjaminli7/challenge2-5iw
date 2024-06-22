@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/mobile/views/login_page.dart';
@@ -109,6 +110,7 @@ class MyMobileApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => HikeProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
