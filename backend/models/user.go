@@ -16,4 +16,6 @@ type User struct {
 	IsVerified bool       `gorm:"default:false" json:"is_verified"`
 	Donor	   Advice	  `gorm:"foreignKey:DonorID" json:"advice_donor" constraint:OnUpdate:CASCADE,OnDelete:CASCADE;`
 	Receiver   Advice     `gorm:"foreignKey:ReceiverID" json:"advice_receiver" constraint:OnUpdate:CASCADE,OnDelete:CASCADE`
+	Groups     []Group    `gorm:"many2many:group_users" json:"groups"`
+	Organizer  Group	  `gorm:"foreignKey:OrganizerID" json:"group_organizer" constraint:OnUpdate:CASCADE,OnDelete:CASCADE;`
 }

@@ -61,6 +61,12 @@ func main() {
 	r.PATCH("/advice/:id", middleware.RequireAuth(false), controllers.UpdateAdvice)
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
+	// Group routes
+	r.POST("/groups", controllers.CreateGroup)
+	r.GET("/groups/:id", controllers.GetGroup)
+	r.PATCH("/groups/:id", controllers.UpdateGroup)
+	r.DELETE("/groups/:id", controllers.DeleteGroup)
+
 	err := r.Run()
 	if err != nil {
 		return
