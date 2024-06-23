@@ -16,14 +16,29 @@ Bienvenue dans LeafMeet, votre compagnon idéal pour documenter vos aventures en
    ```bash
     docker-compose up --build
 
+   ```
+
 2. **Build&lancer go**
 
    ```bash
-    go mod tidy    
+    go mod tidy
     go run main.go
+   ```
 
 a.**Accédez à Swagger UI**
 
-
 - Ouvrez votre navigateur et accédez à http://localhost:8080/swagger/index.html/
-- 
+
+### 🛠️ Lancement des tests
+
+- Vérifiez que le docker est bien lancé avec le conteneur postgres_test
+
+**Dans le repertoire /backend**
+
+```bash
+ go test ./... --cover
+
+### frontend
+
+Lancer la version web avec : flutter run -d chrome --web-browser-flag "--disable-web-security"
+```

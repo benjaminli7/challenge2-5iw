@@ -12,6 +12,8 @@ type User struct {
 	Email      string     `gorm:"unique" json:"email"`
 	Password   string     `gorm:"not null" json:"password"`
 	Role       string     `gorm:"default:user" json:"role"`
-	Token      string     `gorm:"unique" json:"token"`
+	Token      string     `json:"token"`
 	IsVerified bool       `gorm:"default:false" json:"is_verified"`
+	Donor      Advice     `gorm:"foreignKey:DonorID" json:"advice_donor" constraint:OnUpdate:CASCADE,OnDelete:CASCADE;`
+	Receiver   Advice     `gorm:"foreignKey:ReceiverID" json:"advice_receiver" constraint:OnUpdate:CASCADE,OnDelete:CASCADE`
 }
