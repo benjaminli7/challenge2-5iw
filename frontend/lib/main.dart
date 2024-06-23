@@ -5,8 +5,8 @@ import 'package:frontend/web/web_app.dart';
 
 void main() {
   if (kIsWeb) {
-    runApp(MyWebApp());
+    runApp(const MyWebApp());
   } else {
-    runApp(MyMobileApp());
+    runApp(const MyMobileApp());
   }
 }
