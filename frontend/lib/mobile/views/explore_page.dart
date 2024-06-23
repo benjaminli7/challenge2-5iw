@@ -4,6 +4,7 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/widgets/search_bar.dart';
+import 'package:frontend/mobile/views/hike_details_page.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -54,34 +55,44 @@ class _ExplorePageState extends State<ExplorePage> {
               itemCount: hikeProvider.hikes.length,
               itemBuilder: (context, index) {
                 Hike hike = hikeProvider.hikes[index];
-                return Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        'https://via.placeholder.com/150', // Placeholder image URL
-                        fit: BoxFit.cover,
-                        height: 100,
-                        width: double.infinity,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HikeDetailsPage(hike: hike),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              hike.name,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(hike.description),
-                          ],
+                    );
+                  },
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          'https://via.placeholder.com/150', // Placeholder image URL
+                          fit: BoxFit.cover,
+                          height: 100,
+                          width: double.infinity,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                hike.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(hike.description),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

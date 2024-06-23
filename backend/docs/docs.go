@@ -698,22 +698,36 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-05-28T12:54:10.517438+02:00"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "La rando de zinzin"
+                },
+                "difficulty": {
+                    "type": "string",
+                    "example": "Intermediate"
+                },
+                "duration": {
+                    "type": "string",
+                    "example": "3 hours"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Montagne du destin"
                 },
                 "organizer_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-05-28T12:54:10.517438+02:00"
                 }
             }
         },
@@ -777,7 +791,6 @@ const docTemplate = `{
     }
 }`
 
-// SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
