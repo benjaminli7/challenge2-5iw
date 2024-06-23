@@ -1,12 +1,19 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type User struct {
-	gorm.Model
-	FirstName string `gorm:"size:255;not null"`
-	LastName  string `gorm:"size:255;not null"`
-	Email     string `gorm:"size:255;not null;unique"`
-	Password  string `gorm:"size:255;not null"`
-	Role      string `gorm:"size:50;not null"` // admin, moderator, user
+	ID         uint       `gorm:"primaryKey" json:"id"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `gorm:"index" json:"deleted_at,omitempty"`
+	Email      string     `gorm:"unique" json:"email"`
+	Password   string     `gorm:"not null" json:"password"`
+	Role       string     `gorm:"default:user" json:"role"`
+	Token      string     `json:"token"`
+	IsVerified bool       `gorm:"default:false" json:"is_verified"`
+	Donor      Advice     `gorm:"foreignKey:DonorID" json:"advice_donor" constraint:OnUpdate:CASCADE,OnDelete:CASCADE;`
+	Receiver   Advice     `gorm:"foreignKey:ReceiverID" json:"advice_receiver" constraint:OnUpdate:CASCADE,OnDelete:CASCADE`
 }

@@ -1,0 +1,512 @@
+basePath: /
+definitions:
+  models.Advice:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      donor_id:
+        type: integer
+      id:
+        type: integer
+      rating:
+        type: integer
+      receiver_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Hike:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      organizer_id:
+        type: integer
+      start_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.User:
+    properties:
+      advice_donor:
+        $ref: '#/definitions/models.Advice'
+      advice_receiver:
+        $ref: '#/definitions/models.Advice'
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      is_verified:
+        type: boolean
+      password:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.UserListResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /advice:
+    post:
+      consumes:
+      - application/json
+      description: Create a new advice
+      parameters:
+      - description: Create advice
+        in: body
+        name: advice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Advice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new advice
+      tags:
+      - advice
+  /advice/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete advice
+      parameters:
+      - description: Advice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete advice
+      tags:
+      - advice
+    patch:
+      consumes:
+      - application/json
+      description: Update advice
+      parameters:
+      - description: Advice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update advice
+        in: body
+        name: advice
+        required: true
+        schema:
+          $ref: '#/definitions/models.Advice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update advice
+      tags:
+      - advice
+  /advice/{id}/donor:
+    get:
+      consumes:
+      - application/json
+      description: Get advice by donor
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get advice by donor
+      tags:
+      - advice
+  /advice/{id}/receiver:
+    get:
+      consumes:
+      - application/json
+      description: Get advice by receiver
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Advice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get advice by receiver
+      tags:
+      - advice
+  /hikes:
+    get:
+      consumes:
+      - application/json
+      description: Get details of all hikes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Hike'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all hikes
+      tags:
+      - hikes
+    post:
+      consumes:
+      - application/json
+      description: Create a new hike with the input payload
+      parameters:
+      - description: Hike Info
+        in: body
+        name: hike
+        required: true
+        schema:
+          $ref: '#/definitions/models.Hike'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new hike
+      tags:
+      - hikes
+  /hikes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a hike by ID
+      tags:
+      - hikes
+    get:
+      consumes:
+      - application/json
+      description: Get details of a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a hike by ID
+      tags:
+      - hikes
+    put:
+      consumes:
+      - application/json
+      description: Update details of a hike by its ID
+      parameters:
+      - description: Hike ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Hike Info
+        in: body
+        name: hike
+        required: true
+        schema:
+          $ref: '#/definitions/models.Hike'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Hike'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a hike by ID
+      tags:
+      - hikes
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user with email and password
+      parameters:
+      - description: Log in user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Log in a user
+      tags:
+      - auth
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: Log out the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+      summary: Log out a user
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: Sign up user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Sign up a new user
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get the list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserListResponse'
+      summary: Get users
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete user
+      tags:
+      - users
+  /users/{id}/role:
+    patch:
+      consumes:
+      - application/json
+      description: Update the role of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User role
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update user role
+      tags:
+      - users
+  /validate:
+    patch:
+      consumes:
+      - application/json
+      description: Validate the current user token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+      summary: Validate user token
+      tags:
+      - auth
+swagger: "2.0"

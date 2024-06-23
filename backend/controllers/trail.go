@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"backend/db"
 	"backend/models"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func CreateTrailHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +16,7 @@ func CreateTrailHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	result := db.Create(&trail)
+	result := db.DB.Create(&trail)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
@@ -26,7 +28,7 @@ func GetTrailHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	var trail models.Trail
-	result := db.First(&trail, id)
+	result := db.DB.First(&trail, id)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusNotFound)
 		return

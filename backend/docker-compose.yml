@@ -1,26 +1,36 @@
-version: '3.9'
-
+version: '3'
 services:
-  db:
+  postgres:
     image: postgres
-    restart: always
-    shm_size: 128mb
-    environment:
-      POSTGRES_PASSWORD: challenge
-      POSTGRES_USER: admin
-      POSTGRES_DB: challenge
+    container_name: postgres
     ports:
-      - "5432:5432"
+      - 6500:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: db
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
-  adminer:
+  admin:
     image: adminer
     restart: always
+    container_name: adminer
     ports:
-      - "8080:8080"
+      - 8888:8080
 
-  app:
-    build: .
+  postgres_test:
+    image: postgres
+    container_name: postgres_test
     ports:
-      - "5000:5000"
-    depends_on:
-      - db
+      - 6501:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_db
+    volumes:
+      - postgres_test:/var/lib/postgresql/data
+
+volumes:
+  postgres:
+  postgres_test:
