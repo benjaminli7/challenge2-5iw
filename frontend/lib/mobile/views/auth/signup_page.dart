@@ -4,7 +4,7 @@ import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
-import '../widgets/footer.dart';
+import '../../widgets/footer.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

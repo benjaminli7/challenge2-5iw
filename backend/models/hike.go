@@ -5,12 +5,12 @@ import (
 )
 
 type Hike struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	Name        string    `gorm:"not null" json:"name"`
-	Description string    `json:"description"`
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
-	OrganizerID uint      `json:"organizer_id"`
+	ID          uint      `gorm:"primaryKey" json:"id" example:"1"`
+	CreatedAt   time.Time `json:"created_at" example:"2024-05-28T12:54:10.517438+02:00"`
+	UpdatedAt   time.Time `json:"updated_at" example:"2024-05-28T12:54:10.517438+02:00"`
+	Name        string    `gorm:"not null" json:"name" example:"Montagne du destin"`
+	Description string    `json:"description" example:"La rando de zinzin"`
+	OrganizerID uint      `json:"organizer_id" example:"1"`
+	Difficulty  string    `json:"difficulty" example:"Intermediate"`
+	Duration    string    `json:"duration" example:"3 hours"`
 }
