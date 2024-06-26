@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/mobile/views/login_page.dart';
-import 'package:frontend/mobile/views/signup_page.dart';
+import 'package:frontend/mobile/views/auth/login_page.dart';
+import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
-import 'package:frontend/mobile/views/profile_page.dart';
-import 'package:frontend/mobile/views/explore_page.dart';
-import 'package:frontend/mobile/views/groups_page.dart';
+import 'package:frontend/mobile/views/profile/profile_page.dart';
+import 'package:frontend/mobile/views/explore/explore_page.dart';
+import 'package:frontend/mobile/views/groups/groups_page.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -109,6 +110,7 @@ class MyMobileApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => HikeProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

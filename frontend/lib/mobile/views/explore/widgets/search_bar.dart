@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class SearchBarApp extends StatefulWidget {
   final String hintText;
-  const SearchBarApp({this.hintText = '', super.key});
+  final ValueChanged<String> onSearchChanged;
+
+  const SearchBarApp(
+      {required this.hintText, required this.onSearchChanged, super.key});
 
   @override
   State<SearchBarApp> createState() => _SearchBarAppState();
@@ -11,11 +14,14 @@ class SearchBarApp extends StatefulWidget {
 class _SearchBarAppState extends State<SearchBarApp> {
   @override
   Widget build(BuildContext context) {
-    // add more gap left and right
+    print('Building SearchBarApp'); // Debugging print statement
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       padding: const EdgeInsets.all(10),
       child: TextField(
+        onChanged: (value) {
+          widget.onSearchChanged(value);
+        },
         decoration: InputDecoration(
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),

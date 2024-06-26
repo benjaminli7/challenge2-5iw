@@ -50,20 +50,28 @@ definitions:
   models.Hike:
     properties:
       created_at:
+        example: "2024-05-28T12:54:10.517438+02:00"
         type: string
       description:
+        example: La rando de zinzin
         type: string
-      end_date:
+      difficulty:
+        example: Intermediate
+        type: string
+      duration:
+        example: 3 hours
         type: string
       id:
+        example: 1
         type: integer
       name:
+        example: Montagne du destin
         type: string
       organizer_id:
+        example: 1
         type: integer
-      start_date:
-        type: string
       updated_at:
+        example: "2024-05-28T12:54:10.517438+02:00"
         type: string
     type: object
   models.SuccessResponse:

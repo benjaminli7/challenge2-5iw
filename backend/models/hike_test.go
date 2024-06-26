@@ -1,24 +1,22 @@
 package models
 
 import (
-	"testing"
-	"time"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestHikeCreation(t *testing.T) {
 	hike := Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		StartDate:   time.Now(),
-		EndDate:     time.Now().Add(2 * time.Hour),
 		OrganizerID: 1,
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
 	}
 
 	assert.Equal(t, "Test Hike", hike.Name)
 	assert.Equal(t, "This is a test hike", hike.Description)
-	assert.False(t, hike.StartDate.IsZero())
-	assert.False(t, hike.EndDate.IsZero())
 	assert.Equal(t, uint(1), hike.OrganizerID)
+	assert.Equal(t, "Intermediate", hike.Difficulty)
+	assert.Equal(t, "3 hours", hike.Duration)
 }
