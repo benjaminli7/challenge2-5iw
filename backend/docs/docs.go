@@ -269,6 +269,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/groups/leave": {
+            "delete": {
+                "description": "Leave a group",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Leave a group",
+                "parameters": [
+                    {
+                        "description": "Group User Info",
+                        "name": "groupUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GroupUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/groups/{id}": {
             "get": {
                 "description": "Get details of a group by its ID",
@@ -899,6 +939,9 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "models.GroupUser": {
+            "type": "object"
         },
         "models.Hike": {
             "type": "object",

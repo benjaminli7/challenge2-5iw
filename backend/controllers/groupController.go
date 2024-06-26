@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 // CreateGroup godoc
@@ -102,21 +103,21 @@ func DeleteGroup(c *gin.Context) {
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Group deleted"})
 }
 
-// joinGroup godoc
+// JoinGroup godoc
 // @Summary Join a group
-// @Description Join a group by its ID
+// @Description Join a group
 // @Tags groups
 // @Accept json
 // @Produce json
-// @Param id path int true "Group ID"
+// @Param groupUser body models.GroupUser true "Group User Info"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 500 {object} models.ErrorResponse
-// @Router /groups/{id}/join [post]
+// @Router /groups/join [post]
 
 func JoinGroup(c *gin.Context) {
 	var body struct {
-		UserId string,
-		GroupId string,
+		UserId uint
+		GroupId uint
 	}
 	if c.Bind(&body) != nil {
 		println("Failed to read body")
@@ -124,7 +125,6 @@ func JoinGroup(c *gin.Context) {
 		return
 	}
 
-	id := c.Param("id")
 	var group models.Group
 	db.DB.First(&group, body.GroupId)
 
@@ -135,13 +135,72 @@ func JoinGroup(c *gin.Context) {
 	}
 	var accepted bool = false
 
-	if group.isPrivate == true {
-		accepted = false
-	} else {
+	if group.IsPrivate == false {
 		accepted = true
 	}
+
+	groupUser :=  models.GroupUser{UserID: body.UserId, GroupID: body.GroupId, IsValidate: accepted}
+	
+	if err := db.DB.Create(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, groupUser)
+}
+
+// LeaveGroup godoc
+// @Summary Leave a group
+// @Description Leave a group
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param groupUser body models.GroupUser true "Group User Info"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/leave [delete]
+func LeaveGroup(c *gin.Context) {
+	var body struct {
+		UserId uint
+		GroupId uint
+	}
+	if c.Bind(&body) != nil {
+		println("Failed to read body")
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
 	var groupUser models.GroupUser
-	db.DB.Model(&groupUser).Update("role", body.Role)
-	fmt.Println("Role updated successfully")
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Role updated successfully"})
+	if err := db.DB.Where("user_id = ? AND group_id = ?", body.UserId, body.GroupId).First(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	if err := db.DB.Delete(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User left group"})
+}
+
+// ValidateUserGroup godoc
+// @Summary Validate a user in a group
+// @Description Validate a user in a group
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "GroupUser ID"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/validate/{id} [patch]
+func ValidateUserGroup(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var groupUser models.GroupUser
+	if err := db.DB.First(&groupUser, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	groupUser.IsValidate = true
+	if err := db.DB.Save(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User validated"})
 }

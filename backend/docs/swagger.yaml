@@ -45,6 +45,8 @@ definitions:
           $ref: '#/definitions/models.User'
         type: array
     type: object
+  models.GroupUser:
+    type: object
   models.Hike:
     properties:
       created_at:
@@ -363,6 +365,32 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a group by ID
+      tags:
+      - groups
+  /groups/leave:
+    delete:
+      consumes:
+      - application/json
+      description: Leave a group
+      parameters:
+      - description: Group User Info
+        in: body
+        name: groupUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.GroupUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Leave a group
       tags:
       - groups
   /hikes:

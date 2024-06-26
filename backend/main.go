@@ -63,9 +63,12 @@ func main() {
 
 	// Group routes
 	r.POST("/groups", controllers.CreateGroup)
+	r.POST("/groups/join", controllers.JoinGroup)
 	r.GET("/groups/:id", controllers.GetGroup)
 	r.PATCH("/groups/:id", controllers.UpdateGroup)
+	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
+	r.DELETE("/groups/leave", controllers.LeaveGroup)
 
 	err := r.Run()
 	if err != nil {
