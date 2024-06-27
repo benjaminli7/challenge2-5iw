@@ -1,9 +1,9 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:frontend/shared/models/hike.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8080';
+  static const String baseUrl = 'http://10.213.126.208:8080';
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -58,9 +58,4 @@ class ApiService {
   Future<http.Response> getHikes() {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
-
-
 }
-
-
-

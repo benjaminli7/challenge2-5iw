@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/mobile/views/explore/widgets/search_bar.dart';
-import 'widgets/hike_card.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+
+import 'widgets/hike_card.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -44,6 +45,13 @@ class _ExplorePageState extends State<ExplorePage> {
     final hikeProvider = Provider.of<HikeProvider>(context);
 
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print("toto");
+        },
+        child: const Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: const Text(
           'Discover hiking trails \nnear you',
@@ -63,7 +71,7 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
           Expanded(
             child: hikeProvider.hikes.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: Text("No hikes found"))
                 : GridView.builder(
                     padding: const EdgeInsets.all(10),
                     gridDelegate:

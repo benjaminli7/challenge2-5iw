@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:frontend/shared/models/user.dart';
 
+import 'package:frontend/shared/models/user.dart';
+import 'package:http/http.dart' as http;
 
 class AdminService {
-  static const String url = 'http://192.168.1.94:8080/users';
+  static const String url = 'http://10.213.126.208:8080/users';
 
   Future<List<User>> fetchUsers(String token) async {
-
     print('fetchUsers token: $token');
     final response = await http.get(
       Uri.parse(url),
@@ -22,8 +21,10 @@ class AdminService {
       List<dynamic> usersJson = data['users'];
       return usersJson.map((json) => User.fromJson(json)).toList();
     } else {
-      print('Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
-      throw Exception('Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
+      print(
+          'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 
