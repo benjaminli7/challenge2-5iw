@@ -5,13 +5,13 @@ import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 class HikeDetailsPage extends StatelessWidget {
   final Hike hike;
 
-  const HikeDetailsPage({Key? key, required this.hike}) : super(key: key);
+  const HikeDetailsPage({super.key, required this.hike});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hike Details'),
+        title: const Text('Hike Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -21,28 +21,28 @@ class HikeDetailsPage extends StatelessWidget {
             Center(
               child: Text(
                 hike.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Image.network(
               'https://via.placeholder.com/300',
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
             ),
-            SizedBox(height: 16),
-            Row(
+            const SizedBox(height: 16),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Column(
                   children: [
                     Text('Difficulty level'),
                     SizedBox(height: 8),
-                    Text('Intermediate'), 
+                    Text('Intermediate'),
                   ],
                 ),
                 Column(
@@ -54,8 +54,8 @@ class HikeDetailsPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Groups',
               style: TextStyle(
                 fontSize: 18,
@@ -63,8 +63,8 @@ class HikeDetailsPage extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('Create Group'),
-              trailing: Icon(Icons.chevron_right),
+              title: const Text('Create Group'),
+              trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
                   context,

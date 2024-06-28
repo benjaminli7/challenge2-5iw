@@ -1,17 +1,13 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:frontend/shared/models/group.dart';
 
+import 'package:http/http.dart' as http;
 
 class GroupService {
-  static const String baseUrl = 'http://10.213.255.234:8080/groups';
+  static const String baseUrl = 'http://10.213.126.208:8080';
 
-  Future<http.Response> createGroup(Map<String, dynamic> groupData, hikeId, userId, token) async {
-    final url = Uri.parse('$baseUrl');
-    final isPrivate = groupData['groupType']=='Private'? true : false;
-    print('groupData');
-    print(groupData);
-    final dateStart = groupData['hikeDate'].toString();
+  Future<http.Response> createGroup(
+      Map<String, dynamic> groupData, hikeId, userId, token) async {
+    final url = Uri.parse('$baseUrl/groups');
 
     final response = await http.post(
       url,
@@ -22,14 +18,10 @@ class GroupService {
       body: jsonEncode(<String, dynamic>{
         'hikeId': hikeId,
         'Start_date': groupData['hikeDate'],
-        'IsPrivate': isPrivate,
-        'Difficulty': groupData['difficulty'],
-        'Organizer_id' : userId,
+        'Organizer_id': userId,
       }),
     );
 
     return response;
   }
 }
-
-

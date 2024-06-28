@@ -28,15 +28,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'duration': _durationController.text,
       };
 
-      final response = await _apiService.createHike(
+      await _apiService.createHike(
         hike['name'],
         hike['description'],
         user!.id,
         hike['difficulty'],
         hike['duration'],
       );
-      // print response json
-      print(response.body);
     }
   }
 
@@ -52,7 +50,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Hike'),
+        title: const Text('Create Hike'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -62,7 +60,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the name of the hike';
@@ -72,7 +70,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
@@ -82,7 +80,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               DropdownButtonFormField<String>(
                 value: _difficulty,
-                decoration: InputDecoration(labelText: 'Difficulty'),
+                decoration: const InputDecoration(labelText: 'Difficulty'),
                 items: ['Easy', 'Moderate', 'Hard']
                     .map((difficulty) => DropdownMenuItem<String>(
                           value: difficulty,
@@ -103,7 +101,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               TextFormField(
                 controller: _durationController,
-                decoration: InputDecoration(labelText: 'Duration (hours)'),
+                decoration: const InputDecoration(labelText: 'Duration (hours)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the duration of the hike';
@@ -111,24 +109,17 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Process data
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Processing Data')),
+                      const SnackBar(content: Text('Processing Data')),
                     );
-                    // print the form values
-                    print(_nameController.text);
-                    print(_descriptionController.text);
-                    print(_difficulty);
-                    print(_durationController.text);
-
                     _createHike();
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               ),
             ],
           ),
