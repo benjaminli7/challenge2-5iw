@@ -51,7 +51,9 @@ func main() {
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
 	r.GET("/hikes/:id", controllers.GetHike)
+	r.GET("hikes/notValidated",middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
+	r.PATCH("/hikes/:id/validate",middleware.RequireAuth(true), controllers.ValidateHike)
 	r.DELETE("/hikes/:id", controllers.DeleteHike)
 
 	// Advice routes
