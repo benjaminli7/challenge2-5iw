@@ -35,6 +35,8 @@ func TestCreateHike(t *testing.T) {
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
 	}
 
 	jsonValue, _ := json.Marshal(hike)
@@ -49,6 +51,8 @@ func TestCreateHike(t *testing.T) {
 	assert.NoError(t, err, "Error unmarshalling response body")
 	assert.Equal(t, hike.Name, createdHike.Name, "Hike names do not match")
 	assert.Equal(t, hike.Description, createdHike.Description, "Hike descriptions do not match")
+	assert.Equal(t, hike.Difficulty, createdHike.Difficulty, "Hike difficulty levels do not match")
+	assert.Equal(t, hike.Duration, createdHike.Duration, "Hike durations do not match")
 
 	if !t.Failed() {
 		t.Log("TestCreateHike: OK")
@@ -61,7 +65,12 @@ func TestGetAllHikes(t *testing.T) {
 
 	router := setupRouter()
 
-	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	hike := models.Hike{
+		Name:        "Test Hike",
+		Description: "This is a test hike",
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
+	}
 	db.DB.Create(&hike)
 
 	req, _ := http.NewRequest("GET", "/hikes", nil)
@@ -85,7 +94,12 @@ func TestGetHike(t *testing.T) {
 
 	router := setupRouter()
 
-	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	hike := models.Hike{
+		Name:        "Test Hike",
+		Description: "This is a test hike",
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
+	}
 	db.DB.Create(&hike)
 
 	req, _ := http.NewRequest("GET", "/hikes/"+strconv.Itoa(int(hike.ID)), nil)
@@ -98,6 +112,8 @@ func TestGetHike(t *testing.T) {
 	assert.NoError(t, err, "Error unmarshalling response body")
 	assert.Equal(t, hike.Name, retrievedHike.Name, "Hike names do not match")
 	assert.Equal(t, hike.Description, retrievedHike.Description, "Hike descriptions do not match")
+	assert.Equal(t, hike.Difficulty, retrievedHike.Difficulty, "Hike difficulty levels do not match")
+	assert.Equal(t, hike.Duration, retrievedHike.Duration, "Hike durations do not match")
 
 	if !t.Failed() {
 		t.Log("TestGetHike: OK")
@@ -110,10 +126,20 @@ func TestUpdateHike(t *testing.T) {
 
 	router := setupRouter()
 
-	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	hike := models.Hike{
+		Name:        "Test Hike",
+		Description: "This is a test hike",
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
+	}
 	db.DB.Create(&hike)
 
-	updatedHike := models.Hike{Name: "Updated Hike", Description: "This is an updated test hike"}
+	updatedHike := models.Hike{
+		Name:        "Updated Hike",
+		Description: "This is an updated test hike",
+		Difficulty:  "Advanced",
+		Duration:    "5 hours",
+	}
 	jsonValue, _ := json.Marshal(updatedHike)
 	req, _ := http.NewRequest("PUT", "/hikes/"+strconv.Itoa(int(hike.ID)), bytes.NewBuffer(jsonValue))
 	req.Header.Set("Content-Type", "application/json")
@@ -126,6 +152,8 @@ func TestUpdateHike(t *testing.T) {
 	assert.NoError(t, err, "Error unmarshalling response body")
 	assert.Equal(t, updatedHike.Name, retrievedHike.Name, "Hike names do not match")
 	assert.Equal(t, updatedHike.Description, retrievedHike.Description, "Hike descriptions do not match")
+	assert.Equal(t, updatedHike.Difficulty, retrievedHike.Difficulty, "Hike difficulty levels do not match")
+	assert.Equal(t, updatedHike.Duration, retrievedHike.Duration, "Hike durations do not match")
 
 	if !t.Failed() {
 		t.Log("TestUpdateHike: OK")
@@ -138,7 +166,12 @@ func TestDeleteHike(t *testing.T) {
 
 	router := setupRouter()
 
-	hike := models.Hike{Name: "Test Hike", Description: "This is a test hike"}
+	hike := models.Hike{
+		Name:        "Test Hike",
+		Description: "This is a test hike",
+		Difficulty:  "Intermediate",
+		Duration:    "3 hours",
+	}
 	db.DB.Create(&hike)
 
 	req, _ := http.NewRequest("DELETE", "/hikes/"+strconv.Itoa(int(hike.ID)), nil)

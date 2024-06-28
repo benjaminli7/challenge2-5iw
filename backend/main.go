@@ -4,7 +4,7 @@ import (
 	"backend/controllers"
 	"backend/db"
 	_ "backend/docs"
-	middleware "backend/milddleware"
+	middleware "backend/middleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,13 +32,13 @@ func init() {
 
 func main() {
 	r := gin.Default()
-
+	
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Auth route
 	r.POST("/signup", controllers.Signup)
-	r.POST("/login", controllers.Login)
+	r.POST("/login",middleware.Cors(),controllers.Login)
 	r.GET("/logout", controllers.Logout)
 	r.PATCH("/validate", controllers.Validate)
 
@@ -60,6 +60,15 @@ func main() {
 	r.GET("/advice/:id/donor", middleware.RequireAuth(false), controllers.GetAdviceByDonor)
 	r.PATCH("/advice/:id", middleware.RequireAuth(false), controllers.UpdateAdvice)
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
+
+	// Group routes
+	r.POST("/groups", controllers.CreateGroup)
+	r.POST("/groups/join", controllers.JoinGroup)
+	r.GET("/groups/:id", controllers.GetGroup)
+	r.PATCH("/groups/:id", controllers.UpdateGroup)
+	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
+	r.DELETE("/groups/:id", controllers.DeleteGroup)
+	r.DELETE("/groups/leave", controllers.LeaveGroup)
 
 	err := r.Run()
 	if err != nil {
