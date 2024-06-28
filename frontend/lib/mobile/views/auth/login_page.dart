@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'dart:convert';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      GoRouter.of(context).go('/home');
+      GoRouter.of(context).go('/explore');
     } else {
       // Handle login error
       Fluttertoast.showToast(

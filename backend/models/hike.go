@@ -13,4 +13,5 @@ type Hike struct {
 	OrganizerID uint      `json:"organizer_id" example:"1"`
 	Difficulty  string    `json:"difficulty" example:"Intermediate"`
 	Duration    string    `json:"duration" example:"3 hours"`
+	IsApproved   bool      `json:"is_approved" default:"false" example:"false"`
 }

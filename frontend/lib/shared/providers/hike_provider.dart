@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/services/api_service.dart';
@@ -19,6 +20,19 @@ class HikeProvider with ChangeNotifier {
       }
     } catch (e) {
       print('Failed to fetch hikes: $e');
+    }
+  }
+
+  Future<void> createHike(String name, String description,  int organizerId, String difficulty, String duration) async {
+    try {
+      final response = await ApiService().createHike(name, description,  organizerId, difficulty, duration);
+      if (response.statusCode == 200) {
+        print('Hike created successfully');
+      } else {
+        print('Failed to create hike: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to create hike: $e');
     }
   }
 }
