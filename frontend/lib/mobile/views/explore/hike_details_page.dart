@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 
 class HikeDetailsPage extends StatelessWidget {
   final Hike hike;
@@ -62,11 +63,19 @@ class HikeDetailsPage extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('View Groups'),
+              title: Text('Create Group'),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateGroupPage(hike: hike),
+                  ),
+                );
               },
             ),
+
+
           ],
         ),
       ),

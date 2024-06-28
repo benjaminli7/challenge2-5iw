@@ -6,6 +6,7 @@ import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
+import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -125,6 +126,7 @@ class MyMobileApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
+        ChangeNotifierProvider(create: (_) => GroupProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
