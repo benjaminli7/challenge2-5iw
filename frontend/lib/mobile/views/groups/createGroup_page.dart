@@ -23,7 +23,7 @@ class CreateGroupPage extends StatelessWidget {
       final response = await groupService.createGroup(
           groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Group created successfully!')),
         );

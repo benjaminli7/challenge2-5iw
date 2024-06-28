@@ -3,10 +3,11 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
-	"fmt"
 )
 
 // CreateGroup godoc
@@ -137,12 +138,8 @@ func JoinGroup(c *gin.Context) {
 	}
 	var accepted bool = false
 
-	if group.IsPrivate == false {
-		accepted = true
-	}
-
 	groupUser :=  models.GroupUser{UserID: body.UserId, GroupID: body.GroupId, IsValidate: accepted}
-	
+
 	if err := db.DB.Create(&groupUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
