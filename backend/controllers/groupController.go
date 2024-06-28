@@ -23,9 +23,11 @@ import (
 func CreateGroup(c *gin.Context) {
 	var group models.Group
 	if err := c.ShouldBindJSON(&group); err != nil {
+		println("Failed to bind JSON")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	println(c.ShouldBindJSON(group))
 	if err := db.DB.Create(&group).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return

@@ -10,6 +10,7 @@ type Group struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	IsPrivate   bool	  `gorm:"default:false" json:"isPrivate"`
 	Code 		string    `json:"code"`
+	Difficulty  string    `json:"difficulty"`
 	StartDate   time.Time `json:"start_date"`
 	Users		[]User    `gorm:"many2many:group_users" json:"users"`
 	HikeID		uint      `json:"hike_id"`

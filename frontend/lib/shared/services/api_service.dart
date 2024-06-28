@@ -3,11 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/shared/models/hike.dart';
 
 class ApiService {
-<<<<<<< HEAD
   static const String baseUrl = 'http://10.213.255.234:8080';
-=======
-  static const String baseUrl = 'http://10.0.2.2:8080';
->>>>>>> develop
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
