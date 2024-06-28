@@ -1,9 +1,9 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:frontend/shared/models/hike.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8080';
+  static const String baseUrl = 'http://10.213.126.208:8080';
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -59,8 +59,21 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
 
-
+  // add a POST request for create-hike
+  Future<http.Response> createHike(String name, String description,
+      int organizerId, String difficulty, String duration) {
+    return http.post(
+      Uri.parse('$baseUrl/hikes'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'name': name,
+        'description': description,
+        'organizer_id': organizerId,
+        'difficulty': difficulty,
+        'duration': duration
+      }),
+    );
+  }
 }
-
-
-
