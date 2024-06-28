@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/shared/services/api_service.dart';
 
 class HikeProvider with ChangeNotifier {
   List<Hike> _hikes = [];
@@ -23,9 +22,11 @@ class HikeProvider with ChangeNotifier {
     }
   }
 
-  Future<void> createHike(String name, String description,  int organizerId, String difficulty, String duration) async {
+  Future<void> createHike(String name, String description, int organizerId,
+      String difficulty, String duration) async {
     try {
-      final response = await ApiService().createHike(name, description,  organizerId, difficulty, duration);
+      final response = await ApiService()
+          .createHike(name, description, organizerId, difficulty, duration);
       if (response.statusCode == 200) {
         print('Hike created successfully');
       } else {

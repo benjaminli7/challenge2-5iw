@@ -203,3 +203,21 @@ func ValidateUserGroup(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User validated"})
 }
+
+// GetGroups godoc
+// @Summary Get all groups
+// @Description Get the list of groups
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups
+func GetGroups(c *gin.Context) {
+	var groups []models.Group
+	if err := db.DB.Find(&groups).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, groups)
+}

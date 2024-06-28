@@ -59,6 +59,10 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
 
+  Future<http.Response> getGroups() {
+    return http.get(Uri.parse('$baseUrl/groups'));
+  }
+
   // add a POST request for create-hike
   Future<http.Response> createHike(String name, String description,
       int organizerId, String difficulty, String duration) {

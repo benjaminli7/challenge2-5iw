@@ -32,7 +32,7 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	
+
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -62,6 +62,7 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
+	r.GET("/groups", controllers.GetGroups)
 	r.POST("/groups", controllers.CreateGroup)
 	r.POST("/groups/join", controllers.JoinGroup)
 	r.GET("/groups/:id", controllers.GetGroup)

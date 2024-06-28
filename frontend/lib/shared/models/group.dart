@@ -1,22 +1,22 @@
-import 'package:frontend/shared/models/user.dart';
-import 'package:frontend/shared/models/hike.dart';
 class Group {
   final int id;
-  final User organizator;
-  final List<User> members = [];
-  final DateTime dateStart ;
-  final Hike hike;
+  final int organizerId;
+  final List<int> members = [];
+  final String startDate;
+  final int hikeId;
 
-
-  Group({required this.id, required this.organizator, required this.dateStart, required this.hike});
+  Group(
+      {required this.id,
+      required this.organizerId,
+      required this.startDate,
+      required this.hikeId});
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
       id: json['id'],
-      organizator: json['organizator'],
-      dateStart: json['dateStart'],
-      hike: json['hike'],
-
+      organizerId: json['organizer_id'],
+      startDate: json['start_date'],
+      hikeId: json['hike_id'],
     );
   }
 }
