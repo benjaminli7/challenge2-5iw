@@ -45,6 +45,10 @@ class _ExplorePageState extends State<ExplorePage> {
     final user = Provider.of<UserProvider>(context).user;
     final hikeProvider = Provider.of<HikeProvider>(context);
 
+    // get only the hikes who are approved
+    final approvedHikes =
+        hikeProvider.hikes.where((hike) => hike.isApproved).toList();
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
@@ -76,7 +80,7 @@ class _ExplorePageState extends State<ExplorePage> {
             onSearchChanged: _filterHikes,
           ),
           Expanded(
-            child: hikeProvider.hikes.isEmpty
+            child: approvedHikes.isEmpty
                 ? const Center(child: Text("No hikes found"))
                 : GridView.builder(
                     padding: const EdgeInsets.all(10),
@@ -86,9 +90,9 @@ class _ExplorePageState extends State<ExplorePage> {
                       crossAxisSpacing: 8.0,
                       mainAxisSpacing: 26.0,
                     ),
-                    itemCount: filteredHikes.length,
+                    itemCount: approvedHikes.length,
                     itemBuilder: (context, index) {
-                      return HikeCard(hike: filteredHikes[index]);
+                      return HikeCard(hike: approvedHikes[index]);
                     },
                   ),
           ),
