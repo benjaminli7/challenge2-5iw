@@ -43,7 +43,7 @@ class _ExplorePageState extends State<ExplorePage> {
     final hikeProvider = Provider.of<HikeProvider>(context);
     final approvedHikes =
         hikeProvider.hikes.where((hike) => hike.isApproved).toList();
-
+    print(approvedHikes);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(

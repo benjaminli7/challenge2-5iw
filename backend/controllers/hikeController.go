@@ -119,3 +119,46 @@ func DeleteHike(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Hike deleted"})
 }
+
+// ValidateHike godoc
+// @Summary Validate a hike by ID
+// @Description Validate a hike by its ID
+// @Tags hikes
+// @Accept json
+// @Produce json
+// @Param id path int true "Hike ID"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /hikes/{id}/validate [patch]
+func ValidateHike(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var hike models.Hike
+	if err := db.DB.First(&hike, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	hike.IsApproved = true
+	if err := db.DB.Save(&hike).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Hike validated"})
+}
+
+// getNoValitedHike godoc
+// @Summary Get all hikes not validated
+// @Description Get details of all hikes not validated
+// @Tags hikes
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Hike
+// @Failure 500 {object} models.ErrorResponse
+// @Router /hikes/notValidated [get]
+func GetNoValitedHike(c *gin.Context) {
+	var hikes []models.Hike
+	if err := db.DB.Where("is_approved = ?", false).Find(&hikes).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, hikes)
+}

@@ -3,6 +3,7 @@ import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
 import 'package:frontend/mobile/views/back/users_page.dart';
+import 'package:frontend/mobile/views/back/hikes_page.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
@@ -107,6 +108,11 @@ final GoRouter _router = GoRouter(
               name: "users",
               path: 'users',
               builder: (context, state) => const UserListPage(),
+            ),
+            GoRoute(
+              name: "hikes",
+              path: 'hikes',
+              builder: (context, state) => const HikeListPage(),
             ),
           ],
         ),
