@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GroupService {
-  static const String baseUrl = 'http://10.213.255.234:8080';
+  static const String baseUrl = 'http://192.168.1.19:8080';
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {

@@ -1,9 +1,10 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://10.213.255.234:8080';
+  static const String baseUrl = 'http://192.168.1.19:8080';
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -61,19 +62,40 @@ class ApiService {
 
   // add a POST request for create-hike
   Future<http.Response> createHike(String name, String description,
-      int organizerId, String difficulty, String duration) {
-    return http.post(
-      Uri.parse('$baseUrl/hikes'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'name': name,
-        'description': description,
-        'organizer_id': organizerId,
-        'difficulty': difficulty,
-        'duration': duration
-      }),
-    );
+      int organizerId, String difficulty, String duration, File? image) async {
+    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
+
+    // Add headers
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    // Add fields (non-file data)
+    request.fields['name'] = name;
+    request.fields['description'] = description;
+    request.fields['organizer_id'] = organizerId.toString();
+    request.fields['difficulty'] = difficulty;
+    request.fields['duration'] = duration;
+
+    // Add image file if provided
+    if (image != null) {
+      var fileStream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      // Create multipart file for image
+      var multipartFile = http.MultipartFile(
+        'image',
+        fileStream,
+        length,
+        filename: image.path.split('/').last, // File name
+        contentType:
+            MediaType('application', 'octet-stream'), // File content type
+      );
+
+      // Add image file to request
+      request.files.add(multipartFile);
+    }
+
+    // Send the request
+    var streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
   }
 }

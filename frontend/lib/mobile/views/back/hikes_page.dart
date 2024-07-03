@@ -28,7 +28,7 @@ class _HikeListPageState extends State<HikeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Hike no validate List')),
+      appBar: AppBar(title: Text('Hikes validation Panel')),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
@@ -41,11 +41,19 @@ class _HikeListPageState extends State<HikeListPage> {
 
           return DataTable(
             columns: [
+              DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
               DataColumn(label: Text('Description')),
             ],
             rows: adminProvider.hikes.map((hike) {
               return DataRow(cells: [
+                DataCell(
+                  Image.network(
+                    Uri.parse("http://192.168.1.19:8080${hike.image}")
+                        .toString(),
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
@@ -100,16 +108,21 @@ class HikeDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Name: ${hike.name}', style: TextStyle(fontSize: 20)),
-            Text('Description: ${hike.description}', style: TextStyle(fontSize: 20)),
-            Text('Difficulty: ${hike.difficulty}', style: TextStyle(fontSize: 20)),
+            Text('Description: ${hike.description}',
+                style: TextStyle(fontSize: 20)),
+            Text('Difficulty: ${hike.difficulty}',
+                style: TextStyle(fontSize: 20)),
             Text('Duration: ${hike.duration}', style: TextStyle(fontSize: 20)),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
+                final userProvider =
+                    Provider.of<UserProvider>(context, listen: false);
                 if (userProvider.user != null) {
                   final token = userProvider.user!.token;
-                  await context.read<AdminProvider>().validateHike(token, hike.id);
+                  await context
+                      .read<AdminProvider>()
+                      .validateHike(token, hike.id);
 
                   // After deletion, navigate back to the previous page
                   Navigator.of(context).pop();
@@ -120,7 +133,6 @@ class HikeDetailsPage extends StatelessWidget {
                 backgroundColor: Colors.red,
               ),
             ),
-
           ],
         ),
       ),

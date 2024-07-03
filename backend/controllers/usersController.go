@@ -3,15 +3,15 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"backend/services"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
-	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-	"backend/services"
 
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Signup godoc
@@ -41,19 +41,19 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	emailToken,_ := services.GenerateRandomToken(32)
+	emailToken, _ := services.GenerateRandomToken(32)
 	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
 
 	result := db.DB.Create(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest,gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to create user.",
 		})
 		return
 	}
-	fmt.Println("token"+emailToken)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken+ "'> cliquer ici</a>"
-	services.SendEmail(body.Email , content , "Validation de compte")
+	fmt.Println("token" + emailToken)
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken + "'> cliquer ici</a>"
+	services.SendEmail(body.Email, content, "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
 
@@ -95,7 +95,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
 		return
 	}
-	println("user",user.ID)
+	println("user", user.ID)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":      user.ID,
 		"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
@@ -124,8 +124,8 @@ func Login(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} models.SuccessResponse
 // @Router /validate [patch]
-func Validate(c *gin.Context){
-	var body struct{
+func Validate(c *gin.Context) {
+	var body struct {
 		Token string
 	}
 
@@ -135,10 +135,10 @@ func Validate(c *gin.Context){
 		})
 		return
 	}
-	fmt.Println("body",body)
+	fmt.Println("body", body)
 	var user models.User
 	db.DB.First(&user, "token = ?", body.Token)
-	fmt.Println("user",user)
+	fmt.Println("user", user)
 	if user.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid token",
@@ -173,11 +173,11 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Select("id","email", "role", "is_verified").Find(&users)
+	db.DB.Select("id", "email", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
 
-//UpdateRole godoc
+// UpdateRole godoc
 // @Summary Update user role
 // @Description Update the role of a user
 // @Tags users
@@ -192,7 +192,7 @@ func UpdateRole(c *gin.Context) {
 	var body struct {
 		Role string
 	}
-	println("body",body.Role)
+	println("body", body.Role)
 	if c.Bind(&body) != nil {
 		println("Failed to read body")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})

@@ -2,17 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/models/user.dart';
 
-
 class AdminService {
   static const String url = 'http://localhost:8080/users';
 
   Future<List<User>> fetchUsers(String token) async {
-
-
     final response = await http.get(
       Uri.parse(url),
       headers: {
-
         'Cookie': token,
       },
     );
@@ -23,8 +19,10 @@ class AdminService {
       List<dynamic> usersJson = data['users'];
       return usersJson.map((json) => User.fromJson(json)).toList();
     } else {
-      print('Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
-      throw Exception('Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
+      print(
+          'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 

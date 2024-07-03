@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: LeafMeet API
+  version: 1.0.0
+  description: This is a LeafMeet server.
+servers:
+  - url: http://localhost:5000
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      description: Create a new user with the input payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      description: Get details of a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+  /trails:
+    post:
+      summary: Create a new trail
+      description: Create a new trail with the input payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trail'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trail'
+        '400':
+          description: Bad request
+  /trails/{id}:
+    get:
+      summary: Get a trail by ID
+      description: Get details of a trail by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trail'
+        '404':
+          description: Trail not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        ID:
+          type: integer
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        Email:
+          type: string
+        Password:
+          type: string
+        Role:
+          type: string
+    Trail:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+        Location:
+          type: string
+        Distance:
+          type: number
+        Difficulty:
+          type: string

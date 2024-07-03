@@ -5,7 +5,7 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
-  static const String url = 'http://10.213.255.234:8080';
+  static const String url = 'http://192.168.1.19:8080';
 
   Future<List<User>> fetchUsers(String token) async {
     print('fetchUsers token: $token');
@@ -66,8 +66,7 @@ class AdminService {
     );
 
     if (response.statusCode == 200) {
-
-      List<dynamic> hikesJson= json.decode(response.body);
+      List<dynamic> hikesJson = json.decode(response.body);
       print('data: $hikesJson');
       return hikesJson.map((json) => Hike.fromJson(json)).toList();
     } else {

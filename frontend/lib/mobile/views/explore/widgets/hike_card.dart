@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/views/explore/hike_details_page.dart';
+import 'package:go_router/go_router.dart';
 
 class HikeCard extends StatelessWidget {
   final Hike hike;
@@ -17,6 +18,8 @@ class HikeCard extends StatelessWidget {
               builder: (context) => HikeDetailsPage(hike: hike),
             ),
           );
+          // Use GoRouter to render the HikeDetailsPage with the hike data
+          // GoRouter.of(context).go('/explore/hikes/${hike.id}');
         },
         child: Card(
           color: Colors.transparent,
@@ -25,7 +28,7 @@ class HikeCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Image.network(
-                  "https://via.placeholder.com/150",
+                  Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
