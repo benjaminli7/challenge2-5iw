@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GroupService {
-  static const String baseUrl = 'http://10.213.126.208:8080';
+  static const String baseUrl = 'http://192.168.1.19:8080';
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
@@ -16,9 +16,9 @@ class GroupService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'hikeId': hikeId,
-        'Start_date': groupData['hikeDate'],
-        'Organizer_id': userId,
+        'hike_id': hikeId,
+        'start_date': groupData['hikeDate'],
+        'organizer_id': userId,
       }),
     );
 

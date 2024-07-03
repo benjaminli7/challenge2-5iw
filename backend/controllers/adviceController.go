@@ -3,8 +3,9 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // CreateAdvice godoc
@@ -20,9 +21,9 @@ import (
 func CreateAdvice(c *gin.Context) {
 
 	var body struct {
-		Donor_id  uint
+		Donor_id    uint
 		Description string
-		Rating int
+		Rating      int
 		Receiver_id uint
 	}
 
@@ -35,12 +36,11 @@ func CreateAdvice(c *gin.Context) {
 
 	result := db.DB.Create(&advice)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest,gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to create advice.",
 		})
 		return
 	}
-	
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Advice created successfully"})
 
@@ -61,7 +61,7 @@ func GetAdviceByReceiver(c *gin.Context) {
 	var advice []models.Advice
 	result := db.DB.Where("receiver_id = ?", id).Find(&advice)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest,gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to get advice.",
 		})
 		return
@@ -84,7 +84,7 @@ func GetAdviceByDonor(c *gin.Context) {
 	var advice []models.Advice
 	result := db.DB.Where("donor_id = ?", id).Find(&advice)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest,gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to get advice.",
 		})
 		return
@@ -107,7 +107,7 @@ func UpdateAdvice(c *gin.Context) {
 	id := c.Param("id")
 	var body struct {
 		Description string
-		Rating int
+		Rating      int
 	}
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})

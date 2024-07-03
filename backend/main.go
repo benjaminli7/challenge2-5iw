@@ -5,6 +5,7 @@ import (
 	"backend/db"
 	_ "backend/docs"
 	middleware "backend/middleware"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,13 +33,15 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	
+
+	r.Static("/images", "./public/images")
+
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Auth route
 	r.POST("/signup", controllers.Signup)
-	r.POST("/login",middleware.Cors(),controllers.Login)
+	r.POST("/login", middleware.Cors(), controllers.Login)
 	r.GET("/logout", controllers.Logout)
 	r.PATCH("/validate", controllers.Validate)
 
@@ -51,7 +54,9 @@ func main() {
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
 	r.GET("/hikes/:id", controllers.GetHike)
+	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
+	r.PATCH("/hikes/:id/validate", middleware.RequireAuth(true), controllers.ValidateHike)
 	r.DELETE("/hikes/:id", controllers.DeleteHike)
 
 	// Advice routes

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
   String _difficulty = 'Easy';
   final _durationController = TextEditingController();
   final ApiService _apiService = ApiService();
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
 
   void _createHike() async {
     if (_formKey.currentState!.validate()) {
@@ -26,6 +32,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'description': _descriptionController.text,
         'difficulty': _difficulty,
         'duration': _durationController.text,
+        'image': _image,
       };
 
       await _apiService.createHike(
@@ -34,8 +41,21 @@ class _CreateHikePageState extends State<CreateHikePage> {
         user!.id,
         hike['difficulty'],
         hike['duration'],
+        hike['image'],
       );
     }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
@@ -101,13 +121,22 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               TextFormField(
                 controller: _durationController,
-                decoration: const InputDecoration(labelText: 'Duration (hours)'),
+                decoration:
+                    const InputDecoration(labelText: 'Duration (hours)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the duration of the hike';
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 20),
+              _image == null
+                  ? const Text('No image selected.')
+                  : Image.file(_image!),
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('Upload Image'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(

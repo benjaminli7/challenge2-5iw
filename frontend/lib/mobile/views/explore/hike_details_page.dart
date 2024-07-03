@@ -29,10 +29,10 @@ class HikeDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Image.network(
-              'https://via.placeholder.com/300',
+              Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
               fit: BoxFit.cover,
-              height: 200,
               width: double.infinity,
+              height: 200,
             ),
             const SizedBox(height: 16),
             const Row(
@@ -74,8 +74,6 @@ class HikeDetailsPage extends StatelessWidget {
                 );
               },
             ),
-
-
           ],
         ),
       ),
