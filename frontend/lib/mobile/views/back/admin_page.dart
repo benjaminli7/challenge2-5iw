@@ -36,7 +36,7 @@ class AdminPage extends StatelessWidget {
                 GoRouter.of(context).go('/admin/users');
               }),
               buildMenuItem(Icons.hiking, 'Hike', () {
-                // Handle Security tap
+                GoRouter.of(context).go('/admin/hikes');
               }),
 
             ]),

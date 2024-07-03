@@ -34,6 +34,8 @@ func init() {
 func main() {
 	r := gin.Default()
 
+	r.Static("/images", "./public/images")
+
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -52,7 +54,9 @@ func main() {
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
 	r.GET("/hikes/:id", controllers.GetHike)
+	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
+	r.PATCH("/hikes/:id/validate", middleware.RequireAuth(true), controllers.ValidateHike)
 	r.DELETE("/hikes/:id", controllers.DeleteHike)
 
 	// Advice routes
@@ -61,6 +65,15 @@ func main() {
 	r.GET("/advice/:id/donor", middleware.RequireAuth(false), controllers.GetAdviceByDonor)
 	r.PATCH("/advice/:id", middleware.RequireAuth(false), controllers.UpdateAdvice)
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
+
+	// Group routes
+	r.POST("/groups", controllers.CreateGroup)
+	r.POST("/groups/join", controllers.JoinGroup)
+	r.GET("/groups/:id", controllers.GetGroup)
+	r.PATCH("/groups/:id", controllers.UpdateGroup)
+	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
+	r.DELETE("/groups/:id", controllers.DeleteGroup)
+	r.DELETE("/groups/leave", controllers.LeaveGroup)
 
 	err := r.Run()
 	if err != nil {
