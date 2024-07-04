@@ -23,16 +23,25 @@ import (
 // @Router /groups [post]
 func CreateGroup(c *gin.Context) {
 	var group models.Group
+	var groupUser models.GroupUser
 	if err := c.ShouldBindJSON(&group); err != nil {
 		println("Failed to bind JSON")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 	println(c.ShouldBindJSON(group))
+
+	
 	if err := db.DB.Create(&group).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	groupUser = models.GroupUser{UserID: group.OrganizerID, GroupID: group.ID, IsValidate: true}
+	if err := db.DB.Create(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, group)
 }
 
@@ -55,6 +64,26 @@ func GetGroup(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, group)
+}
+
+// GetMyGroups godoc
+// @Summary Get groups by user ID
+// @Description Get groups by user ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/user/{id} [get]
+func GetMyGroups(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var groups []models.GroupUser
+	if err := db.DB.Where("user_id = ?", id).Find(&groups).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, groups)
 }
 
 // UpdateGroup godoc
