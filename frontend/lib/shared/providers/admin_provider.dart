@@ -19,42 +19,43 @@ class AdminProvider with ChangeNotifier {
   final AdminService _adminService = AdminService();
 
   Future<void> fetchUsers(String token) async {
-    _loading = true;
-    notifyListeners();
-
+    _setLoading(true);
     _users = await _adminService.fetchUsers(token);
-
-    _loading = false;
-    notifyListeners();
+    _setLoading(false);
   }
 
   Future<void> deleteUser(String token, int userId) async {
     await _adminService.deleteUser(token, userId);
     _users.removeWhere((user) => user.email == userId);
-    notifyListeners();
+    _notifyListenersDeferred();
   }
 
   Future<void> upgradeAdmin(String token, int userId) async {
     await _adminService.upgradeAdmin(token, userId);
-
-    notifyListeners();
-
+    _notifyListenersDeferred();
   }
 
   Future<void> fetchHikesNoValidate(String token) async {
-    _loading = true;
-    notifyListeners();
-
+    _setLoading(true);
     _hikes = await _adminService.fetchHikesNoValidate(token);
-
-    _loading = false;
-    notifyListeners();
+    _setLoading(false);
   }
 
   Future<void> validateHike(String token, int hikeId) async {
     await _adminService.validateHike(token, hikeId);
     _hikes.removeWhere((hike) => hike.id == hikeId);
-    notifyListeners();
+    _notifyListenersDeferred();
+  }
+
+  void _setLoading(bool value) {
+    _loading = value;
+    _notifyListenersDeferred();
+  }
+
+  void _notifyListenersDeferred() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   Future<void> fetchGroups(String token) async {

@@ -68,8 +68,7 @@ class AdminService {
     );
 
     if (response.statusCode == 200) {
-
-      List<dynamic> hikesJson= json.decode(response.body);
+      List<dynamic> hikesJson = json.decode(response.body);
       print('data: $hikesJson');
       return hikesJson.map((json) => Hike.fromJson(json)).toList();
     } else {
