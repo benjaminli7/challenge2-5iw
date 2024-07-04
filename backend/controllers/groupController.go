@@ -68,7 +68,7 @@ func GetGroup(c *gin.Context) {
 // @Router /groups [get]
 func GetGroups(c *gin.Context) {
 	var groups []models.Group
-	if err := db.DB.Preload("Hike").Preload("Organizer").Find(&groups).Error; err != nil {
+	if err := db.DB.Preload("Hike").Preload("Organizer").Order("id desc").Find(&groups).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
