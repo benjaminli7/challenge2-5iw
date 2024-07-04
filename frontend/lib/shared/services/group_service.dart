@@ -29,6 +29,7 @@ class GroupService {
     final url = Uri.parse('$baseUrl/groups/user/$userId');
 
     final response = await http.get(
+
       url,
       headers: <String, String>{
         'Authorization': 'Bearer $token',

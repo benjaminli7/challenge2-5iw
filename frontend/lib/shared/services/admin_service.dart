@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
@@ -19,6 +20,7 @@ class AdminService {
     if (response.statusCode == 200) {
       // Parsing the JSON assuming the response contains an object with a "users" key
       Map<String, dynamic> data = json.decode(response.body);
+
       List<dynamic> usersJson = data['users'];
       return usersJson.map((json) => User.fromJson(json)).toList();
     } else {
@@ -91,4 +93,47 @@ class AdminService {
       throw Exception('Failed to validate hike');
     }
   }
+
+  Future<List<Group>> fetchGroups(String token) async {
+    final response = await http.get(
+      Uri.parse('$url/groups'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Response body: ${response.body}');
+      var data = json.decode(response.body);
+
+      // Si data est une liste
+      if (data is List) {
+        return data.map((json) => Group.fromJson(json)).toList();
+      }
+      // Si data est une map contenant la clé 'groups'
+      else if (data is Map<String, dynamic> && data.containsKey('groups')) {
+        List<dynamic> groupsJson = data['groups'];
+        return groupsJson.map((json) => Group.fromJson(json)).toList();
+      }
+      else {
+        throw Exception('Unexpected JSON structure: $data');
+      }
+    } else {
+      print('Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception('Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
+    }
+  }
+
+  Future<void> deleteGroup(String token, int groupId) async {
+    final response = await http.delete(
+      Uri.parse('$url/groups/$groupId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete group');
+    }
+  }
+
 }

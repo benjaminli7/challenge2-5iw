@@ -70,6 +70,7 @@ final GoRouter _router = GoRouter(
             path: '/users',
             builder: (context, state) => const UserListPage()
         ),
+
         GoRoute(
           path: '/',
           builder: (context, state) {

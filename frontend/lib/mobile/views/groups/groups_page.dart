@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:frontend/shared/services/group_service.dart'; // Assurez-vous de pointer vers le bon fichier
+import 'package:frontend/shared/services/group_service.dart'; 
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +49,7 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   title: Text(group.id.toString()),
-                  subtitle: Text(DateFormat('dd/MM/yyyy').format(group.dateStart)),
+                  subtitle: Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
                   onTap: () {
                     // Gérer la navigation vers les détails du groupe
                   },

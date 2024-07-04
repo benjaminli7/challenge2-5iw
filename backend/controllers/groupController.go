@@ -66,6 +66,26 @@ func GetGroup(c *gin.Context) {
 	c.JSON(http.StatusOK, group)
 }
 
+// GetGroups godoc
+// @Summary Get all groups
+// @Description Get all groups
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.GroupListResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups [get]
+func GetGroups(c *gin.Context) {
+	var groups []models.Group
+	if err := db.DB.Preload("Hike").Preload("Organizer").Order("id desc").Find(&groups).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Réponse JSON avec les groupes récupérés
+	c.JSON(http.StatusOK, models.GroupListResponse{Groups: groups})
+}
+
 // GetMyGroups godoc
 // @Summary Get groups by user ID
 // @Description Get groups by user ID
@@ -128,6 +148,12 @@ func UpdateGroup(c *gin.Context) {
 // @Router /groups/{id} [delete]
 func DeleteGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
+
+	if err := db.DB.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	if err := db.DB.Delete(&models.Group{}, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return

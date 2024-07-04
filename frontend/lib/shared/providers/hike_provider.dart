@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/models/hike.dart';
