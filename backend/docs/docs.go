@@ -224,6 +224,36 @@ const docTemplate = `{
             }
         },
         "/groups": {
+            "get": {
+                "description": "Get all groups",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get all groups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Group"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new group with the input payload",
                 "consumes": [
@@ -269,6 +299,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/groups/day": {
+            "get": {
+                "description": "Get all groups for a specific day",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get all groups for a specific day",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Day",
+                        "name": "day",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Group"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/groups/leave": {
             "delete": {
                 "description": "Leave a group",
@@ -291,6 +362,44 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.GroupUser"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/validate/{id}": {
+            "patch": {
+                "description": "Validate a user in a group",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Validate a user in a group",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "GroupUser ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -510,6 +619,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/hikes/notValidated": {
+            "get": {
+                "description": "Get details of all hikes not validated",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hikes"
+                ],
+                "summary": "Get all hikes not validated",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Hike"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/hikes/{id}": {
             "get": {
                 "description": "Get details of a hike by its ID",
@@ -610,6 +751,44 @@ const docTemplate = `{
                     "hikes"
                 ],
                 "summary": "Delete a hike by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Hike ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hikes/{id}/validate": {
+            "patch": {
+                "description": "Validate a hike by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hikes"
+                ],
+                "summary": "Validate a hike by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -908,10 +1087,10 @@ const docTemplate = `{
         "models.Group": {
             "type": "object",
             "properties": {
-                "code": {
+                "created_at": {
                     "type": "string"
                 },
-                "created_at": {
+                "description": {
                     "type": "string"
                 },
                 "hike_id": {
@@ -919,9 +1098,6 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
-                },
-                "isPrivate": {
-                    "type": "boolean"
                 },
                 "organizer_id": {
                     "type": "integer"
@@ -965,6 +1141,11 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "is_approved": {
+                    "type": "boolean",
+                    "default": false,
+                    "example": false
                 },
                 "name": {
                     "type": "string",
@@ -1049,6 +1230,7 @@ const docTemplate = `{
     }
 }`
 
+// SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",

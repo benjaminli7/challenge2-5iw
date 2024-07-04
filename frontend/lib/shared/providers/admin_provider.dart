@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:frontend/shared/services/admin_service.dart';
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/shared/models/group.dart';
 
 class AdminProvider with ChangeNotifier {
   List<User> _users = [];
   List<Hike> _hikes = [];
+  List<Group> _groups = [];
   bool _loading = false;
 
   List<User> get users => _users;
   List<Hike> get hikes => _hikes;
+  List<Group> get groups => _groups;
   bool get loading => _loading;
+
 
   final AdminService _adminService = AdminService();
 
@@ -50,6 +54,28 @@ class AdminProvider with ChangeNotifier {
   Future<void> validateHike(String token, int hikeId) async {
     await _adminService.validateHike(token, hikeId);
     _hikes.removeWhere((hike) => hike.id == hikeId);
+    notifyListeners();
+  }
+
+  Future<void> fetchGroups(String token) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      _groups = await _adminService.fetchGroups(token);
+      print('Fetched groups: $_groups'); // Debugging
+    } catch (e) {
+      print('Error fetching groups: $e');
+
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteGroup(String token, int groupId) async {
+    await _adminService.deleteGroup(token, groupId);
+    _groups.removeWhere((group) => group.id == groupId);
     notifyListeners();
   }
 }
