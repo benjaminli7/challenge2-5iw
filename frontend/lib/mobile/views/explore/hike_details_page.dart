@@ -29,7 +29,7 @@ class HikeDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Image.network(
-              Uri.parse("http://192.168.1.94:8080${hike.image}").toString(),
+              Uri.parse("http://192.168.1.110:8080${hike.image}").toString(),
               fit: BoxFit.cover,
               width: double.infinity,
               height: 200,

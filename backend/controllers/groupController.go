@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
+	"time"
 	"github.com/gin-gonic/gin"
 )
 
@@ -97,12 +97,22 @@ func GetGroups(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/user/{id} [get]
 func GetMyGroups(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	var groups []models.GroupUser
-	if err := db.DB.Where("user_id = ?", id).Find(&groups).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+	userIdParam := c.Param("id")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
+
+	var groups []models.Group
+	today := time.Now().Format("2006-01-02")
+
+	err = db.DB.Preload("Hike").Preload("Organizer").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date >= ?", today).Find(&groups).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, groups)
 }
 

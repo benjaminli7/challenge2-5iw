@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-import 'package:frontend/shared/services/group_service.dart'; 
+import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
-import 'package:provider/provider.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -31,16 +31,16 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Groups')),
+      appBar: AppBar(title: const Text('Groups')),
       body: FutureBuilder<List<Group>>(
         future: _groupsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No groups found'));
+            return const Center(child: Text('No groups found'));
           } else {
             final groups = snapshot.data!;
             return ListView.builder(
@@ -48,7 +48,11 @@ class _GroupsPageState extends State<GroupsPage> {
               itemBuilder: (context, index) {
                 final group = groups[index];
                 return ListTile(
-                  title: Text(group.id.toString()),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(Uri.parse("http://192.168.1.110:8080${group.hike.image}").toString(),),
+                    radius: 30,
+                  ),
+                  title: Text(group.hike.name),
                   subtitle: Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
                   onTap: () {
                     // Gérer la navigation vers les détails du groupe
