@@ -11,4 +11,5 @@ type GroupUser struct {
 	IsValidate 	bool `gorm:"default:false" json:"validate"`    
 	User     	User `gorm:"foreignKey:UserID "` 
 	Group     	Group `gorm:"foreignKey:GroupID"` 
+
 }
