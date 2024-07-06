@@ -61,8 +61,14 @@ class ApiService {
   }
 
   // add a POST request for create-hike
-  Future<http.Response> createHike(String name, String description,
-      int organizerId, String difficulty, String duration, File? image) async {
+  Future<http.Response> createHike(
+      String name,
+      String description,
+      int organizerId,
+      String difficulty,
+      String duration,
+      File? image,
+      File? gpxFile) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
     // Add headers
@@ -91,6 +97,25 @@ class ApiService {
       );
 
       // Add image file to request
+      request.files.add(multipartFile);
+    }
+
+    // Add GPX file if provided
+    if (gpxFile != null) {
+      var fileStream = http.ByteStream(gpxFile.openRead());
+      var length = await gpxFile.length();
+
+      // Create multipart file for GPX file
+      var multipartFile = http.MultipartFile(
+        'gpx_file',
+        fileStream,
+        length,
+        filename: gpxFile.path.split('/').last, // File name
+        contentType:
+            MediaType('application', 'octet-stream'), // File content type
+      );
+
+      // Add GPX file to request
       request.files.add(multipartFile);
     }
 

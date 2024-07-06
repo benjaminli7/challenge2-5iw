@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
   final _durationController = TextEditingController();
   final ApiService _apiService = ApiService();
   File? _image;
+  File? _gpxFile;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -33,6 +35,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'difficulty': _difficulty,
         'duration': _durationController.text,
         'image': _image,
+        'gpx_file': _gpxFile,
       };
 
       await _apiService.createHike(
@@ -42,6 +45,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         hike['difficulty'],
         hike['duration'],
         hike['image'],
+        hike['gpx_file'],
       );
     }
   }
@@ -56,6 +60,48 @@ class _CreateHikePageState extends State<CreateHikePage> {
         print('No image selected.');
       }
     });
+  }
+
+  Future<void> _pickGPXFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['gpx'], // Ensure no dot before the extension
+      );
+
+      print('File picking result: $result'); // Debug print
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _gpxFile = File(result.files.single.path!);
+          print('GPX file path: ${_gpxFile!.path}'); // Debug print
+        });
+      } else {
+        print('No GPX file selected.');
+      }
+    } catch (e) {
+      print('Error picking GPX file: $e');
+      print('Attempting to use FileType.any as a fallback');
+
+      // Fallback to FileType.any
+      try {
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.any,
+        );
+
+        if (result != null && result.files.single.path != null) {
+          setState(() {
+            _gpxFile = File(result.files.single.path!);
+            print(
+                'GPX file path with fallback: ${_gpxFile!.path}'); // Debug print
+          });
+        } else {
+          print('No file selected in fallback.');
+        }
+      } catch (e) {
+        print('Error picking file in fallback: $e');
+      }
+    }
   }
 
   @override
@@ -134,9 +180,19 @@ class _CreateHikePageState extends State<CreateHikePage> {
               _image == null
                   ? const Text('No image selected.')
                   : Image.file(_image!),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _pickImage,
                 child: const Text('Upload Image'),
+              ),
+              const SizedBox(height: 20),
+              _gpxFile == null
+                  ? const Text('No GPX file selected.')
+                  : Text(_gpxFile!.path),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _pickGPXFile,
+                child: const Text('Upload GPX File'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(

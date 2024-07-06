@@ -16,4 +16,5 @@ type Hike struct {
 	IsApproved   bool      `json:"is_approved" default:"false" example:"false"`
 	Groups      []Group   `json:"groups"`
 	Image       string    `json:"image" example:"hike_image.jpg"`
+	GpxFile     string    `json:"gpx_file" example:"hike.gpx"`
 }

@@ -6,6 +6,7 @@ class Hike {
   final String duration;
   final bool isApproved;
   final String image;
+  final String gpxFile;
 
   Hike(
       {required this.id,
@@ -14,7 +15,8 @@ class Hike {
       required this.difficulty,
       required this.duration,
       required this.isApproved,
-      required this.image});
+      required this.image,
+      required this.gpxFile});
 
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
@@ -24,6 +26,7 @@ class Hike {
         difficulty: json['difficulty'],
         duration: json['duration'],
         isApproved: json['is_approved'],
-        image: json['image']);
+        image: json['image'],
+        gpxFile: json['gpx_file']);
   }
 }
