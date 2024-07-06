@@ -17,7 +17,7 @@ class _UserListPageState extends State<UserListPage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      // Fetch users when the page is first loaded
+
       context.read<AdminProvider>().fetchUsers(user.token);
     }
   }
@@ -51,7 +51,6 @@ class _UserListPageState extends State<UserListPage> {
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      // Handle email click
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -86,7 +85,6 @@ class _UserListPageState extends State<UserListPage> {
   }
 }
 
-// Sample UserDetailsPage to navigate to
 class UserDetailsPage extends StatelessWidget {
   final User user;
 
@@ -112,7 +110,6 @@ class UserDetailsPage extends StatelessWidget {
                   final token = userProvider.user!.token;
                   await context.read<AdminProvider>().deleteUser(token, user.id);
 
-                  // After deletion, navigate back to the previous page
                   Navigator.of(context).pop();
                 }
               },
@@ -129,7 +126,6 @@ class UserDetailsPage extends StatelessWidget {
                   final token = userProvider.user!.token;
                   await context.read<AdminProvider>().upgradeAdmin(token, user.id);
 
-                  // After deletion, navigate back to the previous page
                   Navigator.of(context).pop();
                 }
               },

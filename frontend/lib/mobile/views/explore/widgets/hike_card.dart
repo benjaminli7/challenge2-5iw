@@ -28,7 +28,7 @@ class HikeCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Image.network(
-                  Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
+                  Uri.parse("http://192.168.1.110:8080${hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),

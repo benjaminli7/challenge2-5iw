@@ -68,9 +68,11 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
-	r.POST("/groups", controllers.CreateGroup)
+	r.POST("/groups",middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", controllers.JoinGroup)
-	r.GET("/groups/:id", controllers.GetGroup)
+	r.GET("/groups/user/:id", controllers.GetMyGroups)
+	r.GET("/groups/:id",middleware.RequireAuth(false), controllers.GetGroup)
+	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.PATCH("/groups/:id", controllers.UpdateGroup)
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)

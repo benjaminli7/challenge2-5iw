@@ -45,7 +45,7 @@ class HikeDetailsPage extends StatelessWidget {
                       Text('Difficulty level'),
                       SizedBox(height: 8),
                       Text(
-                          "difficulty"), // Assuming `difficultyLevel` is a property of Hike
+                          "difficulty"), 
                     ],
                   ),
                   Column(
@@ -53,7 +53,7 @@ class HikeDetailsPage extends StatelessWidget {
                       const Text('Duration'),
                       const SizedBox(height: 8),
                       Text(
-                          '${hike.duration} hours'), // Assuming `duration` is a property of Hike
+                          '${hike.duration} hours'), 
                     ],
                   ),
                 ],
@@ -63,7 +63,7 @@ class HikeDetailsPage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 16),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: 300, // Set a specific height
+                  height: 300, 
                   child: GPXMapScreen(hike: hike),
                 ),
               ),
