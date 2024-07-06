@@ -10,6 +10,7 @@ import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         Fluttertoast.showToast(
-            msg: 'Failed to connect with Google',
+            msg: 'Failed to connect with Google2 ',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -88,6 +89,26 @@ class _LoginPageState extends State<LoginPage> {
       }
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
+
+      // login process
+      final String? token = await _apiService.login(
+        googleUser.email,
+        "",
+        isGoogle: true,
+      );
+      Map<String, dynamic> parseJwt = jsonDecode(
+        ascii.decode(base64.decode(base64.normalize(token!.split('.')[1]))),
+      );
+
+      Provider.of<UserProvider>(context, listen: false).setUser(
+        User(
+            id: parseJwt['sub'],
+            email: parseJwt['email'],
+            password: "",
+            token: token,
+            role: parseJwt['roles'],
+            isVerified: parseJwt['verified']),
+      );
 
       final credential = Fluttertoast.showToast(
         msg: 'Connected with Google',
@@ -99,10 +120,11 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
       GoRouter.of(context).go('/explore');
+      // print email
     } catch (e) {
       // Handle login error
       Fluttertoast.showToast(
-        msg: 'Failed to connect with Google',
+        msg: 'Failed to connect with Google 3',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -110,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Failed to connect with Google');
+      print('error: $e');
     }
   }
 
@@ -149,12 +171,25 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ElevatedButton(
               onPressed: _googleLogin,
-              child: const Text('Sign in with Google',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  )),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/google.svg',
+                    height: 24,
+                    width: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Sign in with Google',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
             TextButton(
               onPressed: () {

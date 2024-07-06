@@ -27,6 +27,7 @@ dependencies:
   lottie: ^3.1.2
   carousel_slider: ^4.0.0
   flutter_dotenv: ^5.1.0
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -38,3 +39,4 @@ flutter:
   assets:
     - assets/
     - .env
+    - assets/images/google.svg

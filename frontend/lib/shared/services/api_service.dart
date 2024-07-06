@@ -19,9 +19,15 @@ class ApiService {
     );
   }
 
-  Future<String?> login(String email, String password) async {
+  Future<String?> login(String email, String password,
+      {bool isGoogle = false}) async {
     try {
       // Envoyer la requête POST
+      print(jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'isGoogle': isGoogle.toString()
+      }));
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{
@@ -30,6 +36,7 @@ class ApiService {
         body: jsonEncode(<String, String>{
           'email': email,
           'password': password,
+          'isGoogle': isGoogle.toString()
         }),
       );
 
@@ -60,7 +67,7 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
 
-  // add a POST request for create-hike
+  // add a POST request for càreate-hike
   Future<http.Response> createHike(
       String name,
       String description,
