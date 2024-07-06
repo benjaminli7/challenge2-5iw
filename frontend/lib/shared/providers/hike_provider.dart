@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:xml/xml.dart' as xml;
+import 'package:latlong2/latlong.dart';
 
 class HikeProvider with ChangeNotifier {
   List<Hike> _hikes = [];
@@ -41,10 +43,10 @@ class HikeProvider with ChangeNotifier {
   // }
 
   Future<void> createHike(String name, String description, int organizerId,
-      String difficulty, String duration, File image) async {
+      String difficulty, String duration, File image, File gpxFile) async {
     try {
       final response = await ApiService().createHike(
-          name, description, organizerId, difficulty, duration, image);
+          name, description, organizerId, difficulty, duration, image, gpxFile);
       if (response.statusCode == 200) {
         print('Hike created successfully');
       } else {
@@ -52,6 +54,43 @@ class HikeProvider with ChangeNotifier {
       }
     } catch (e) {
       print('Failed to create hike: $e');
+    }
+  }
+
+  //create a function to parse the gpx file
+  Future<List<LatLng>> parseGPX(String file) async {
+    try {
+      final document = xml.XmlDocument.parse(file);
+      final routePoint = <LatLng>[];
+
+      // <trkseg>
+      // 			<trkpt lat="48.013010" lon="7.073140">
+      final trkptElements = document.findAllElements('trkpt');
+      final rtepElements = document.findAllElements('rtept');
+
+      if (trkptElements.isEmpty && rtepElements.isEmpty) {
+        return [];
+      }
+      if (trkptElements.isNotEmpty) {
+        print('trkptElements: $trkptElements');
+        for (var element in trkptElements) {
+          final lat = double.parse(element.getAttribute('lat') ?? '0');
+          final lon = double.parse(element.getAttribute('lon') ?? '0');
+          routePoint.add(LatLng(lat, lon));
+        }
+      }
+      if (rtepElements.isNotEmpty) {
+        print('rtepElements: $rtepElements');
+        for (var element in rtepElements) {
+          final lat = double.parse(element.getAttribute('lat') ?? '0');
+          final lon = double.parse(element.getAttribute('lon') ?? '0');
+          routePoint.add(LatLng(lat, lon));
+        }
+      }
+      return routePoint;
+    } catch (e) {
+      print('Error loading GPX file: $e');
+      return [];
     }
   }
 }

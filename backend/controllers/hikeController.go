@@ -62,6 +62,21 @@ func CreateHike(c *gin.Context) {
 		return
 	}
 
+	//Add GPX file upload
+	file, err = c.FormFile("gpx_file")
+	if err == nil {
+		filename := filepath.Base(file.Filename)
+		filePath := filepath.Join("public", "gpx", filename)
+		if err := c.SaveUploadedFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+		hike.GpxFile = "/gpx/" + filename
+	} else if err != http.ErrMissingFile {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	if err := db.DB.Create(&hike).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return

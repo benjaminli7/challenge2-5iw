@@ -35,6 +35,7 @@ func main() {
 	r := gin.Default()
 
 	r.Static("/images", "./public/images")
+	r.Static("/gpx", "./public/gpx")
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -15,4 +15,5 @@ type Hike struct {
 	Duration    string    `json:"duration" example:"3 hours"`
 	IsApproved  bool      `json:"is_approved" default:"false" example:"false"`
 	Image       string    `json:"image" example:"hike_image.jpg"`
+	GpxFile     string    `json:"gpx_file" example:"hike.gpx"`
 }
