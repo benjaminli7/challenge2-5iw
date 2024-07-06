@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
@@ -138,6 +139,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final isGoogleActivated = settingsProvider.settings.googleAuth;
     return Scaffold(
       appBar: const NavBar(),
       body: Padding(
@@ -169,28 +172,32 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   )),
             ),
-            ElevatedButton(
-              onPressed: _googleLogin,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/google.svg',
-                    height: 24,
-                    width: 24,
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'Sign in with Google',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+            isGoogleActivated
+                ? ElevatedButton(
+                    onPressed: _googleLogin,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/google.svg',
+                          height: 24,
+                          width: 24,
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'Sign in with Google',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
+                  )
+                : const SizedBox(
+                    height: 0,
                   ),
-                ],
-              ),
-            ),
             TextButton(
               onPressed: () {
                 GoRouter.of(context).go('/signup');
