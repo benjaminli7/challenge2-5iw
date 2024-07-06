@@ -44,4 +44,24 @@ class GroupService {
       throw Exception('Failed to load groups');
     }
   }
+
+  Future<List<Group>> fetchHikeGroups(String token, int hikeId) async {
+    final url = Uri.parse('$baseUrl/groups/hike/$hikeId');
+
+    final response = await http.get(
+
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> groupList = json.decode(response.body);
+      print(groupList);
+      return groupList.map((json) => Group.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load groups');
+    }
+  }
 }
