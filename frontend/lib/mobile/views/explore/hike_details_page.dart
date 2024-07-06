@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/mobile/views/explore/widgets/group_list.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
@@ -11,7 +10,7 @@ import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 class HikeDetailsPage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsPage({super.key, required this.hike});
+  const HikeDetailsPage({Key? key, required this.hike}) : super(key: key);
 
   @override
   _HikeDetailsPageState createState() => _HikeDetailsPageState();
@@ -27,7 +26,7 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id);
+      _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
     } else {
       _groupsFuture = Future.error('User not logged in');
     }
@@ -44,6 +43,35 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
       setState(() {
         _selectedDate = picked;
       });
+    }
+  }
+
+  Future<void> _joinGroup(Group group) async {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (user != null) {
+      try {
+        await _groupService.joinGroup(user.token, group.id, user.id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Joined group ${group.hike.name} successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to join group ${group.hike.name}: $e'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User not logged in'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -69,7 +97,6 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Assurez-vous que l'image a une taille définie
               SizedBox(
                 width: double.infinity,
                 height: 200,
@@ -116,29 +143,28 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                height: 400, // Par exemple, une hauteur fixe pour éviter le problème de taille indéfinie
-                child: FutureBuilder<List<Group>>(
-                  future: _groupsFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No groups found for this hike'));
-                    } else {
-                      List<Group> groups = snapshot.data!;
-                      if (_selectedDate != null) {
-                        groups = groups.where((group) {
-                          return group.startDate.isAtSameMomentAs(_selectedDate!) ||
-                              group.startDate.isAfter(_selectedDate!);
-                        }).toList();
-                      }
-                      return GroupList(groups: groups);
+              FutureBuilder<List<Group>>(
+                future: _groupsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No groups found for this hike'));
+                  } else {
+                    List<Group> groups = snapshot.data!;
+                    if (_selectedDate != null) {
+                      groups = groups.where((group) {
+                        return group.startDate.isAtSameMomentAs(_selectedDate!) ||
+                            group.startDate.isAfter(_selectedDate!);
+                      }).toList();
                     }
-                  },
-                ),
+                    return Column(
+                      children: groups.map((group) => _buildGroupCard(group)).toList(),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -154,6 +180,33 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
           );
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildGroupCard(Group group) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              group.hike.name,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text('Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
+            SizedBox(height: 8),
+            Text('Participants: ${group.organizer.email.length}'),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => _joinGroup(group),
+              child: Text('Join Group'),
+            ),
+          ],
+        ),
       ),
     );
   }

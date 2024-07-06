@@ -125,7 +125,9 @@ func GetMyGroups(c *gin.Context) {
 // @Param id path int true "Hike ID"
 // @Success 200 {object} models.Group
 // @Failure 500 {object} models.ErrorResponse
-// @Router /groups/hike/{id} [get]
+// @Router /groups/hike/{id}/{userId} [get]
+
+
 func GetGroupsByHike(c *gin.Context) {
 	hikeIdParam := c.Param("id")
 	hikeId, err := strconv.Atoi(hikeIdParam)
@@ -134,10 +136,22 @@ func GetGroupsByHike(c *gin.Context) {
 		return
 	}
 
-	var groups []models.Group
-	today := time.Now().Format("2006-01-02")
+	userId := c.Param("userId") 
 
-	err = db.DB.Preload("Hike").Preload("Organizer").Order("start_date").Where("hike_id = ?", hikeId).Where("start_date >= ?", today).Find(&groups).Error
+	var groups []models.Group
+
+	subQuery := db.DB.Model(&models.GroupUser{}).
+		Select("group_id").
+		Where("user_id = ?", userId)
+
+	today := time.Now().Format("2006-01-02")
+	err = db.DB.Preload("Hike").Preload("Organizer").
+		Order("start_date").
+		Where("hike_id = ?", hikeId).
+		Where("start_date >= ?", today).
+		Not("id IN (?)", subQuery).
+		Find(&groups).Error
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -145,6 +159,7 @@ func GetGroupsByHike(c *gin.Context) {
 
 	c.JSON(http.StatusOK, groups)
 }
+
 // UpdateGroup godoc
 // @Summary Update a group by ID
 // @Description Update details of a group by its ID

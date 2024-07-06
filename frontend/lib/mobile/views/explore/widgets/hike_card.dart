@@ -18,8 +18,7 @@ class HikeCard extends StatelessWidget {
               builder: (context) => HikeDetailsPage(hike: hike),
             ),
           );
-          // Use GoRouter to render the HikeDetailsPage with the hike data
-          // GoRouter.of(context).go('/explore/hikes/${hike.id}');
+
         },
         child: Card(
           color: Colors.transparent,

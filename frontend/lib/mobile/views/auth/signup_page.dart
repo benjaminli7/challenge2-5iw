@@ -25,11 +25,10 @@ class _SignupPageState extends State<SignupPage> {
       _passwordController.text,
     );
 
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return; 
 
     if (response.statusCode == 200) {
-      // Handle successful signup
-      print('Signup successful');
+
       Fluttertoast.showToast(
         msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
@@ -41,7 +40,7 @@ class _SignupPageState extends State<SignupPage> {
       );
       GoRouter.of(context).go('/login');
     } else {
-      // Handle signup error
+
       Fluttertoast.showToast(
         msg: 'Signup failed',
         toastLength: Toast.LENGTH_SHORT,

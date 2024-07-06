@@ -45,8 +45,8 @@ class GroupService {
     }
   }
 
-  Future<List<Group>> fetchHikeGroups(String token, int hikeId) async {
-    final url = Uri.parse('$baseUrl/groups/hike/$hikeId');
+  Future<List<Group>> fetchHikeGroups(String token, int hikeId, int userId) async {
+    final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
 
     final response = await http.get(
 
@@ -62,6 +62,26 @@ class GroupService {
       return groupList.map((json) => Group.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load groups');
+    }
+  }
+
+
+  Future<void> joinGroup(String token, int groupId, int userId) async {
+    final url = Uri.parse('$baseUrl/groups/join');
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'groupId': groupId,
+        'userId': userId,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to join the group');
     }
   }
 }

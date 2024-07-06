@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'pages/login_screen.dart'; // Importing the LoginScreen widget
-import 'pages/profile_screen.dart'; // Importing the ProfileScreen widget
-import 'pages/groups_screen.dart'; // Importing the GroupScreen widget
-import 'pages/explore_screen.dart'; // Importing the ExploreScreen widget
+import 'pages/login_screen.dart';
+import 'pages/profile_screen.dart';
+import 'pages/groups_screen.dart';
+import 'pages/explore_screen.dart';
 
 void main() {
   runApp(const MyApp());

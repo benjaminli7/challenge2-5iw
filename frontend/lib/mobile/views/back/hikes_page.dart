@@ -20,7 +20,6 @@ class _HikeListPageState extends State<HikeListPage> {
     final hike = Provider.of<HikeProvider>(context, listen: false).hikes;
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      // Fetch users when the page is first loaded
       context.read<AdminProvider>().fetchHikesNoValidate(user.token);
     }
   }
@@ -57,7 +56,6 @@ class _HikeListPageState extends State<HikeListPage> {
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      // Handle email click
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -124,7 +122,6 @@ class HikeDetailsPage extends StatelessWidget {
                       .read<AdminProvider>()
                       .validateHike(token, hike.id);
 
-                  // After deletion, navigate back to the previous page
                   Navigator.of(context).pop();
                 }
               },

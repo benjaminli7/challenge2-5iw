@@ -66,14 +66,14 @@ class _FooterState extends State<Footer> {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: items,
-      backgroundColor: const Color(0xFF1b1b1b), // Background color
-      selectedItemColor: Colors.white, // Selected icon and text color
-      unselectedItemColor: Colors.white, // Unselected icon and text color
+      backgroundColor: const Color(0xFF1b1b1b),
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
       selectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.white), // Selected text bold
+          color: Colors.white), 
       unselectedLabelStyle:
-      const TextStyle(color: Colors.white), // Unselected text color
+      const TextStyle(color: Colors.white),
     );
   }
 }

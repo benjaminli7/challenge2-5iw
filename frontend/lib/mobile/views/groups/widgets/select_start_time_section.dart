@@ -75,7 +75,6 @@ class _SelectStartTimeSectionState extends State<SelectStartTimeSection> {
             onChanged: (String? newValue) {
               setState(() {
                 _selectedTime = newValue;
-                // Ici, vous pouvez gérer la sélection de l'heure
               });
             },
             items: _times.map<DropdownMenuItem<String>>((String value) {
