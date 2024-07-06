@@ -38,9 +38,10 @@ class AdminPage extends StatelessWidget {
               buildMenuItem(Icons.hiking, 'Hike', () {
                 GoRouter.of(context).go('/admin/hikes');
               }),
-
+              buildMenuItem(Icons.settings, 'Settings', () {
+                GoRouter.of(context).go('/admin/settings');
+              }),
             ]),
-
           ],
         ),
       ),
@@ -58,12 +59,12 @@ class AdminPage extends StatelessWidget {
             .asMap()
             .entries
             .map((entry) => Column(
-          children: [
-            entry.value,
-            if (entry.key != items.length - 1)
-              Divider(height: 1, color: Colors.grey[700]),
-          ],
-        ))
+                  children: [
+                    entry.value,
+                    if (entry.key != items.length - 1)
+                      Divider(height: 1, color: Colors.grey[700]),
+                  ],
+                ))
             .toList(),
       ),
     );

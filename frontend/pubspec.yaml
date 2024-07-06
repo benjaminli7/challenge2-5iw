@@ -23,6 +23,9 @@ dependencies:
   latlong2: ^0.9.1
   xml: ^5.3.1
   file_picker: ^8.0.5
+  weather: ^3.1.1
+  lottie: ^3.1.2
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +34,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
