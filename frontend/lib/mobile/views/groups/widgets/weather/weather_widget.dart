@@ -3,6 +3,8 @@ import 'package:weather/weather.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/services/weather_service.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_forecast.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
+import 'package:provider/provider.dart';
 
 // ignore: constant_identifier_names
 enum AppState { NOT_DOWNLOADED, DOWNLOADING, FINISHED_DOWNLOADING }
@@ -33,11 +35,25 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
     try {
       final ws = WeatherService();
-      final forecast = await ws.getWeather(widget.group);
-      setState(() {
-        _data = forecast;
-        _state = AppState.FINISHED_DOWNLOADING;
-      });
+      final settingsProvider =
+          Provider.of<SettingsProvider>(context, listen: false);
+      final useWeatherAPI = settingsProvider.settings.weatherAPI;
+
+      print('Weather API enabled: $useWeatherAPI');
+
+      // Check if weatherAPI setting is enabled before fetching weather data
+      if (useWeatherAPI) {
+        final forecast = await ws.getWeather(widget.group);
+        setState(() {
+          _data = forecast;
+          _state = AppState.FINISHED_DOWNLOADING;
+        });
+      } else {
+        // Weather API is disabled in settings
+        setState(() {
+          _state = AppState.NOT_DOWNLOADED;
+        });
+      }
     } catch (e) {
       setState(() {
         _state = AppState.NOT_DOWNLOADED;
