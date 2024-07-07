@@ -40,6 +40,11 @@ class _ReviewWidgetState extends State<ReviewWidget> {
     }
   }
 
+  bool _isValidInput(String value) {
+    final regex = RegExp(r'[<>]');
+    return !regex.hasMatch(value);
+  }
+
   Future<void> _submitReview() async {
     if (_formKey.currentState!.validate()) {
       final user = Provider.of<UserProvider>(context, listen: false).user;
@@ -100,9 +105,21 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           TextFormField(
             controller: _commentController,
             decoration: const InputDecoration(
-              labelText: 'Comment',
+              labelText: 'Comment (optional)',
               border: OutlineInputBorder(),
             ),
+            maxLength: 280,
+            validator: (value) {
+              if (value != null && value.isNotEmpty) {
+                if (value.length > 280) {
+                  return 'Comment cannot be longer than 280 characters';
+                }
+                if (!_isValidInput(value)) {
+                  return 'Invalid characters in comment';
+                }
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           ElevatedButton(

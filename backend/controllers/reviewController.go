@@ -3,10 +3,9 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 // CreateReview godoc
@@ -23,6 +22,11 @@ import (
 func CreateReview(c *gin.Context) {
 	var review models.Review
 	if err := c.ShouldBindJSON(&review); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	if err := validate.Struct(&review); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -55,6 +59,11 @@ func UpdateReview(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&review); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	if err := validate.Struct(&review); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
