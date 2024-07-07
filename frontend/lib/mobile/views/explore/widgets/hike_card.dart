@@ -11,7 +11,7 @@ class HikeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          GoRouter.of(context).go('/hike/${hike.id}');
+          GoRouter.of(context).push('/hike/${hike.id}');
         },
         child: Card(
           color: Colors.transparent,

@@ -8,7 +8,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 // CreateHike godoc
 // @Summary Create a new hike
@@ -47,17 +50,19 @@ func CreateHike(c *gin.Context) {
 		hike.IsApproved = isApproved
 	}
 
+	// Handle image upload or set default image
 	file, err := c.FormFile("image")
 	if err == nil {
 		filename := filepath.Base(file.Filename)
-		print(filename)
 		filePath := filepath.Join("public", "images", filename)
 		if err := c.SaveUploadedFile(file, filePath); err != nil {
 			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 			return
 		}
 		hike.Image = "/images/" + filename
-	} else if err != http.ErrMissingFile {
+	} else if err == http.ErrMissingFile {
+		hike.Image = "/images/default_hikePicture.png"
+	} else {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -74,6 +79,12 @@ func CreateHike(c *gin.Context) {
 		hike.GpxFile = "/gpx/" + filename
 	} else if err != http.ErrMissingFile {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	// Validate the hike struct
+	if err := validate.Struct(hike); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
@@ -186,8 +197,18 @@ func UpdateHike(c *gin.Context) {
 			return
 		}
 		hike.Image = "/images/" + filename
-	} else if err != http.ErrMissingFile {
+	} else if err == http.ErrMissingFile {
+		if hike.Image == "" {
+			hike.Image = "/images/default_hikePicture.png"
+		}
+	} else {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	// Validate the hike struct
+	if err := validate.Struct(hike); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
