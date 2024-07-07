@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/shared/services/group_service.dart';
 
 class GroupProvider with ChangeNotifier {
   DateTime? hikeDate;

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 //import go_router.dart;
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});

@@ -67,7 +67,7 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
 
-  // add a POST request for càreate-hike
+  // add a POST request for create-hike
   Future<http.Response> createHike(
       String name,
       String description,

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
-import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/models/hike.dart';
 
 class HikeListPage extends StatefulWidget {
@@ -28,19 +27,19 @@ class _HikeListPageState extends State<HikeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Hikes validation Panel')),
+      appBar: AppBar(title: const Text('Hikes validation Panel')),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (adminProvider.hikes.isEmpty) {
-            return Center(child: Text('No hikes found'));
+            return const Center(child: Text('No hikes found'));
           }
 
           return DataTable(
-            columns: [
+            columns: const [
               DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
               DataColumn(label: Text('Description')),
@@ -67,7 +66,7 @@ class _HikeListPageState extends State<HikeListPage> {
                     },
                     child: Text(
                       hike.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
@@ -87,7 +86,7 @@ class _HikeListPageState extends State<HikeListPage> {
             context.read<AdminProvider>().fetchHikesNoValidate(user.token);
           }
         },
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
@@ -101,19 +100,19 @@ class HikeDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Hike Details')),
+      appBar: AppBar(title: const Text('Hike Details')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: ${hike.name}', style: TextStyle(fontSize: 20)),
+            Text('Name: ${hike.name}', style: const TextStyle(fontSize: 20)),
             Text('Description: ${hike.description}',
-                style: TextStyle(fontSize: 20)),
+                style: const TextStyle(fontSize: 20)),
             Text('Difficulty: ${hike.difficulty}',
-                style: TextStyle(fontSize: 20)),
-            Text('Duration: ${hike.duration}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
+                style: const TextStyle(fontSize: 20)),
+            Text('Duration: ${hike.duration}', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final userProvider =
@@ -128,10 +127,10 @@ class HikeDetailsPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Valider'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
+              child: const Text('Valider'),
             ),
           ],
         ),

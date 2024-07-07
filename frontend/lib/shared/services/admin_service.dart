@@ -46,7 +46,7 @@ class AdminService {
   Future<void> upgradeAdmin(String token, int userId) async {
     var body = jsonEncode({"role": "admin"});
     final response = await http.patch(
-      Uri.parse('$url/users/${userId}/role'),
+      Uri.parse('$url/users/$userId/role'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ class AdminService {
   Future<void> validateHike(String token, int hikeId) async {
     var body = jsonEncode({"validated": true});
     final response = await http.patch(
-      Uri.parse('$url/hikes/${hikeId}/validate'),
+      Uri.parse('$url/hikes/$hikeId/validate'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
-import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 
 class HomePage extends StatelessWidget {

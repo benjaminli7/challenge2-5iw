@@ -6,8 +6,6 @@ import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/back/hikes_page.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
-import 'package:frontend/mobile/views/explore/hike_details_page.dart'
-    as hikeDetailsExp;
 import 'package:frontend/mobile/views/back/admin_settings_page.dart';
 import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
@@ -134,7 +132,7 @@ final GoRouter _router = GoRouter(
             GoRoute(
               name: "admin-settings",
               path: 'settings',
-              builder: (context, state) => AdminSettingsPage(),
+              builder: (context, state) => const AdminSettingsPage(),
             ),
           ],
         ),

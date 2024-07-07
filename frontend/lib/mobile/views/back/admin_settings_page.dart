@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:lottie/lottie.dart';
-//svg library
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AdminSettingsPage extends StatefulWidget {
+  const AdminSettingsPage({super.key});
+
   @override
   _AdminSettingsPageState createState() => _AdminSettingsPageState();
 }
@@ -29,7 +30,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Center(
         child: Padding(

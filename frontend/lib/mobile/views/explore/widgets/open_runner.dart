@@ -23,7 +23,7 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
   }
 
   Future<void> loadGpxData() async {
-    if (widget.hike.gpxFile == null || widget.hike.gpxFile.isEmpty) {
+    if (widget.hike.gpxFile.isEmpty) {
       setState(() {
         noDataAvailable = true;
       });

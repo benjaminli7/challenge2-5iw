@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/login_screen.dart'; // Importing the LoginScreen widget
-import 'pages/profile_screen.dart'; // Importing the ProfileScreen widget
+// Importing the ProfileScreen widget
 import 'pages/groups_screen.dart'; // Importing the GroupScreen widget
 import 'pages/explore_screen.dart'; // Importing the ExploreScreen widget
 
@@ -9,7 +9,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
