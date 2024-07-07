@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:go_router/go_router.dart';
 
 class HikeCard extends StatelessWidget {
@@ -12,14 +11,7 @@ class HikeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HikeDetailsPage(hike: hike),
-            ),
-          );
-          // Use GoRouter to render the HikeDetailsPage with the hike data
-          // GoRouter.of(context).go('/explore/hikes/${hike.id}');
+          GoRouter.of(context).go('/hike/${hike.id}');
         },
         child: Card(
           color: Colors.transparent,
@@ -28,7 +20,7 @@ class HikeCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Image.network(
-                  Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
+                  Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),

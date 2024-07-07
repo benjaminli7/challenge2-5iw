@@ -3,10 +3,10 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 
-class HikeDetailsPage extends StatelessWidget {
+class HikeDetailsExplorePage extends StatelessWidget {
   final Hike hike;
 
-  const HikeDetailsPage({super.key, required this.hike});
+  const HikeDetailsExplorePage({super.key, required this.hike});
 
   @override
   Widget build(BuildContext context) {
@@ -31,31 +31,32 @@ class HikeDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Image.network(
-                Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
+                Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
                 fit: BoxFit.cover,
                 width: double.infinity,
-                height: 100,
+                height: 200,
               ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const Column(
+                  Column(
                     children: [
-                      Text('Difficulty level'),
-                      SizedBox(height: 8),
-                      Text("difficulty"),
+                      const Text('Difficulty level'),
+                      const SizedBox(height: 8),
+                      Text(hike.difficulty),
                     ],
                   ),
                   Column(
                     children: [
                       const Text('Duration'),
                       const SizedBox(height: 8),
-                      Text('${hike.duration} hours'),
+                      Text(hike.duration),
                     ],
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 16),

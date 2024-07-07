@@ -9,6 +9,7 @@ import 'package:frontend/mobile/views/explore/explore_page.dart';
 import 'package:frontend/mobile/views/explore/hike_details_page.dart'
     as hikeDetailsExp;
 import 'package:frontend/mobile/views/back/admin_settings_page.dart';
+import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
@@ -92,22 +93,18 @@ final GoRouter _router = GoRouter(
           name: "explore",
           path: '/explore',
           builder: (context, state) => const ExplorePage(),
-          // routes: [
-          //   GoRoute(
-          //     name: "hike details",
-          //     path: 'hikes/:id',
-          //     builder: (context, state) {
-          //       final hikeId = state.pathParameters['id'];
-          //       final hikeProvider =
-          //           Provider.of<HikeProvider>(context, listen: false);
-
-          //       print('hikeId: $hikeId');
-          //       final hike =
-          //           hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
-          //       return HikeDetailsPage(hike: hike);
-          //     },
-          //   ),
-          // ],
+        ),
+        GoRoute(
+          name: "hikeDetails",
+          path: '/hike/:id',
+          builder: (context, state) {
+            final hikeId = int.parse(state.pathParameters['id']!);
+            final hikeProvider =
+            Provider.of<HikeProvider>(context, listen: false);
+            final hike = hikeProvider.hikes
+                .firstWhere((hike) => hike.id == hikeId);
+            return HikeDetailsExplorePage(hike: hike);
+          },
         ),
         GoRoute(
           name: "create-hike",
