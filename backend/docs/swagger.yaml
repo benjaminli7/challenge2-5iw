@@ -1,3 +1,4 @@
+
 basePath: /
 definitions:
   models.Advice:
@@ -28,10 +29,14 @@ definitions:
         type: string
       description:
         type: string
+      hike:
+        $ref: '#/definitions/models.Hike'
       hike_id:
         type: integer
       id:
         type: integer
+      organizer:
+        $ref: '#/definitions/models.User'
       organizer_id:
         type: integer
       start_date:
@@ -41,6 +46,13 @@ definitions:
       users:
         items:
           $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  models.GroupListResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/models.Group'
         type: array
     type: object
   models.GroupUser:
@@ -59,9 +71,19 @@ definitions:
       duration:
         example: 3 hours
         type: string
+      gpx_file:
+        example: hike.gpx
+        type: string
+      groups:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
       id:
         example: 1
         type: integer
+      image:
+        example: hike_image.jpg
+        type: string
       is_approved:
         default: false
         example: false
@@ -93,8 +115,6 @@ definitions:
         type: string
       email:
         type: string
-      group_organizer:
-        $ref: '#/definitions/models.Group'
       groups:
         items:
           $ref: '#/definitions/models.Group'
@@ -275,9 +295,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Group'
-            type: array
+            $ref: '#/definitions/models.GroupListResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -397,33 +415,6 @@ paths:
       summary: Update a group by ID
       tags:
       - groups
-  /groups/day:
-    get:
-      consumes:
-      - application/json
-      description: Get all groups for a specific day
-      parameters:
-      - description: Day
-        in: query
-        name: day
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Group'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Get all groups for a specific day
-      tags:
-      - groups
   /groups/leave:
     delete:
       consumes:
@@ -448,6 +439,31 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Leave a group
+      tags:
+      - groups
+  /groups/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get groups by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Group'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get groups by user ID
       tags:
       - groups
   /groups/validate/{id}:
@@ -498,15 +514,42 @@ paths:
       - hikes
     post:
       consumes:
-      - application/json
-      description: Create a new hike with the input payload
+      - multipart/form-data
+      description: Create a new hike with the input payload and optional image upload
       parameters:
-      - description: Hike Info
-        in: body
-        name: hike
+      - description: Hike Name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Hike'
+        type: string
+      - description: Hike Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Organizer ID
+        in: formData
+        name: organizer_id
+        required: true
+        type: integer
+      - description: Difficulty
+        in: formData
+        name: difficulty
+        required: true
+        type: string
+      - description: Duration
+        in: formData
+        name: duration
+        required: true
+        type: string
+      - description: Is Approved
+        in: formData
+        name: is_approved
+        type: boolean
+      - description: Hike Image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
@@ -576,20 +619,47 @@ paths:
       - hikes
     put:
       consumes:
-      - application/json
-      description: Update details of a hike by its ID
+      - multipart/form-data
+      description: Update details of a hike by its ID and optional image upload
       parameters:
       - description: Hike ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Hike Info
-        in: body
-        name: hike
+      - description: Hike Name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Hike'
+        type: string
+      - description: Hike Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Organizer ID
+        in: formData
+        name: organizer_id
+        required: true
+        type: integer
+      - description: Difficulty
+        in: formData
+        name: difficulty
+        required: true
+        type: string
+      - description: Duration
+        in: formData
+        name: duration
+        required: true
+        type: string
+      - description: Is Approved
+        in: formData
+        name: is_approved
+        type: boolean
+      - description: Hike Image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
