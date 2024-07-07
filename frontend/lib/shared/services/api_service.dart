@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/review.dart';
+
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8080';
 
@@ -129,5 +131,33 @@ class ApiService {
     // Send the request
     var streamedResponse = await request.send();
     return http.Response.fromStream(streamedResponse);
+  }
+
+  Future<http.Response> createReview(Review review) {
+    return http.post(
+      Uri.parse('$baseUrl/reviews'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<http.Response> updateReview(Review review) {
+    return http.put(
+      Uri.parse('$baseUrl/reviews/${review.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<http.Response> getReviewsByHike(int hikeId) {
+    return http.get(Uri.parse('$baseUrl/reviews/hike/$hikeId'));
+  }
+
+  Future<http.Response> getReviewByUser(int userId, int hikeId) {
+    return http.get(Uri.parse('$baseUrl/reviews/user/$userId/hike/$hikeId'));
   }
 }

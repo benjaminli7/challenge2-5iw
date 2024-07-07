@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 
 class HikeDetailsExplorePage extends StatelessWidget {
   final Hike hike;
@@ -86,6 +88,8 @@ class HikeDetailsExplorePage extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 16),
+              ReviewWidget(hikeId: hike.id),
             ],
           ),
         ),
