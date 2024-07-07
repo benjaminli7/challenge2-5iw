@@ -122,9 +122,11 @@ class _ReviewWidgetState extends State<ReviewWidget> {
             },
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _submitReview,
-            child: const Text('Submit Review'),
+          Center(
+            child: ElevatedButton(
+              onPressed: _submitReview,
+              child: const Text('Submit Review'),
+            ),
           ),
         ],
       ),

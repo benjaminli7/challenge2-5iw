@@ -3,7 +3,6 @@ import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
-import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 
 class HikeDetailsExplorePage extends StatelessWidget {
   final Hike hike;
@@ -32,11 +31,14 @@ class HikeDetailsExplorePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Image.network(
-                Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 200,
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -44,16 +46,16 @@ class HikeDetailsExplorePage extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      const Text('Difficulty level'),
+                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(hike.difficulty),
+                      Text(hike.difficulty, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      const Text('Duration'),
+                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(hike.duration),
+                      Text(hike.duration, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
@@ -87,6 +89,14 @@ class HikeDetailsExplorePage extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+              const Divider(),
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               ReviewWidget(hikeId: hike.id),
