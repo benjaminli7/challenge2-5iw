@@ -68,15 +68,21 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
-	r.POST("/groups",middleware.RequireAuth(false), controllers.CreateGroup)
+	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", controllers.JoinGroup)
 	r.GET("/groups/user/:id", controllers.GetMyGroups)
-	r.GET("/groups/:id",middleware.RequireAuth(false), controllers.GetGroup)
+	r.GET("/groups/:id", middleware.RequireAuth(false), controllers.GetGroup)
 	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.PATCH("/groups/:id", controllers.UpdateGroup)
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
+
+	// Review routes
+	r.POST("/reviews", controllers.CreateReview)
+	r.PUT("/reviews/:id", controllers.UpdateReview)
+	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
+	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
 	err := r.Run()
 	if err != nil {

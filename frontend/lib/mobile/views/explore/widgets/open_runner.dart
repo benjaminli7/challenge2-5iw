@@ -23,15 +23,15 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
   }
 
   Future<void> loadGpxData() async {
-    if (widget.hike.gpxFile == null || widget.hike.gpxFile.isEmpty) {
+    if (widget.hike.gpxFile.isEmpty) {
       setState(() {
         noDataAvailable = true;
       });
       return;
     }
-    print('http://192.168.1.19:8080${widget.hike.gpxFile}');
+    print('http://10.0.2.2:8080${widget.hike.gpxFile}');
     final response = await http
-        .get(Uri.parse('http://192.168.1.19:8080${widget.hike.gpxFile}'));
+        .get(Uri.parse('http://10.0.2.2:8080${widget.hike.gpxFile}'));
     if (response.statusCode == 200) {
       final gpxString = response.body;
       print('GPX String: $gpxString');
@@ -55,47 +55,48 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('GPX Route Viewer'),
+        automaticallyImplyLeading: false,
       ),
       body: noDataAvailable
           ? const Center(
-              child: Text(
-                'No data available',
-                style: TextStyle(fontSize: 18, color: Colors.red),
-              ),
-            )
+        child: Text(
+          'No data available',
+          style: TextStyle(fontSize: 18, color: Colors.red),
+        ),
+      )
           : routePoints.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    return FlutterMap(
-                      options: MapOptions(
-                        initialCenter: routePoints.isNotEmpty
-                            ? routePoints.first
-                            : const LatLng(0, 0),
-                        initialZoom: 10.0,
-                        interactionOptions: const InteractionOptions(
-                            // flags: InteractiveFlag.none,
-                            ),
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          subdomains: const ['a', 'b', 'c'],
-                        ),
-                        PolylineLayer(
-                          polylines: [
-                            Polyline(
-                              points: routePoints,
-                              strokeWidth: 4.0,
-                              color: Colors.blue,
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                ),
+          ? const Center(child: CircularProgressIndicator())
+          : LayoutBuilder(
+        builder: (context, constraints) {
+          return FlutterMap(
+            options: MapOptions(
+              initialCenter: routePoints.isNotEmpty
+                  ? routePoints.first
+                  : const LatLng(0, 0),
+              initialZoom: 10.0,
+              interactionOptions: const InteractionOptions(
+                // flags: InteractiveFlag.none,
+              ),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: const ['a', 'b', 'c'],
+              ),
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: routePoints,
+                    strokeWidth: 4.0,
+                    color: Colors.blue,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

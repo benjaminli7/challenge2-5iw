@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 
 class SelectHikeDateSection extends StatelessWidget {
-  const SelectHikeDateSection({Key? key}) : super(key: key);
+  const SelectHikeDateSection({super.key});
 
   @override
   Widget build(BuildContext context) {

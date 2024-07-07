@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 
-class HikeDetailsPage extends StatelessWidget {
+class HikeDetailsExplorePage extends StatelessWidget {
   final Hike hike;
 
-  const HikeDetailsPage({super.key, required this.hike});
+  const HikeDetailsExplorePage({super.key, required this.hike});
 
   @override
   Widget build(BuildContext context) {
@@ -30,32 +31,36 @@ class HikeDetailsPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Image.network(
-                Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 100,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 200,
+                ),
               ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const Column(
+                  Column(
                     children: [
-                      Text('Difficulty level'),
-                      SizedBox(height: 8),
-                      Text("difficulty"),
+                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(hike.difficulty, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      const Text('Duration'),
+                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('${hike.duration} hours'),
+                      Text(hike.duration, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 16),
@@ -85,6 +90,16 @@ class HikeDetailsPage extends StatelessWidget {
                   );
                 },
               ),
+              const Divider(),
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ReviewWidget(hikeId: hike.id),
             ],
           ),
         ),

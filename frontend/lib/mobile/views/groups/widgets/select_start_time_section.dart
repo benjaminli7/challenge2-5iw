@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectStartTimeSection extends StatefulWidget {
-  const SelectStartTimeSection({Key? key}) : super(key: key);
+  const SelectStartTimeSection({super.key});
 
   @override
   _SelectStartTimeSectionState createState() => _SelectStartTimeSectionState();
