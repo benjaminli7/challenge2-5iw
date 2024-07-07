@@ -2,13 +2,16 @@ import 'package:weather/weather.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherService {
-  final String apiKey = 'c5d8f3d7c849a34add89de170f8274ee';
   late WeatherFactory _weatherFactory;
 
   WeatherService() {
-    _weatherFactory = WeatherFactory(apiKey);
+    final String? apiKey = dotenv.env['WEATHER_API_KEY'];
+    print('Weather API key: $apiKey');
+
+    _weatherFactory = WeatherFactory(apiKey!);
   }
 
   Future<List<Weather>> getWeather(Group group) async {

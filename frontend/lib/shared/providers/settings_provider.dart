@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/settings.dart';
 
 class SettingsProvider with ChangeNotifier {
-  Settings _settings = Settings(weatherAPI: true); // Default value
+  Settings _settings = Settings(weatherAPI: true, googleAuth: true);
 
   Settings get settings => _settings;
 
@@ -16,8 +16,13 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateGoogleAuth(bool value) {
+    _settings.googleAuth = value;
+    notifyListeners();
+  }
+
   void clearSettings() {
-    _settings = Settings(weatherAPI: true);
+    _settings = Settings(weatherAPI: true, googleAuth: true);
     notifyListeners();
   }
 }
