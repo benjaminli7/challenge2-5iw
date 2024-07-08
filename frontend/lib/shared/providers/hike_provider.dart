@@ -6,6 +6,8 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:latlong2/latlong.dart';
 
+import '../models/review.dart';
+
 class HikeProvider with ChangeNotifier {
   List<Hike> _hikes = [];
 
@@ -91,4 +93,63 @@ class HikeProvider with ChangeNotifier {
       return [];
     }
   }
+
+  Future<void> createReview(Review review) async {
+    try {
+      final response = await ApiService().createReview(review);
+      if (response.statusCode == 200) {
+        print('Review created successfully');
+      } else {
+        print('Failed to create review_widget.dart: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to create review_widget.dart: $e');
+    }
+  }
+
+  Future<void> updateReview(Review review) async {
+    try {
+      final response = await ApiService().updateReview(review);
+      if (response.statusCode == 200) {
+        print('Review updated successfully');
+      } else {
+        print('Failed to update review_widget.dart: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to update review_widget.dart: $e');
+    }
+  }
+
+  Future<List<Review>> fetchReviewsByHike(int hikeId) async {
+    try {
+      final response = await ApiService().getReviewsByHike(hikeId);
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Review.fromJson(json)).toList();
+      } else {
+        print('Failed to fetch reviews: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Failed to fetch reviews: $e');
+      return [];
+    }
+  }
+
+  Future<Review?> fetchReviewByUser(int userId, int hikeId) async {
+    try {
+      final response = await ApiService().getReviewByUser(userId, hikeId);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return Review.fromJson(data);
+      } else {
+        print('Failed to fetch review: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Failed to fetch review: $e');
+      return null;
+    }
+  }
 }
+

@@ -6,9 +6,8 @@ import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/back/hikes_page.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
-import 'package:frontend/mobile/views/explore/hike_details_page.dart'
-    as hikeDetailsExp;
 import 'package:frontend/mobile/views/back/admin_settings_page.dart';
+import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
@@ -30,16 +29,12 @@ final GoRouter _router = GoRouter(
   redirect: (context, state) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
-    // print(state.uri.path);
-    // print(isLoggedIn);
-    // If the user is not logged in and trying to access a protected route, redirect to the login page
     if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
       //print(1);
       return '/login';
     }
-    // If the user is logged in and trying to access the login/signup page, redirect to the home page
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
       //print(2);
@@ -48,7 +43,6 @@ final GoRouter _router = GoRouter(
     return null;
   },
   routes: <RouteBase>[
-    // Routes without a footer
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupPage(),
@@ -57,7 +51,6 @@ final GoRouter _router = GoRouter(
       path: '/login',
       builder: (context, state) => const LoginPage(),
     ),
-    // ShellRoute with a footer
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
@@ -92,22 +85,18 @@ final GoRouter _router = GoRouter(
           name: "explore",
           path: '/explore',
           builder: (context, state) => const ExplorePage(),
-          // routes: [
-          //   GoRoute(
-          //     name: "hike details",
-          //     path: 'hikes/:id',
-          //     builder: (context, state) {
-          //       final hikeId = state.pathParameters['id'];
-          //       final hikeProvider =
-          //           Provider.of<HikeProvider>(context, listen: false);
-
-          //       print('hikeId: $hikeId');
-          //       final hike =
-          //           hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
-          //       return HikeDetailsPage(hike: hike);
-          //     },
-          //   ),
-          // ],
+        ),
+        GoRoute(
+          name: "hikeDetails",
+          path: '/hike/:id',
+          builder: (context, state) {
+            final hikeId = int.parse(state.pathParameters['id']!);
+            final hikeProvider =
+            Provider.of<HikeProvider>(context, listen: false);
+            final hike = hikeProvider.hikes
+                .firstWhere((hike) => hike.id == hikeId);
+            return HikeDetailsExplorePage(hike: hike);
+          },
         ),
         GoRoute(
           name: "create-hike",
@@ -137,13 +126,13 @@ final GoRouter _router = GoRouter(
             GoRoute(
               name: "admin-settings",
               path: 'settings',
-              builder: (context, state) => AdminSettingsPage(),
+              builder: (context, state) => const AdminSettingsPage(),
             ),
           ],
         ),
       ],
     ),
-    // Default route, redirects to login or home based on user state
+
   ],
 );
 
@@ -163,7 +152,6 @@ class MyMobileApp extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: _router,
         theme: ThemeData(
-          // Dark theme
           brightness: Brightness.dark,
         ),
       ),

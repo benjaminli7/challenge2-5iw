@@ -4,7 +4,7 @@ import 'package:frontend/mobile/views/groups/widgets/select_hike_date_section.da
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/services/group_service.dart'; // Importer le service
+import 'package:frontend/shared/services/group_service.dart';
 import 'package:provider/provider.dart';
 
 class CreateGroupPage extends StatelessWidget {
@@ -19,7 +19,6 @@ class CreateGroupPage extends StatelessWidget {
     final groupService = GroupService();
 
     try {
-      // Envoyer les données au backend
       final response = await groupService.createGroup(
           groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
 

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 //import go_router.dart;
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -28,9 +27,7 @@ class AdminPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            // First block with Profile and Trail Pass buttons
 
-            // Second block with Filters, Security, Alerts, Theme, Advanced buttons
             buildMenuBlock([
               buildMenuItem(Icons.person, 'Users', () {
                 GoRouter.of(context).go('/admin/users');

@@ -28,10 +28,14 @@ definitions:
         type: string
       description:
         type: string
+      hike:
+        $ref: '#/definitions/models.Hike'
       hike_id:
         type: integer
       id:
         type: integer
+      organizer:
+        $ref: '#/definitions/models.User'
       organizer_id:
         type: integer
       start_date:
@@ -43,6 +47,13 @@ definitions:
           $ref: '#/definitions/models.User'
         type: array
     type: object
+  models.GroupListResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
+    type: object
   models.GroupUser:
     type: object
   models.Hike:
@@ -52,22 +63,38 @@ definitions:
         type: string
       description:
         example: La rando de zinzin
+        maxLength: 500
         type: string
       difficulty:
+        enum:
+        - Easy
+        - Moderate
+        - Hard
         example: Intermediate
         type: string
       duration:
         example: 3 hours
         type: string
+      gpx_file:
+        example: hike.gpx
+        type: string
+      groups:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
       id:
         example: 1
         type: integer
+      image:
+        example: hike_image.jpg
+        type: string
       is_approved:
         default: false
         example: false
         type: boolean
       name:
         example: Montagne du destin
+        maxLength: 100
         type: string
       organizer_id:
         example: 1
@@ -75,6 +102,36 @@ definitions:
       updated_at:
         example: "2024-05-28T12:54:10.517438+02:00"
         type: string
+    required:
+    - description
+    - difficulty
+    - duration
+    - name
+    - organizer_id
+    type: object
+  models.Review:
+    properties:
+      comment:
+        maxLength: 280
+        type: string
+      created_at:
+        type: string
+      hike_id:
+        type: integer
+      id:
+        type: integer
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - hike_id
+    - rating
+    - user_id
     type: object
   models.SuccessResponse:
     properties:
@@ -93,8 +150,6 @@ definitions:
         type: string
       email:
         type: string
-      group_organizer:
-        $ref: '#/definitions/models.Group'
       groups:
         items:
           $ref: '#/definitions/models.Group'
@@ -275,9 +330,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Group'
-            type: array
+            $ref: '#/definitions/models.GroupListResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -397,33 +450,6 @@ paths:
       summary: Update a group by ID
       tags:
       - groups
-  /groups/day:
-    get:
-      consumes:
-      - application/json
-      description: Get all groups for a specific day
-      parameters:
-      - description: Day
-        in: query
-        name: day
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Group'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Get all groups for a specific day
-      tags:
-      - groups
   /groups/leave:
     delete:
       consumes:
@@ -448,6 +474,31 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Leave a group
+      tags:
+      - groups
+  /groups/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get groups by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Group'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get groups by user ID
       tags:
       - groups
   /groups/validate/{id}:
@@ -498,15 +549,42 @@ paths:
       - hikes
     post:
       consumes:
-      - application/json
-      description: Create a new hike with the input payload
+      - multipart/form-data
+      description: Create a new hike with the input payload and optional image upload
       parameters:
-      - description: Hike Info
-        in: body
-        name: hike
+      - description: Hike Name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Hike'
+        type: string
+      - description: Hike Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Organizer ID
+        in: formData
+        name: organizer_id
+        required: true
+        type: integer
+      - description: Difficulty
+        in: formData
+        name: difficulty
+        required: true
+        type: string
+      - description: Duration
+        in: formData
+        name: duration
+        required: true
+        type: string
+      - description: Is Approved
+        in: formData
+        name: is_approved
+        type: boolean
+      - description: Hike Image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
@@ -576,20 +654,47 @@ paths:
       - hikes
     put:
       consumes:
-      - application/json
-      description: Update details of a hike by its ID
+      - multipart/form-data
+      description: Update details of a hike by its ID and optional image upload
       parameters:
       - description: Hike ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Hike Info
-        in: body
-        name: hike
+      - description: Hike Name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.Hike'
+        type: string
+      - description: Hike Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Organizer ID
+        in: formData
+        name: organizer_id
+        required: true
+        type: integer
+      - description: Difficulty
+        in: formData
+        name: difficulty
+        required: true
+        type: string
+      - description: Duration
+        in: formData
+        name: duration
+        required: true
+        type: string
+      - description: Is Approved
+        in: formData
+        name: is_approved
+        type: boolean
+      - description: Hike Image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
@@ -695,6 +800,128 @@ paths:
       summary: Log out a user
       tags:
       - auth
+  /reviews:
+    post:
+      consumes:
+      - application/json
+      description: Create a new review for a hike
+      parameters:
+      - description: Review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/models.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new review
+      tags:
+      - reviews
+  /reviews/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update details of a review by its ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/models.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a review by ID
+      tags:
+      - reviews
+  /reviews/hike/{hike_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all reviews for a specific hike
+      parameters:
+      - description: Hike ID
+        in: path
+        name: hike_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Review'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get reviews for a hike
+      tags:
+      - reviews
+  /reviews/user/{user_id}/hike/{hike_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get the review by a specific user for a specific hike
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Hike ID
+        in: path
+        name: hike_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a review by user and hike
+      tags:
+      - reviews
   /signup:
     post:
       consumes:

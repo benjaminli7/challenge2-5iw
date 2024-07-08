@@ -44,7 +44,7 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Group List')),
+      appBar: AppBar(title: const Text('Group List')),
       body: Column(
         children: [
           Padding(
@@ -58,7 +58,7 @@ class _GroupsPageState extends State<GroupsPage> {
                       : 'Selected Date: ${DateFormat('dd/MM/yyyy').format(_selectedDate!)}',
                 ),
                 IconButton(
-                  icon: Icon(Icons.calendar_today),
+                  icon: const Icon(Icons.calendar_today),
                   onPressed: () => _pickDate(context),
                 ),
               ],
@@ -68,11 +68,11 @@ class _GroupsPageState extends State<GroupsPage> {
             child: Consumer<AdminProvider>(
               builder: (context, adminProvider, child) {
                 if (adminProvider.loading) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (adminProvider.groups.isEmpty) {
-                  return Center(child: Text('No groups found'));
+                  return const Center(child: Text('No groups found'));
                 }
 
                 final filteredGroups = _selectedDate == null
@@ -85,7 +85,7 @@ class _GroupsPageState extends State<GroupsPage> {
                 }).toList();
 
                 if (filteredGroups.isEmpty) {
-                  return Center(child: Text('No groups found for selected date'));
+                  return const Center(child: Text('No groups found for selected date'));
                 }
 
                 return SingleChildScrollView(
@@ -93,7 +93,7 @@ class _GroupsPageState extends State<GroupsPage> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: DataTable(
-                      columns: [
+                      columns: const [
                         DataColumn(label: Text('ID')),
                         DataColumn(label: Text('Date Start')),
                         DataColumn(label: Text('Hike')),
@@ -113,7 +113,7 @@ class _GroupsPageState extends State<GroupsPage> {
                               },
                               child: Text(
                                 group.id.toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.blue,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -121,7 +121,7 @@ class _GroupsPageState extends State<GroupsPage> {
                             ),
                           ),
                           DataCell(Text(DateFormat('dd/MM/yyyy').format(group.startDate))),
-                          DataCell(Text(group.hike.name != null ? group.hike.name : 'None')),
+                          DataCell(Text(group.hike.name ?? 'None')),
                           DataCell(Text(group.organizer.email)),
                         ]);
                       }).toList(),
@@ -140,7 +140,7 @@ class _GroupsPageState extends State<GroupsPage> {
             context.read<AdminProvider>().fetchGroups(user.token);
           }
         },
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
@@ -154,17 +154,17 @@ class GroupDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Group Details')),
+      appBar: AppBar(title: const Text('Group Details')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Group ID: ${group.id.toString()}', style: TextStyle(fontSize: 20)),
-            Text('Date Start: ${DateFormat('dd/MM/yyyy').format(group.startDate)}', style: TextStyle(fontSize: 20)),
-            Text('Hike: ${group.hike.name != null ? group.hike.name : 'None'}', style: TextStyle(fontSize: 20)),
-            Text('Organizer: ${group.organizer.email}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
+            Text('Group ID: ${group.id.toString()}', style: const TextStyle(fontSize: 20)),
+            Text('Date Start: ${DateFormat('dd/MM/yyyy').format(group.startDate)}', style: const TextStyle(fontSize: 20)),
+            Text('Hike: ${group.hike.name ?? 'None'}', style: const TextStyle(fontSize: 20)),
+            Text('Organizer: ${group.organizer.email}', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -174,12 +174,12 @@ class GroupDetailsPage extends StatelessWidget {
                 }
                 Navigator.of(context).pop();
               },
-              child: Text('Delete Group'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
+              child: const Text('Delete Group'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
           ],
         ),

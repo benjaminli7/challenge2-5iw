@@ -25,19 +25,19 @@ class _ParamsPageState extends State<ParamsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User List')),
+      appBar: AppBar(title: const Text('User List')),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (adminProvider.users.isEmpty) {
-            return Center(child: Text('No users found'));
+            return const Center(child: Text('No users found'));
           }
 
           return DataTable(
-            columns: [
+            columns: const [
               DataColumn(label: Text('Email')),
               DataColumn(label: Text('Role')),
             ],
@@ -56,7 +56,7 @@ class _ParamsPageState extends State<ParamsPage> {
                     },
                     child: Text(
                       user.email,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
@@ -76,7 +76,7 @@ class _ParamsPageState extends State<ParamsPage> {
             context.read<AdminProvider>().fetchUsers(user.token);
           }
         },
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
@@ -91,16 +91,16 @@ class UserDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User Details')),
+      appBar: AppBar(title: const Text('User Details')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Email: ${user.email}', style: TextStyle(fontSize: 20)),
-            Text('Role: ${user.role}', style: TextStyle(fontSize: 20)),
-            Text('IsValide: ${user.isVerified.toString()}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
+            Text('Email: ${user.email}', style: const TextStyle(fontSize: 20)),
+            Text('Role: ${user.role}', style: const TextStyle(fontSize: 20)),
+            Text('IsValide: ${user.isVerified.toString()}', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -112,12 +112,12 @@ class UserDetailsPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Delete User'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
+              child: const Text('Delete User'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -129,10 +129,10 @@ class UserDetailsPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Devenir Admin'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
               ),
+              child: const Text('Devenir Admin'),
             ),
           ],
         ),

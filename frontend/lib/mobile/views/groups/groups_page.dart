@@ -50,10 +50,10 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      Uri.parse("http://192.168.1.19:8080${group.hike.image}")
-                          .toString(),
-                    ),
+
+                    backgroundImage: NetworkImage(Uri.parse("http://192.168.1.94:8080${group.hike.image}").toString(),),
+
+
                     radius: 30,
                   ),
                   title: Text(group.hike.name),
