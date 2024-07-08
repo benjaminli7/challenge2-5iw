@@ -6,7 +6,9 @@ import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
+
   static const String url = 'http://192.168.1.94:8080';
+
 
   Future<List<User>> fetchUsers(String token) async {
     print('fetchUsers token: $token');
@@ -46,7 +48,7 @@ class AdminService {
   Future<void> upgradeAdmin(String token, int userId) async {
     var body = jsonEncode({"role": "admin"});
     final response = await http.patch(
-      Uri.parse('$url/users/${userId}/role'),
+      Uri.parse('$url/users/$userId/role'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -82,7 +84,7 @@ class AdminService {
   Future<void> validateHike(String token, int hikeId) async {
     var body = jsonEncode({"validated": true});
     final response = await http.patch(
-      Uri.parse('$url/hikes/${hikeId}/validate'),
+      Uri.parse('$url/hikes/$hikeId/validate'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -114,13 +116,14 @@ class AdminService {
       else if (data is Map<String, dynamic> && data.containsKey('groups')) {
         List<dynamic> groupsJson = data['groups'];
         return groupsJson.map((json) => Group.fromJson(json)).toList();
-      }
-      else {
+      } else {
         throw Exception('Unexpected JSON structure: $data');
       }
     } else {
-      print('Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
-      throw Exception('Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
+      print(
+          'Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 

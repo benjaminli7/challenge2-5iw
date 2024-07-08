@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 //import go_router.dart;
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -36,9 +35,10 @@ class AdminPage extends StatelessWidget {
               buildMenuItem(Icons.hiking, 'Hike', () {
                 GoRouter.of(context).go('/admin/hikes');
               }),
-
+              buildMenuItem(Icons.settings, 'Settings', () {
+                GoRouter.of(context).go('/admin/settings');
+              }),
             ]),
-
           ],
         ),
       ),
@@ -56,12 +56,12 @@ class AdminPage extends StatelessWidget {
             .asMap()
             .entries
             .map((entry) => Column(
-          children: [
-            entry.value,
-            if (entry.key != items.length - 1)
-              Divider(height: 1, color: Colors.grey[700]),
-          ],
-        ))
+                  children: [
+                    entry.value,
+                    if (entry.key != items.length - 1)
+                      Divider(height: 1, color: Colors.grey[700]),
+                  ],
+                ))
             .toList(),
       ),
     );

@@ -6,13 +6,12 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/web/views/home_page.dart';
 import 'package:frontend/web/widgets/footer.dart';
-import 'package:frontend/web/views/admin_page.dart';
 import 'package:frontend/web/views/users_page.dart';
 import 'package:frontend/web/views/params_page.dart';
 import 'package:frontend/web/views/groups_page.dart';
 import 'package:frontend/web/views/hikes_page.dart';
 void main() {
-  runApp(MyWebApp());
+  runApp(const MyWebApp());
 }
 final GoRouter _router = GoRouter(
   redirect: (context, state) {
@@ -110,13 +109,15 @@ class MyWebApp extends StatelessWidget {
 }
 
 class WebHomePage extends StatelessWidget {
+  const WebHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Web Home'),
+        title: const Text('Web Home'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Welcome to the Web Dashboard!'),
       ),
     );

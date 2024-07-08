@@ -41,7 +41,7 @@ class AdminService {
   Future<void> upgradeAdmin(String token, int userId) async {
     var body = jsonEncode({"role": "admin"});
     final response = await http.patch(
-      Uri.parse('$url/${userId}/role'),
+      Uri.parse('$url/$userId/role'),
       headers: {
         'Cookie': token,
         'Content-Type': 'application/json',

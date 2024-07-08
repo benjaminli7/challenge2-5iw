@@ -39,15 +39,15 @@ class _FooterState extends State<Footer> {
     final user = Provider.of<UserProvider>(context).user;
 
     List<BottomNavigationBarItem> items = [
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.explore, color: Colors.white),
         label: 'Explore',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.group, color: Colors.white),
         label: 'Groups',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.person, color: Colors.white),
         label: 'Profile',
       ),
@@ -55,7 +55,7 @@ class _FooterState extends State<Footer> {
 
     if (user != null && user.role == 'admin') {
       items.add(
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.admin_panel_settings, color: Colors.white),
           label: 'Admin',
         ),

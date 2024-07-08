@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +21,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
   final _durationController = TextEditingController();
   final ApiService _apiService = ApiService();
   File? _image;
+  File? _gpxFile;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -33,6 +34,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'difficulty': _difficulty,
         'duration': _durationController.text,
         'image': _image,
+        'gpx_file': _gpxFile,
       };
 
       await _apiService.createHike(
@@ -42,6 +44,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         hike['difficulty'],
         hike['duration'],
         hike['image'],
+        hike['gpx_file'],
       );
     }
   }
@@ -56,6 +59,21 @@ class _CreateHikePageState extends State<CreateHikePage> {
         print('No image selected.');
       }
     });
+  }
+
+  Future<void> _pickGPXFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['gpx'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _gpxFile = File(result.files.single.path!);
+      });
+    } else {
+      print('No GPX file selected.');
+    }
   }
 
   @override
@@ -85,6 +103,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the name of the hike';
                   }
+                  if (value.length > 100) {
+                    return 'Name cannot be longer than 100 characters';
+                  }
                   return null;
                 },
               ),
@@ -95,6 +116,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
                   }
+                  if (value.length > 280) {
+                    return 'Description cannot be longer than 280 characters';
+                  }
                   return null;
                 },
               ),
@@ -103,9 +127,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
                 decoration: const InputDecoration(labelText: 'Difficulty'),
                 items: ['Easy', 'Moderate', 'Hard']
                     .map((difficulty) => DropdownMenuItem<String>(
-                          value: difficulty,
-                          child: Text(difficulty),
-                        ))
+                  value: difficulty,
+                  child: Text(difficulty),
+                ))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -122,10 +146,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
               TextFormField(
                 controller: _durationController,
                 decoration:
-                    const InputDecoration(labelText: 'Duration (hours)'),
+                const InputDecoration(labelText: 'Duration (hours)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the duration of the hike';
+                  }
+                  if (double.tryParse(value) == null || double.parse(value) <= 0 || double.parse(value) >= 96) {
+                    return 'Duration must be between 0 and 96h (its not Trekking!)';
                   }
                   return null;
                 },
@@ -134,9 +161,19 @@ class _CreateHikePageState extends State<CreateHikePage> {
               _image == null
                   ? const Text('No image selected.')
                   : Image.file(_image!),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _pickImage,
                 child: const Text('Upload Image'),
+              ),
+              const SizedBox(height: 20),
+              _gpxFile == null
+                  ? const Text('No GPX file selected.')
+                  : Text(_gpxFile!.path),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _pickGPXFile,
+                child: const Text('Upload GPX File'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(

@@ -240,10 +240,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Group"
-                            }
+                            "$ref": "#/definitions/models.GroupListResponse"
                         }
                     },
                     "500": {
@@ -299,47 +296,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/groups/day": {
-            "get": {
-                "description": "Get all groups for a specific day",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "groups"
-                ],
-                "summary": "Get all groups for a specific day",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Day",
-                        "name": "day",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Group"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/groups/leave": {
             "delete": {
                 "description": "Leave a group",
@@ -369,6 +325,44 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/user/{id}": {
+            "get": {
+                "description": "Get groups by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get groups by user ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Group"
                         }
                     },
                     "500": {
@@ -575,9 +569,9 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new hike with the input payload",
+                "description": "Create a new hike with the input payload and optional image upload",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -588,13 +582,51 @@ const docTemplate = `{
                 "summary": "Create a new hike",
                 "parameters": [
                     {
-                        "description": "Hike Info",
-                        "name": "hike",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Hike"
-                        }
+                        "type": "string",
+                        "description": "Hike Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hike Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Organizer ID",
+                        "name": "organizer_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Difficulty",
+                        "name": "difficulty",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Duration",
+                        "name": "duration",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Approved",
+                        "name": "is_approved",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Hike Image",
+                        "name": "image",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -689,9 +721,9 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update details of a hike by its ID",
+                "description": "Update details of a hike by its ID and optional image upload",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -709,13 +741,51 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Hike Info",
-                        "name": "hike",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Hike"
-                        }
+                        "type": "string",
+                        "description": "Hike Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hike Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Organizer ID",
+                        "name": "organizer_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Difficulty",
+                        "name": "difficulty",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Duration",
+                        "name": "duration",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Is Approved",
+                        "name": "is_approved",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Hike Image",
+                        "name": "image",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -872,6 +942,191 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews": {
+            "post": {
+                "description": "Create a new review for a hike",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Create a new review",
+                "parameters": [
+                    {
+                        "description": "Review",
+                        "name": "review",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Review"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Review"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews/hike/{hike_id}": {
+            "get": {
+                "description": "Get all reviews for a specific hike",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Get reviews for a hike",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Hike ID",
+                        "name": "hike_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Review"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews/user/{user_id}/hike/{hike_id}": {
+            "get": {
+                "description": "Get the review by a specific user for a specific hike",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Get a review by user and hike",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Hike ID",
+                        "name": "hike_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Review"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews/{id}": {
+            "put": {
+                "description": "Update details of a review by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Update a review by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Review ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Review",
+                        "name": "review",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Review"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Review"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -1093,11 +1348,17 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "hike": {
+                    "$ref": "#/definitions/models.Hike"
+                },
                 "hike_id": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "organizer": {
+                    "$ref": "#/definitions/models.User"
                 },
                 "organizer_id": {
                     "type": "integer"
@@ -1116,11 +1377,29 @@ const docTemplate = `{
                 }
             }
         },
+        "models.GroupListResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Group"
+                    }
+                }
+            }
+        },
         "models.GroupUser": {
             "type": "object"
         },
         "models.Hike": {
             "type": "object",
+            "required": [
+                "description",
+                "difficulty",
+                "duration",
+                "name",
+                "organizer_id"
+            ],
             "properties": {
                 "created_at": {
                     "type": "string",
@@ -1128,19 +1407,39 @@ const docTemplate = `{
                 },
                 "description": {
                     "type": "string",
+                    "maxLength": 500,
                     "example": "La rando de zinzin"
                 },
                 "difficulty": {
                     "type": "string",
+                    "enum": [
+                        "Easy",
+                        "Moderate",
+                        "Hard"
+                    ],
                     "example": "Intermediate"
                 },
                 "duration": {
                     "type": "string",
                     "example": "3 hours"
                 },
+                "gpx_file": {
+                    "type": "string",
+                    "example": "hike.gpx"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Group"
+                    }
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "image": {
+                    "type": "string",
+                    "example": "hike_image.jpg"
                 },
                 "is_approved": {
                     "type": "boolean",
@@ -1149,6 +1448,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
+                    "maxLength": 100,
                     "example": "Montagne du destin"
                 },
                 "organizer_id": {
@@ -1158,6 +1458,40 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2024-05-28T12:54:10.517438+02:00"
+                }
+            }
+        },
+        "models.Review": {
+            "type": "object",
+            "required": [
+                "hike_id",
+                "rating",
+                "user_id"
+            ],
+            "properties": {
+                "comment": {
+                    "type": "string",
+                    "maxLength": 280
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "hike_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 1
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1186,9 +1520,6 @@ const docTemplate = `{
                 },
                 "email": {
                     "type": "string"
-                },
-                "group_organizer": {
-                    "$ref": "#/definitions/models.Group"
                 },
                 "groups": {
                     "type": "array",

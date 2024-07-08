@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/review.dart';
+
 class ApiService {
   static const String baseUrl = 'http://192.168.1.94:8080';
+
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -19,9 +22,15 @@ class ApiService {
     );
   }
 
-  Future<String?> login(String email, String password) async {
+  Future<String?> login(String email, String password,
+      {bool isGoogle = false}) async {
     try {
       // Envoyer la requête POST
+      print(jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'isGoogle': isGoogle.toString()
+      }));
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{
@@ -30,6 +39,7 @@ class ApiService {
         body: jsonEncode(<String, String>{
           'email': email,
           'password': password,
+          'isGoogle': isGoogle.toString()
         }),
       );
 
@@ -61,8 +71,14 @@ class ApiService {
   }
 
   // add a POST request for create-hike
-  Future<http.Response> createHike(String name, String description,
-      int organizerId, String difficulty, String duration, File? image) async {
+  Future<http.Response> createHike(
+      String name,
+      String description,
+      int organizerId,
+      String difficulty,
+      String duration,
+      File? image,
+      File? gpxFile) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
     // Add headers
@@ -94,8 +110,55 @@ class ApiService {
       request.files.add(multipartFile);
     }
 
+    // Add GPX file if provided
+    if (gpxFile != null) {
+      var fileStream = http.ByteStream(gpxFile.openRead());
+      var length = await gpxFile.length();
+
+      // Create multipart file for GPX file
+      var multipartFile = http.MultipartFile(
+        'gpx_file',
+        fileStream,
+        length,
+        filename: gpxFile.path.split('/').last, // File name
+        contentType:
+            MediaType('application', 'octet-stream'), // File content type
+      );
+
+      // Add GPX file to request
+      request.files.add(multipartFile);
+    }
+
     // Send the request
     var streamedResponse = await request.send();
     return http.Response.fromStream(streamedResponse);
+  }
+
+  Future<http.Response> createReview(Review review) {
+    return http.post(
+      Uri.parse('$baseUrl/reviews'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<http.Response> updateReview(Review review) {
+    return http.put(
+      Uri.parse('$baseUrl/reviews/${review.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<http.Response> getReviewsByHike(int hikeId) {
+    return http.get(Uri.parse('$baseUrl/reviews/hike/$hikeId'));
+  }
+
+  Future<http.Response> getReviewByUser(int userId, int hikeId) {
+    return http.get(Uri.parse('$baseUrl/reviews/user/$userId/hike/$hikeId'));
   }
 }

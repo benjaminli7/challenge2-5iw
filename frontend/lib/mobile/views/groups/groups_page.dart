@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
+import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -49,13 +50,22 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   leading: CircleAvatar(
+
                     backgroundImage: NetworkImage(Uri.parse("http://192.168.1.94:8080${group.hike.image}").toString(),),
+
+
                     radius: 30,
                   ),
                   title: Text(group.hike.name),
-                  subtitle: Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
+                  subtitle:
+                      Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
                   onTap: () {
-                    // Gérer la navigation vers les détails du groupe
+                    //for the moment just test the weather widget
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => WeatherWidget(group: group),
+                      ),
+                    );
                   },
                 );
               },

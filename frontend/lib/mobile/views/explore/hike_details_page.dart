@@ -6,17 +6,19 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
+import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 
-class HikeDetailsPage extends StatefulWidget {
+class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsPage({Key? key, required this.hike}) : super(key: key);
+  const HikeDetailsExplorePage({Key? key, required this.hike}) : super(key: key);
 
   @override
-  _HikeDetailsPageState createState() => _HikeDetailsPageState();
+  _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
 }
 
-class _HikeDetailsPageState extends State<HikeDetailsPage> {
+class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
   DateTime? _selectedDate;
@@ -53,14 +55,18 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
         await _groupService.joinGroup(user.token, group.id, user.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Joined group ${group.hike.name} successfully'),
+            content: Text('Joined group ${group.id} successfully'),
             duration: Duration(seconds: 2),
           ),
         );
+        setState(() {
+          // Re-fetch groups to update the list after joining a group
+          _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
+        });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to join group ${group.hike.name}: $e'),
+            content: Text('Failed to join group ${group.id}: $e'),
             duration: Duration(seconds: 2),
           ),
         );
@@ -106,24 +112,34 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Column(
                     children: [
-                      Text('Difficulty level'),
-                      SizedBox(height: 8),
-                      Text('Intermediate'),
+                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(widget.hike.difficulty, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      Text('Duration'),
-                      SizedBox(height: 8),
-                      Text('3 hours'),
+                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(widget.hike.duration, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 16),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 300,
+                  child: GPXMapScreen(hike: widget.hike),
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -166,6 +182,16 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
                   }
                 },
               ),
+              const Divider(),
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ReviewWidget(hikeId: widget.hike.id),
             ],
           ),
         ),
