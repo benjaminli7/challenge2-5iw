@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/shared/models/user.dart';
 
 class AdminService {
-  static const String url = 'http://localhost:8080/users';
+  static const String url = 'http://10.0.2.2:8080/users';
 
   Future<List<User>> fetchUsers(String token) async {
     final response = await http.get(

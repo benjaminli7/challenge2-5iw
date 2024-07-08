@@ -107,7 +107,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://192.168.1.94:8080${widget.hike.image}").toString(),
+                  Uri.parse("http://10.0.2.2:8080${widget.hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -132,15 +132,16 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 ],
               ),
               const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 300,
-                  child: GPXMapScreen(hike: widget.hike),
+              if (widget.hike.gpxFile.isNotEmpty)
+                Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 300,
+                    child: GPXMapScreen(hike: widget.hike),
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               const Text(
                 'Groups',
