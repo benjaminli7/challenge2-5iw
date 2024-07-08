@@ -101,7 +101,7 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://192.168.1.110:8080${widget.hike.image}").toString(),
+                  Uri.parse("http://192.168.1.94:8080${widget.hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -193,14 +193,13 @@ class _HikeDetailsPageState extends State<HikeDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              group.hike.name,
+              group.organizer.email,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text('Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
             SizedBox(height: 8),
-            Text('Participants: ${group.organizer.email.length}'),
-            SizedBox(height: 8),
+
             ElevatedButton(
               onPressed: () => _joinGroup(group),
               child: Text('Join Group'),
