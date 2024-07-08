@@ -40,7 +40,7 @@ services:
       - 9200:9200
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.9.3
+    image: arm64v8/logstash:7.17.22
     container_name: logstash
     volumes:
       - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
