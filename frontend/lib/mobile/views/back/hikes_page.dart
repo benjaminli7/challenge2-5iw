@@ -19,7 +19,6 @@ class _HikeListPageState extends State<HikeListPage> {
     final hike = Provider.of<HikeProvider>(context, listen: false).hikes;
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      // Fetch users when the page is first loaded
       context.read<AdminProvider>().fetchHikesNoValidate(user.token);
     }
   }
@@ -48,15 +47,14 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("http://10.O.2.2:8080${hike.image}")
-                        .toString(),
+
+                    Uri.parse("http://192.168.1.94:8080${hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      // Handle email click
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -123,7 +121,6 @@ class HikeDetailsPage extends StatelessWidget {
                       .read<AdminProvider>()
                       .validateHike(token, hike.id);
 
-                  // After deletion, navigate back to the previous page
                   Navigator.of(context).pop();
                 }
               },

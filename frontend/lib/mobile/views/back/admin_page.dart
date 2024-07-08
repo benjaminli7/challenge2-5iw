@@ -27,9 +27,7 @@ class AdminPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            // First block with Profile and Trail Pass buttons
 
-            // Second block with Filters, Security, Alerts, Theme, Advanced buttons
             buildMenuBlock([
               buildMenuItem(Icons.person, 'Users', () {
                 GoRouter.of(context).go('/admin/users');

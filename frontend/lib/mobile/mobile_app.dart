@@ -29,16 +29,12 @@ final GoRouter _router = GoRouter(
   redirect: (context, state) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
-    // print(state.uri.path);
-    // print(isLoggedIn);
-    // If the user is not logged in and trying to access a protected route, redirect to the login page
     if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
       //print(1);
       return '/login';
     }
-    // If the user is logged in and trying to access the login/signup page, redirect to the home page
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
       //print(2);
@@ -47,7 +43,6 @@ final GoRouter _router = GoRouter(
     return null;
   },
   routes: <RouteBase>[
-    // Routes without a footer
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupPage(),
@@ -56,7 +51,6 @@ final GoRouter _router = GoRouter(
       path: '/login',
       builder: (context, state) => const LoginPage(),
     ),
-    // ShellRoute with a footer
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
@@ -138,7 +132,7 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-    // Default route, redirects to login or home based on user state
+
   ],
 );
 
@@ -158,7 +152,6 @@ class MyMobileApp extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: _router,
         theme: ThemeData(
-          // Dark theme
           brightness: Brightness.dark,
         ),
       ),

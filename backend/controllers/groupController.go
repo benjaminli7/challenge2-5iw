@@ -116,6 +116,50 @@ func GetMyGroups(c *gin.Context) {
 	c.JSON(http.StatusOK, groups)
 }
 
+// GetGroupsByHike godoc
+// @Summary Get groups by hike ID
+// @Description Get groups by hike ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "Hike ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/hike/{id}/{userId} [get]
+
+
+func GetGroupsByHike(c *gin.Context) {
+	hikeIdParam := c.Param("id")
+	hikeId, err := strconv.Atoi(hikeIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid hike ID"})
+		return
+	}
+
+	userId := c.Param("userId") 
+
+	var groups []models.Group
+
+	subQuery := db.DB.Model(&models.GroupUser{}).
+		Select("group_id").
+		Where("user_id = ?", userId)
+
+	today := time.Now().Format("2006-01-02")
+	err = db.DB.Preload("Hike").Preload("Organizer").
+		Order("start_date").
+		Where("hike_id = ?", hikeId).
+		Where("start_date >= ?", today).
+		Not("id IN (?)", subQuery).
+		Find(&groups).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, groups)
+}
+
 // UpdateGroup godoc
 // @Summary Update a group by ID
 // @Description Update details of a group by its ID
