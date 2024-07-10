@@ -6,9 +6,7 @@ import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
-
-  static const String url = 'http://192.168.1.94:8080';
-
+  static const String url = 'http://192.168.1.19:8080';
 
   Future<List<User>> fetchUsers(String token) async {
     print('fetchUsers token: $token');
@@ -138,5 +136,4 @@ class AdminService {
       throw Exception('Failed to delete group');
     }
   }
-
 }

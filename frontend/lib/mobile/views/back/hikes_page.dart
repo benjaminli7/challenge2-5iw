@@ -47,8 +47,8 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-
-                    Uri.parse("http://192.168.1.94:8080${hike.image}").toString(),
+                    Uri.parse("http://192.168.1.19:8080${hike.image}")
+                        .toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -109,7 +109,8 @@ class HikeDetailsPage extends StatelessWidget {
                 style: const TextStyle(fontSize: 20)),
             Text('Difficulty: ${hike.difficulty}',
                 style: const TextStyle(fontSize: 20)),
-            Text('Duration: ${hike.duration}', style: const TextStyle(fontSize: 20)),
+            Text('Duration: ${hike.duration}',
+                style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
