@@ -5,9 +5,7 @@ import 'package:http/http.dart' as http;
 import '../models/group.dart';
 
 class GroupService {
-
-  static const String baseUrl = 'http://192.168.1.94:8080';
-
+  static const String baseUrl = 'http://192.168.1.19:8080';
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
@@ -48,11 +46,11 @@ class GroupService {
     }
   }
 
-  Future<List<Group>> fetchHikeGroups(String token, int hikeId, int userId) async {
+  Future<List<Group>> fetchHikeGroups(
+      String token, int hikeId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
 
     final response = await http.get(
-
       url,
       headers: <String, String>{
         'Authorization': 'Bearer $token',
@@ -67,7 +65,6 @@ class GroupService {
       throw Exception('Failed to load groups');
     }
   }
-
 
   Future<void> joinGroup(String token, int groupId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/join');
