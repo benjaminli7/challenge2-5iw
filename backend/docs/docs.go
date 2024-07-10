@@ -1490,6 +1490,9 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
                 "user_id": {
                     "type": "integer"
                 }
