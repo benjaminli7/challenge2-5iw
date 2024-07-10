@@ -110,7 +110,7 @@ func GetReviewByUser(c *gin.Context) {
 func GetReviewsByHike(c *gin.Context) {
 	hikeID, _ := strconv.Atoi(c.Param("hike_id"))
 	var reviews []models.Review
-	if err := db.DB.Where("hike_id = ?", hikeID).Find(&reviews).Error; err != nil {
+	if err := db.DB.Where("hike_id = ?", hikeID).Preload("User").Find(&reviews).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
