@@ -3,6 +3,7 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -22,16 +23,21 @@ import (
 func CreateReview(c *gin.Context) {
 	var review models.Review
 	if err := c.ShouldBindJSON(&review); err != nil {
+		fmt.Println("Bind JSON Error:", err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
+	fmt.Printf("Received review: %+v\n", review)
+
 	if err := validate.Struct(&review); err != nil {
+		fmt.Println("Validation Error:", err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	if err := db.DB.Where("user_id = ? AND hike_id = ?", review.UserID, review.HikeID).FirstOrCreate(&review).Error; err != nil {
+		fmt.Println("Database Error:", err)
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}

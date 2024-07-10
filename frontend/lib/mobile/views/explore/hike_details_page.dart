@@ -8,6 +8,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
@@ -193,6 +194,15 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               ),
               const SizedBox(height: 16),
               ReviewWidget(hikeId: widget.hike.id),
+              const SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
+                  },
+                  child: const Text('View All Reviews'),
+                ),
+              ),
             ],
           ),
         ),
@@ -226,7 +236,6 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
             SizedBox(height: 8),
             Text('Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
             SizedBox(height: 8),
-
             ElevatedButton(
               onPressed: () => _joinGroup(group),
               child: Text('Join Group'),
