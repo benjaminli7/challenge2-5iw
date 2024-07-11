@@ -40,3 +40,5 @@ flutter:
     - assets/
     - .env
     - assets/images/google.svg
+    - assets/images/intro-image.jpg
+    - assets/images/hike-icon.svg

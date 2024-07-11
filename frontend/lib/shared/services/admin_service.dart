@@ -138,5 +138,4 @@ class AdminService {
       throw Exception('Failed to delete group');
     }
   }
-
 }

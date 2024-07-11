@@ -30,18 +30,15 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 32),
             // First block with Profile and Trail Pass buttons
             buildMenuBlock([
-              buildMenuItem(Icons.person, 'Profile', () {
-                // Handle Profile tap
-              }),
+              buildMenuItem(Icons.person, 'Profile', () {}),
               buildMenuItem(Icons.directions_walk, 'Trail pass', () {
-                // Handle Trail Pass tap
+                GoRouter.of(context).go('/profile/hike-history');
               }),
             ]),
             const SizedBox(height: 16),
             // Second block with Filters, Security, Alerts, Theme, Advanced buttons
             buildMenuBlock([
               buildMenuItem(Icons.filter_list, 'Filters', () {}),
-
               buildMenuItem(Icons.security, 'Security', () {
                 // Handle Security tap
               }),

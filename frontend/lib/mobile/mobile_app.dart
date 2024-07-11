@@ -14,6 +14,7 @@ import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
+import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
@@ -21,29 +22,40 @@ import 'package:frontend/shared/providers/settings_provider.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/mobile/views/intro_screen.dart';
 
 void main() {
   runApp(const MyMobileApp());
 }
 
 final GoRouter _router = GoRouter(
-  redirect: (context, state) {
+  redirect: (context, state) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool introSeen = prefs.getBool('intro_seen') ?? false;
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
-    if (!isLoggedIn &&
+
+    if (!introSeen && state.uri.path != '/intro') {
+      return '/intro';
+    }
+    if (introSeen &&
+        !isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
-      //print(1);
       return '/login';
     }
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
-      //print(2);
       return '/home';
     }
     return null;
   },
   routes: <RouteBase>[
+    GoRoute(
+      path: '/intro',
+      builder: (context, state) => IntroPage(),
+    ),
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupPage(),
@@ -81,6 +93,13 @@ final GoRouter _router = GoRouter(
           name: "profile",
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
+          routes: [
+            GoRoute(
+              name: "hike-history",
+              path: 'hike-history',
+              builder: (context, state) => const UserHikeHistory(),
+            )
+          ],
         ),
         GoRoute(
           name: "explore",
@@ -93,9 +112,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final hikeId = int.parse(state.pathParameters['id']!);
             final hikeProvider =
-            Provider.of<HikeProvider>(context, listen: false);
-            final hike = hikeProvider.hikes
-                .firstWhere((hike) => hike.id == hikeId);
+                Provider.of<HikeProvider>(context, listen: false);
+            final hike =
+                hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsExplorePage(hike: hike);
           },
         ),
@@ -141,7 +160,6 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-
   ],
 );
 

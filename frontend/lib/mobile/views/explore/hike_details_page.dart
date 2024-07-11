@@ -13,7 +13,8 @@ import 'package:go_router/go_router.dart';
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsExplorePage({Key? key, required this.hike}) : super(key: key);
+  const HikeDetailsExplorePage({Key? key, required this.hike})
+      : super(key: key);
 
   @override
   _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
@@ -29,7 +30,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
+      _groupsFuture =
+          _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
     } else {
       _groupsFuture = Future.error('User not logged in');
     }
@@ -62,7 +64,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         );
         setState(() {
           // Re-fetch groups to update the list after joining a group
-          _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
+          _groupsFuture = _groupService.fetchHikeGroups(
+              user.token, widget.hike.id, user.id);
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -174,12 +177,15 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
                       groups = groups.where((group) {
-                        return group.startDate.isAtSameMomentAs(_selectedDate!) ||
+                        return group.startDate
+                                .isAtSameMomentAs(_selectedDate!) ||
                             group.startDate.isAfter(_selectedDate!);
                       }).toList();
                     }
                     return Column(
-                      children: groups.map((group) => _buildGroupCard(group)).toList(),
+                      children: groups
+                          .map((group) => _buildGroupCard(group))
+                          .toList(),
                     );
                   }
                 },
@@ -234,7 +240,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text('Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
+            Text(
+                'Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
             SizedBox(height: 8),
             ElevatedButton(
               onPressed: () => _joinGroup(group),
