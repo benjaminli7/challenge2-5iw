@@ -3,6 +3,7 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"log"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -107,9 +108,18 @@ func CreateHike(c *gin.Context) {
 func GetAllHikes(c *gin.Context) {
 	var hikes []models.Hike
 	if err := db.DB.Find(&hikes).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Calculate average rating for each hike
+	for i, hike := range hikes {
+		var avgRating float64
+		db.DB.Model(&models.Review{}).Where("hike_id = ?", hike.ID).Select("avg(rating)").Row().Scan(&avgRating)
+		hikes[i].AverageRating = avgRating
+		log.Printf("Hike ID: %d, Name: %s, Average Rating: %.2f\n", hike.ID, hike.Name, avgRating)
+	}
+
 	c.JSON(http.StatusOK, hikes)
 }
 
@@ -130,6 +140,13 @@ func GetHike(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+
+	//Calcule avgRating
+	var avgRating float64
+	db.DB.Model(&models.Review{}).Where("hike_id = ?", hike.ID).Select("avg(rating)").Row().Scan(&avgRating)
+	hike.AverageRating = avgRating
+	log.Printf("Hike ID: %d, Name: %s, Average Rating: %.2f\n", hike.ID, hike.Name, avgRating)
+
 	c.JSON(http.StatusOK, hike)
 }
 

@@ -8,6 +8,9 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
@@ -20,6 +23,7 @@ class HikeDetailsExplorePage extends StatefulWidget {
 }
 
 class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
+  String baseUrl = ConfigService.baseUrl;
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
   DateTime? _selectedDate;
@@ -110,8 +114,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://54.38.190.3:8080${widget.hike.image}")
-                      .toString(),
+                  Uri.parse("$baseUrl${widget.hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -121,34 +124,31 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 children: [
                   Column(
                     children: [
-                      const Text('Difficulty level',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.difficulty,
-                          style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.difficulty, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      const Text('Duration',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.duration,
-                          style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.duration, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 300,
-                  child: GPXMapScreen(hike: widget.hike),
+              if (widget.hike.gpxFile.isNotEmpty)
+                Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 300,
+                    child: GPXMapScreen(hike: widget.hike),
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               const Text(
                 'Groups',
@@ -203,6 +203,15 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               ),
               const SizedBox(height: 16),
               ReviewWidget(hikeId: widget.hike.id),
+              const SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
+                  },
+                  child: const Text('View All Reviews'),
+                ),
+              ),
             ],
           ),
         ),
@@ -219,6 +228,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         child: const Icon(Icons.add),
       ),
     );
+
   }
 
   Widget _buildGroupCard(Group group) {

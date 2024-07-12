@@ -15,4 +15,5 @@ type Group struct {
 	Hike        Hike      `json:"hike" gorm:"foreignKey:HikeID"`
 	OrganizerID uint      `json:"organizer_id"`
 	Organizer   User      `json:"organizer" gorm:"foreignKey:OrganizerID"`
+	Messages []Message
 }
