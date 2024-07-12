@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 import '../models/review.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8080';
-
+  String baseUrl = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
 
   Future<http.Response> signup(String email, String password) {
     return http.post(

@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	"fmt"
 	"backend/db"
 	"backend/models"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -74,11 +75,15 @@ func RequireAuth(adminOnly bool) gin.HandlerFunc {
             return
         }
 
+
         // If adminOnly is true, check if the user is an admin
         if adminOnly && user.Role != "admin" {
+            fmt.Println(adminOnly)
+            fmt.Println(user.Role)
             c.AbortWithStatus(http.StatusUnauthorized)
             return
         }
+
 
         // Attach the user to the request context
         c.Set("user", user)
