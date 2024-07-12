@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/group.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GroupService {
-  static const String baseUrl = 'http://54.38.190.3:8080';
+  static String baseUrl = dotenv.env['BASE_URL']!;
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {

@@ -5,43 +5,34 @@ import (
 	"backend/db"
 	_ "backend/docs"
 	middleware "backend/middleware"
-	"net"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-var logger *logrus.Logger
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /
 
 func init() {
-	// Set up the logger
-	logger = logrus.New()
-	conn, err := net.Dial("tcp", "localhost:5005")
-	if err != nil {
-		logger.Fatal(err)
-	}
-	logger.SetOutput(conn)
-	logger.SetFormatter(&logrus.JSONFormatter{})
-
-	// Connect to the database
 	db.ConnectToDb()
 	db.SyncDatabase()
 }
 
 func main() {
 	r := gin.Default()
-
-	// Middleware to log each request
-	r.Use(func(c *gin.Context) {
-		c.Next()
-		logger.WithFields(logrus.Fields{
-			"method": c.Request.Method,
-			"path":   c.Request.URL.Path,
-			"status": c.Writer.Status(),
-		}).Info("request handled")
-	})
 
 	r.Static("/images", "./public/images")
 	r.Static("/gpx", "./public/gpx")
@@ -77,6 +68,7 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
+
 	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", middleware.RequireAuth(false), controllers.JoinGroup)
 	r.GET("/groups/user/:id", middleware.RequireAuth(false), controllers.GetMyGroups)
@@ -94,8 +86,9 @@ func main() {
 	r.PUT("/reviews/:id", controllers.UpdateReview)
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
+
 	err := r.Run()
 	if err != nil {
-		logger.Fatal(err)
+		return
 	}
 }

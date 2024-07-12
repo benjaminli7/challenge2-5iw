@@ -4,9 +4,10 @@ import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AdminService {
-  static const String url = 'http://54.38.190.3:8080';
+  static String url = '${dotenv.env['BASE_URL']}';
 
   Future<List<User>> fetchUsers(String token) async {
     print('fetchUsers token: $token');

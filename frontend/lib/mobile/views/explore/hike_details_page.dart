@@ -8,6 +8,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
@@ -110,7 +111,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://54.38.190.3:8080${widget.hike.image}")
+                  Uri.parse("${dotenv.env['BASE_URL']}${widget.hike.image}")
                       .toString(),
                   fit: BoxFit.cover,
                 ),

@@ -4,6 +4,7 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HikeListPage extends StatefulWidget {
   const HikeListPage({super.key});
@@ -47,7 +48,7 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("http://54.38.190.3:8080${hike.image}")
+                    Uri.parse("${dotenv.env['BASE_URL']}${hike.image}")
                         .toString(),
                     fit: BoxFit.cover,
                   ),

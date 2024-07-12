@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GPXMapScreen extends StatefulWidget {
   final Hike hike;
@@ -29,9 +30,9 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       });
       return;
     }
-    print('http://54.38.190.3:8080${widget.hike.gpxFile}');
+    print('${dotenv.env['BASE_URL']}${widget.hike.gpxFile}');
     final response = await http
-        .get(Uri.parse('http://54.38.190.3:8080${widget.hike.gpxFile}'));
+        .get(Uri.parse('${dotenv.env['BASE_URL']}${widget.hike.gpxFile}'));
     if (response.statusCode == 200) {
       final gpxString = response.body;
       print('GPX String: $gpxString');

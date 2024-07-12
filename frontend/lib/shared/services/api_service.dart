@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../models/review.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://54.38.190.3:8080';
+  static String baseUrl = dotenv.env['BASE_URL']!;
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -30,6 +31,9 @@ class ApiService {
         'password': password,
         'isGoogle': isGoogle.toString()
       }));
+
+      print('$baseUrl/login');
+
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{
