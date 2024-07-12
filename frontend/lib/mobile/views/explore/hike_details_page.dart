@@ -110,7 +110,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://51.75.200.94:8080${widget.hike.image}")
+                  Uri.parse("http://54.38.190.3:8080${widget.hike.image}")
                       .toString(),
                   fit: BoxFit.cover,
                 ),

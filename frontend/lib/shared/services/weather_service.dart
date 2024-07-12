@@ -18,7 +18,7 @@ class WeatherService {
     try {
       // Fetch GPX data from the provided URL
       final response = await http
-          .get(Uri.parse('http://51.75.200.94:8080${group.hike.gpxFile}'));
+          .get(Uri.parse('http://54.38.190.3:8080${group.hike.gpxFile}'));
       final points = await HikeProvider().parseGPX(response.body);
 
       // Extract coordinates from the first point

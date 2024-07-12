@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../models/review.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://51.75.200.94:8080';
+  static const String baseUrl = 'http://54.38.190.3:8080';
 
   Future<http.Response> signup(String email, String password) {
     return http.post(

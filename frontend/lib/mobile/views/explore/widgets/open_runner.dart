@@ -29,9 +29,9 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       });
       return;
     }
-    print('http://51.75.200.94:8080${widget.hike.gpxFile}');
+    print('http://54.38.190.3:8080${widget.hike.gpxFile}');
     final response = await http
-        .get(Uri.parse('http://51.75.200.94:8080${widget.hike.gpxFile}'));
+        .get(Uri.parse('http://54.38.190.3:8080${widget.hike.gpxFile}'));
     if (response.statusCode == 200) {
       final gpxString = response.body;
       print('GPX String: $gpxString');

@@ -57,7 +57,7 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(
-                        Uri.parse("http://51.75.200.94:8080${group.hike.image}")
+                        Uri.parse("http://54.38.190.3:8080${group.hike.image}")
                             .toString(),
                       ),
                       radius: 30,
