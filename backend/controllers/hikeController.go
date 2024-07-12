@@ -107,9 +107,17 @@ func CreateHike(c *gin.Context) {
 func GetAllHikes(c *gin.Context) {
 	var hikes []models.Hike
 	if err := db.DB.Find(&hikes).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Calculate average rating for each hike
+	for i, hike := range hikes {
+		var avgRating float64
+		db.DB.Model(&models.Review{}).Where("hike_id = ?", hike.ID).Select("avg(rating)").Row().Scan(&avgRating)
+		hikes[i].AverageRating = avgRating
+	}
+
 	c.JSON(http.StatusOK, hikes)
 }
 

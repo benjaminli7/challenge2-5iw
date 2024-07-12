@@ -155,6 +155,10 @@ class ApiService {
     );
   }
 
+  Future<http.Response> getHikesWithRatings() {
+    return http.get(Uri.parse('$baseUrl/hikes/withRatings'));
+  }
+
   Future<http.Response> getReviewsByHike(int hikeId) {
     return http.get(Uri.parse('$baseUrl/reviews/hike/$hikeId'));
   }

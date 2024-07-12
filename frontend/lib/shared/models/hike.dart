@@ -7,6 +7,7 @@ class Hike {
   final bool isApproved;
   final String image;
   final String gpxFile;
+  final double averageRating;
 
   Hike(
       {required this.id,
@@ -16,7 +17,8 @@ class Hike {
       required this.duration,
       required this.isApproved,
       required this.image,
-      required this.gpxFile});
+      required this.gpxFile,
+      required this.averageRating});
 
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
@@ -27,6 +29,8 @@ class Hike {
         duration: json['duration'],
         isApproved: json['is_approved'],
         image: json['image'],
-        gpxFile: json['gpx_file']);
+        gpxFile: json['gpx_file'],
+        averageRating: json['average_rating'] ?? 0.0,);
+
   }
 }

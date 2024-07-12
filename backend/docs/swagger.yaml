@@ -58,6 +58,8 @@ definitions:
     type: object
   models.Hike:
     properties:
+      average_rating:
+        type: number
       created_at:
         example: "2024-05-28T12:54:10.517438+02:00"
         type: string

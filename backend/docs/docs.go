@@ -1401,6 +1401,9 @@ const docTemplate = `{
                 "organizer_id"
             ],
             "properties": {
+                "average_rating": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2024-05-28T12:54:10.517438+02:00"
