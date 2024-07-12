@@ -5,6 +5,8 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/models/hike.dart';
 
+import '../../../shared/services/config_service.dart';
+
 class HikeListPage extends StatefulWidget {
   const HikeListPage({super.key});
 
@@ -13,6 +15,8 @@ class HikeListPage extends StatefulWidget {
 }
 
 class _HikeListPageState extends State<HikeListPage> {
+  String baseUrl = ConfigService.baseUrl;
+
   @override
   void initState() {
     super.initState();
@@ -48,7 +52,7 @@ class _HikeListPageState extends State<HikeListPage> {
                 DataCell(
                   Image.network(
 
-                    Uri.parse("http://10.0.2.2:8080${hike.image}").toString(),
+                    Uri.parse("$baseUrl${hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                 ),

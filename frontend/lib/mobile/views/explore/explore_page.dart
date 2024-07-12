@@ -10,12 +10,14 @@ import 'widgets/hike_card.dart';
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
+
   @override
   _ExplorePageState createState() => _ExplorePageState();
 }
 
 class _ExplorePageState extends State<ExplorePage> {
   List<Hike> filteredHikes = [];
+  bool _isSortedAscending = true;
 
   @override
   void initState() {
@@ -38,7 +40,12 @@ class _ExplorePageState extends State<ExplorePage> {
 
   void _sortHikesByRating() {
     setState(() {
-      filteredHikes.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+      if (_isSortedAscending) {
+        filteredHikes.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+      } else {
+        filteredHikes.sort((a, b) => a.averageRating.compareTo(b.averageRating));
+      }
+      _isSortedAscending = !_isSortedAscending;
     });
   }
 
@@ -52,12 +59,7 @@ class _ExplorePageState extends State<ExplorePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CreateHikePage(),
-            ),
-          );
+          GoRouter.of(context).push('/create-hike');
         },
         child: const Icon(Icons.add),
       ),

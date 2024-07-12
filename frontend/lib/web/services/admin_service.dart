@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/models/user.dart';
 
+import '../../shared/services/config_service.dart';
+
 class AdminService {
-  static const String url = 'http://10.0.2.2:8080/users';
+  String baseUrl = ConfigService.baseUrl;
 
   Future<List<User>> fetchUsers(String token) async {
     final response = await http.get(
-      Uri.parse(url),
+      Uri.parse(baseUrl),
       headers: {
         'Cookie': token,
       },
@@ -28,7 +30,7 @@ class AdminService {
 
   Future<void> deleteUser(String token, int userId) async {
     final response = await http.delete(
-      Uri.parse('$url/$userId'),
+      Uri.parse('$baseUrl/$userId'),
       headers: {
         'Cookie': token,
       },
@@ -41,7 +43,7 @@ class AdminService {
   Future<void> upgradeAdmin(String token, int userId) async {
     var body = jsonEncode({"role": "admin"});
     final response = await http.patch(
-      Uri.parse('$url/$userId/role'),
+      Uri.parse('$baseUrl/$userId/role'),
       headers: {
         'Cookie': token,
         'Content-Type': 'application/json',
