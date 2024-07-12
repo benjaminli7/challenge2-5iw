@@ -12,7 +12,6 @@ class WeatherService {
 
   WeatherService() {
     final String? apiKey = dotenv.env['WEATHER_API_KEY'];
-    print('Weather API key: $apiKey');
 
     _weatherFactory = WeatherFactory(apiKey!);
   }

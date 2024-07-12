@@ -31,6 +31,9 @@ class ApiService {
         'password': password,
         'isGoogle': isGoogle.toString()
       }));
+
+      print('$baseUrl/login');
+
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{

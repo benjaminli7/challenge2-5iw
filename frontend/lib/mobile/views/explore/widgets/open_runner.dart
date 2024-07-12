@@ -65,44 +65,44 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       ),
       body: noDataAvailable
           ? const Center(
-        child: Text(
-          'No data available',
-          style: TextStyle(fontSize: 18, color: Colors.red),
-        ),
-      )
+              child: Text(
+                'No data available',
+                style: TextStyle(fontSize: 18, color: Colors.red),
+              ),
+            )
           : routePoints.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-        builder: (context, constraints) {
-          return FlutterMap(
-            options: MapOptions(
-              initialCenter: routePoints.isNotEmpty
-                  ? routePoints.first
-                  : const LatLng(0, 0),
-              initialZoom: 10.0,
-              interactionOptions: const InteractionOptions(
-                // flags: InteractiveFlag.none,
-              ),
-            ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-              ),
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: routePoints,
-                    strokeWidth: 4.0,
-                    color: Colors.blue,
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
+              ? const Center(child: CircularProgressIndicator())
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return FlutterMap(
+                      options: MapOptions(
+                        initialCenter: routePoints.isNotEmpty
+                            ? routePoints.first
+                            : const LatLng(0, 0),
+                        initialZoom: 10.0,
+                        interactionOptions: const InteractionOptions(
+                            // flags: InteractiveFlag.none,
+                            ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          subdomains: const ['a', 'b', 'c'],
+                        ),
+                        PolylineLayer(
+                          polylines: [
+                            Polyline(
+                              points: routePoints,
+                              strokeWidth: 4.0,
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
     );
   }
 }
