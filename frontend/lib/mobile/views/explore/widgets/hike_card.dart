@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../shared/services/config_service.dart';
 
 class HikeCard extends StatelessWidget {
   final Hike hike;
@@ -10,6 +12,8 @@ class HikeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String baseUrl = ConfigService.baseUrl;
+
     return GestureDetector(
         onTap: () {
           GoRouter.of(context).push('/hike/${hike.id}');
@@ -21,8 +25,7 @@ class HikeCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Image.network(
-                  Uri.parse("${dotenv.env['BASE_URL']}${hike.image}")
-                      .toString(),
+                  Uri.parse("$baseUrl${hike.image}").toString(), // Use baseUrl directly
                   fit: BoxFit.cover,
                 ),
               ),

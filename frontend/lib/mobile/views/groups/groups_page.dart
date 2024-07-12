@@ -6,7 +6,8 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../../../shared/services/config_service.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -16,6 +17,7 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
+  String baseUrl = ConfigService.baseUrl;
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
 
@@ -51,10 +53,10 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      Uri.parse("${dotenv.env['BASE_URL']}${group.hike.image}")
-                          .toString(),
-                    ),
+
+                    backgroundImage: NetworkImage(Uri.parse("$baseUrl${group.hike.image}").toString(),),
+
+
                     radius: 30,
                   ),
                   title: Text(group.hike.name),

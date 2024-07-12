@@ -3,7 +3,10 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
@@ -22,16 +25,21 @@ import (
 func CreateReview(c *gin.Context) {
 	var review models.Review
 	if err := c.ShouldBindJSON(&review); err != nil {
+		fmt.Println("Bind JSON Error:", err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
+	fmt.Printf("Received review: %+v\n", review)
+
 	if err := validate.Struct(&review); err != nil {
+		fmt.Println("Validation Error:", err)
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	if err := db.DB.Where("user_id = ? AND hike_id = ?", review.UserID, review.HikeID).FirstOrCreate(&review).Error; err != nil {
+		fmt.Println("Database Error:", err)
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -84,6 +92,7 @@ func UpdateReview(c *gin.Context) {
 // @Param user_id path int true "User ID"
 // @Param hike_id path int true "Hike ID"
 // @Success 200 {object} models.Review
+// @Failure 404 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /reviews/user/{user_id}/hike/{hike_id} [get]
 func GetReviewByUser(c *gin.Context) {
@@ -91,6 +100,10 @@ func GetReviewByUser(c *gin.Context) {
 	hikeID, _ := strconv.Atoi(c.Param("hike_id"))
 	var review models.Review
 	if err := db.DB.Where("user_id = ? AND hike_id = ?", userID, hikeID).First(&review).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, models.ErrorResponse{Error: "Review not found"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -110,7 +123,7 @@ func GetReviewByUser(c *gin.Context) {
 func GetReviewsByHike(c *gin.Context) {
 	hikeID, _ := strconv.Atoi(c.Param("hike_id"))
 	var reviews []models.Review
-	if err := db.DB.Where("hike_id = ?", hikeID).Find(&reviews).Error; err != nil {
+	if err := db.DB.Where("hike_id = ?", hikeID).Preload("User").Find(&reviews).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}

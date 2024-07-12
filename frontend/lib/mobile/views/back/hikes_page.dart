@@ -4,7 +4,8 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../../../shared/services/config_service.dart';
 
 class HikeListPage extends StatefulWidget {
   const HikeListPage({super.key});
@@ -14,6 +15,8 @@ class HikeListPage extends StatefulWidget {
 }
 
 class _HikeListPageState extends State<HikeListPage> {
+  String baseUrl = ConfigService.baseUrl;
+
   @override
   void initState() {
     super.initState();
@@ -48,8 +51,8 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("${dotenv.env['BASE_URL']}${hike.image}")
-                        .toString(),
+
+                    Uri.parse("$baseUrl${hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -110,8 +113,7 @@ class HikeDetailsPage extends StatelessWidget {
                 style: const TextStyle(fontSize: 20)),
             Text('Difficulty: ${hike.difficulty}',
                 style: const TextStyle(fontSize: 20)),
-            Text('Duration: ${hike.duration}',
-                style: const TextStyle(fontSize: 20)),
+            Text('Duration: ${hike.duration}', style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
