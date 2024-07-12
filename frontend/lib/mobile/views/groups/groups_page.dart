@@ -51,7 +51,7 @@ class _GroupsPageState extends State<GroupsPage> {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                      Uri.parse("http://192.168.1.19:8080${group.hike.image}")
+                      Uri.parse("http://51.75.200.94:8080${group.hike.image}")
                           .toString(),
                     ),
                     radius: 30,

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../models/group.dart';
 
 class GroupService {
-  static const String baseUrl = 'http://192.168.1.19:8080';
+  static const String baseUrl = 'http://51.75.200.94:8080';
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {

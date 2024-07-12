@@ -47,7 +47,7 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("http://192.168.1.19:8080${hike.image}")
+                    Uri.parse("http://51.75.200.94:8080${hike.image}")
                         .toString(),
                     fit: BoxFit.cover,
                   ),
