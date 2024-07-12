@@ -37,9 +37,16 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           _rating = review.rating;
           _commentController.text = review.comment;
         });
+      } else {
+        setState(() {
+          _existingReview = null;
+          _rating = 0;
+          _commentController.text = '';
+        });
       }
     }
   }
+
 
   bool _isValidInput(String value) {
     final regex = RegExp(r'[<>]');

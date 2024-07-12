@@ -10,6 +10,8 @@ import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/services/config_service.dart';
+
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
@@ -21,6 +23,7 @@ class HikeDetailsExplorePage extends StatefulWidget {
 }
 
 class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
+  String baseUrl = ConfigService.baseUrl;
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
   DateTime? _selectedDate;
@@ -111,7 +114,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://10.0.2.2:8080${widget.hike.image}").toString(),
+                  Uri.parse("$baseUrl${widget.hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -212,17 +215,6 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateGroupPage(hike: widget.hike),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }

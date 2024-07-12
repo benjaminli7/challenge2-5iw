@@ -9,28 +9,31 @@ class Hike {
   final String gpxFile;
   final double averageRating;
 
-  Hike(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.difficulty,
-      required this.duration,
-      required this.isApproved,
-      required this.image,
-      required this.gpxFile,
-      required this.averageRating});
+  Hike({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.difficulty,
+    required this.duration,
+    required this.isApproved,
+    required this.image,
+    required this.gpxFile,
+    required this.averageRating,
+  });
 
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
-        id: json['id'],
-        name: json['name'],
-        description: json['description'],
-        difficulty: json['difficulty'],
-        duration: json['duration'],
-        isApproved: json['is_approved'],
-        image: json['image'],
-        gpxFile: json['gpx_file'],
-        averageRating: json['average_rating'] ?? 0.0,);
-
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      difficulty: json['difficulty'],
+      duration: json['duration'],
+      isApproved: json['is_approved'],
+      image: json['image'],
+      gpxFile: json['gpx_file'],
+      averageRating: (json['average_rating'] is int)
+          ? (json['average_rating'] as int).toDouble() : (json['average_rating']
+          ?? 0.0),
+    );
   }
 }
