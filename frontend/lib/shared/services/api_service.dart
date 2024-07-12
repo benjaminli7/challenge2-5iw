@@ -8,7 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import '../models/review.dart';
 
 class ApiService {
-  String baseUrl = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
+  static String baseUrl = dotenv.env['BASE_URL']!;
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -32,6 +32,9 @@ class ApiService {
         'password': password,
         'isGoogle': isGoogle.toString()
       }));
+
+      print('$baseUrl/login');
+
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{

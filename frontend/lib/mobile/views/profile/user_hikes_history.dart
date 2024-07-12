@@ -6,6 +6,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserHikeHistory extends StatefulWidget {
   const UserHikeHistory({super.key});
@@ -57,7 +58,8 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(
-                        Uri.parse("http://192.168.1.19:8080${group.hike.image}")
+                        Uri.parse(
+                                "${dotenv.env['BASE_URL']}${group.hike.image}")
                             .toString(),
                       ),
                       radius: 30,

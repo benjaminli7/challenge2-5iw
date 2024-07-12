@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../models/group.dart';
 
 class GroupService {
-  String baseUrl = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
+  static String baseUrl = dotenv.env['BASE_URL']!;
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
