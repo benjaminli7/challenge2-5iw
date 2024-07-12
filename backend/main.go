@@ -87,6 +87,10 @@ func main() {
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
+	// Message routes
+    r.GET("/ws/:groupID", controllers.HandleWebSocket)
+
+
 	err := r.Run()
 	if err != nil {
 		return

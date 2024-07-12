@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'pages/login_screen.dart';
-import 'pages/profile_screen.dart';
-import 'pages/groups_screen.dart';
 import 'pages/explore_screen.dart';
-
+import 'pages/groups_screen.dart';
+import 'pages/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
