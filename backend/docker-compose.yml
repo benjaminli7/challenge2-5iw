@@ -17,7 +17,7 @@ services:
     restart: always
     container_name: adminer
     ports:
-      - 8888:8080
+      - 8888:8888
 
   postgres_test:
     image: postgres
@@ -56,6 +56,8 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
+    environment:
+      - SERVER_BASEPATH=/kibana
 
 volumes:
   postgres:
