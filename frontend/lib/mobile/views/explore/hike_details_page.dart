@@ -216,7 +216,19 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateGroupPage(hike: widget.hike),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
+
   }
 
   Widget _buildGroupCard(Group group) {
