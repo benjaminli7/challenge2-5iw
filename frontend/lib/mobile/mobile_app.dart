@@ -17,7 +17,7 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
-
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
@@ -50,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
       Fluttertoast.showToast(
-        msg: 'Login successful',
+        msg: "Log in success",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,

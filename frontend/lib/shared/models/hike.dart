@@ -17,7 +17,9 @@ class Hike {
       required this.isApproved,
       required this.image,
       required this.gpxFile});
-
+  static Hike defaultHike() {
+    return Hike(id: 0, name: 'Default Hike', description: '', difficulty: '', duration: '', isApproved: false, image: '', gpxFile: '');
+  }
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
         id: json['id'],
