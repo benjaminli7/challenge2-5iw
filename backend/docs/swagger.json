@@ -1334,42 +1334,7 @@
             }
         },
         "models.Group": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "hike": {
-                    "$ref": "#/definitions/models.Hike"
-                },
-                "hike_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "organizer": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "organizer_id": {
-                    "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
+            "type": "object"
         },
         "models.GroupListResponse": {
             "type": "object",

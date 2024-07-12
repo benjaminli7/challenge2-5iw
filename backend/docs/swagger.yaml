@@ -23,29 +23,6 @@ definitions:
         type: string
     type: object
   models.Group:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      hike:
-        $ref: '#/definitions/models.Hike'
-      hike_id:
-        type: integer
-      id:
-        type: integer
-      organizer:
-        $ref: '#/definitions/models.User'
-      organizer_id:
-        type: integer
-      start_date:
-        type: string
-      updated_at:
-        type: string
-      users:
-        items:
-          $ref: '#/definitions/models.User'
-        type: array
     type: object
   models.GroupListResponse:
     properties:
