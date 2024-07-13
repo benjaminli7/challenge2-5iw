@@ -292,3 +292,40 @@ func DeleteUser(c *gin.Context) {
 	db.DB.Delete(&user)
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
 }
+
+// UpdateUser godoc
+// @Summary Update user profile
+// @Description Update the profile of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User true "User profile"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [put]
+func UpdateUser(c *gin.Context) {
+	var user models.User
+	id := c.Param("id")
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	var body models.User
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	if body.Username != "" {
+		user.Username = body.Username
+	}
+
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
+}
