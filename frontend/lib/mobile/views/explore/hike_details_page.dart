@@ -5,11 +5,10 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
-import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
@@ -218,12 +217,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateGroupPage(hike: widget.hike),
-            ),
-          );
+          GoRouter.of(context).go('/groups/create/${widget.hike.id}');
         },
         child: const Icon(Icons.add),
       ),

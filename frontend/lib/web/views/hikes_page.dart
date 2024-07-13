@@ -46,7 +46,6 @@ class _HikesPageState extends State<HikesPage> {
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      // Handle email click
                       Navigator.push(
                         context,
                         MaterialPageRoute(

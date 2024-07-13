@@ -168,4 +168,20 @@ class ApiService {
   Future<http.Response> getReviewByUser(int userId, int hikeId) {
     return http.get(Uri.parse('$baseUrl/reviews/user/$userId/hike/$hikeId'));
   }
+
+  // POST to subscribe to a hike
+  Future<http.Response> subscribeToHike(int hikeId, int userId, String token) {
+    print('token: $token' 'userId: $userId' 'hikeId: $hikeId');
+    return http.post(
+      Uri.parse('$baseUrl/hikes/subscribe'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'hike_id': hikeId,
+        'user_id': userId,
+      }),
+    );
+  }
 }

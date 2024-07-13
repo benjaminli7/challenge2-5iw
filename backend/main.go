@@ -58,7 +58,8 @@ func main() {
 	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
 	r.PATCH("/hikes/:id/validate", middleware.RequireAuth(true), controllers.ValidateHike)
-	r.DELETE("/hikes/:id", controllers.DeleteHike)
+	r.DELETE("/hikes/:id", middleware.RequireAuth(false), controllers.DeleteHike)
+	r.POST("/hikes/subscribe", middleware.RequireAuth(false), controllers.UserSubscribtionHikes)
 
 	// Advice routes
 	r.POST("/advice", middleware.RequireAuth(false), controllers.CreateAdvice)
@@ -88,8 +89,7 @@ func main() {
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
 	// Message routes
-    r.GET("/ws/:groupID", controllers.HandleWebSocket)
-
+	r.GET("/ws/:groupID", controllers.HandleWebSocket)
 
 	err := r.Run()
 	if err != nil {

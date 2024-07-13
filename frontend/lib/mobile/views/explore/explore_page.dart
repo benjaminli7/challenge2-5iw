@@ -5,6 +5,7 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'widgets/hike_card.dart';
 
 class ExplorePage extends StatefulWidget {

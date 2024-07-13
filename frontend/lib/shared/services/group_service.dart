@@ -85,4 +85,19 @@ class GroupService {
       throw Exception('Failed to join the group');
     }
   }
+
+  // Add a method to delete a group
+  Future<void> deleteGroup(String token, int groupId) async {
+    final url = Uri.parse('$baseUrl/groups/$groupId');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete the group');
+    }
+  }
 }
