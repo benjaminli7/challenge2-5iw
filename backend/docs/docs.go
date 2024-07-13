@@ -1340,42 +1340,7 @@ const docTemplate = `{
             }
         },
         "models.Group": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "hike": {
-                    "$ref": "#/definitions/models.Hike"
-                },
-                "hike_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "organizer": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "organizer_id": {
-                    "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
+            "type": "object"
         },
         "models.GroupListResponse": {
             "type": "object",
@@ -1401,6 +1366,9 @@ const docTemplate = `{
                 "organizer_id"
             ],
             "properties": {
+                "average_rating": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2024-05-28T12:54:10.517438+02:00"
@@ -1489,6 +1457,9 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
                 },
                 "user_id": {
                     "type": "integer"

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../shared/services/config_service.dart';
+
 
 class HikeCard extends StatefulWidget {
   final Hike hike;
@@ -47,6 +49,8 @@ class _HikeCardState extends State<HikeCard> {
 
   @override
   Widget build(BuildContext context) {
+    String baseUrl = ConfigService.baseUrl;
+
     return GestureDetector(
         onTap: () {
           GoRouter.of(context).push('/hike/${widget.hike.id}');
@@ -57,6 +61,7 @@ class _HikeCardState extends State<HikeCard> {
           child: Column(
             children: [
               Expanded(
+
                 child: Stack(
                   children: [
                     Image.network(

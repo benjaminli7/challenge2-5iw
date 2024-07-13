@@ -18,4 +18,5 @@ type Hike struct {
 	Image        string         `json:"image" example:"hike_image.jpg"`
 	GpxFile      string         `json:"gpx_file" example:"hike.gpx"`
 	Subcriptions []Subscription `json:"subscriptions"`
+
 }

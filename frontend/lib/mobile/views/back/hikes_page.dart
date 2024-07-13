@@ -6,6 +6,11 @@ import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:frontend/shared/models/hike.dart';
+
+import '../../../shared/services/config_service.dart';
+
+
 class HikeListPage extends StatefulWidget {
   const HikeListPage({super.key});
 
@@ -14,6 +19,8 @@ class HikeListPage extends StatefulWidget {
 }
 
 class _HikeListPageState extends State<HikeListPage> {
+  String baseUrl = ConfigService.baseUrl;
+
   @override
   void initState() {
     super.initState();
@@ -48,8 +55,8 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("${dotenv.env['BASE_URL']}${hike.image}")
-                        .toString(),
+
+                    Uri.parse("$baseUrl${hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -86,3 +93,4 @@ class _HikeListPageState extends State<HikeListPage> {
     );
   }
 }
+
