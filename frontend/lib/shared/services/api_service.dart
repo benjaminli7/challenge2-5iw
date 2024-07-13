@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../models/review.dart';
+import '../models/user.dart';
 import 'config_service.dart';
 
 class ApiService {
@@ -184,4 +185,15 @@ class ApiService {
       }),
     );
   }
+
+  Future<http.Response> updateUserProfile(User user) {
+    return http.put(
+      Uri.parse('$baseUrl/users/${user.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+  }
+
 }
