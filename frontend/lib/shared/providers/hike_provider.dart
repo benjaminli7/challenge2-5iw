@@ -151,5 +151,18 @@ class HikeProvider with ChangeNotifier {
       return null;
     }
   }
-}
 
+  Future<void> userSubscribeToHike(int hikeId, int userId, String token) async {
+    try {
+      final response =
+          await ApiService().subscribeToHike(hikeId, userId, token);
+      if (response.statusCode == 200) {
+        print('User subscribed to hike successfully');
+      } else {
+        print('Failed to subscribe to hike: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Failed to subscribe to hike: $e');
+    }
+  }
+}

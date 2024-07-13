@@ -4,6 +4,7 @@ import 'package:frontend/mobile/views/explore/widgets/search_bar.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widgets/hike_card.dart';
 
@@ -47,12 +48,7 @@ class _ExplorePageState extends State<ExplorePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CreateHikePage(),
-            ),
-          );
+          GoRouter.of(context).go('/create-hike');
         },
         child: const Icon(Icons.add),
       ),

@@ -7,7 +7,7 @@ services:
       - 6500:5432
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      POSTGRES_PASSWORD: challenge2esgi2K24
       POSTGRES_DB: db
     volumes:
       - postgres:/var/lib/postgresql/data

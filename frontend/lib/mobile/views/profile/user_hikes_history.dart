@@ -67,14 +67,7 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
                     title: Text(group.hike.name),
                     subtitle:
                         Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
-                    onTap: () {
-                      //for the moment just test the weather widget
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => WeatherWidget(group: group),
-                        ),
-                      );
-                    },
+                    onTap: () {},
                   );
                 },
               );

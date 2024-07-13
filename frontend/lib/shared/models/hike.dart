@@ -1,3 +1,5 @@
+import 'package:frontend/shared/models/subscriptions.dart';
+
 class Hike {
   final int id;
   final String name;
@@ -7,6 +9,7 @@ class Hike {
   final bool isApproved;
   final String image;
   final String gpxFile;
+  final List<Subscriptions> subscriptions;
 
   Hike(
       {required this.id,
@@ -16,7 +19,8 @@ class Hike {
       required this.duration,
       required this.isApproved,
       required this.image,
-      required this.gpxFile});
+      required this.gpxFile,
+      required this.subscriptions});
 
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
@@ -27,6 +31,10 @@ class Hike {
         duration: json['duration'],
         isApproved: json['is_approved'],
         image: json['image'],
-        gpxFile: json['gpx_file']);
+        gpxFile: json['gpx_file'],
+        subscriptions: json['subscriptions'] != null
+            ? List<Subscriptions>.from(json['subscriptions']
+                .map((user) => Subscriptions.fromJson(user)))
+            : []);
   }
 }

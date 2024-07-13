@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -60,6 +61,61 @@ class _GroupsPageState extends State<GroupsPage> {
                   title: Text(group.hike.name),
                   subtitle:
                       Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
+                  trailing:
+                      // if group.organizer.id == user.id then show a delete button
+                      group.organizer.id ==
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .user!
+                                  .id
+                          ? IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                // use group service to delete group with token and group id
+                                try {
+                                  _groupService
+                                      .deleteGroup(
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .user!
+                                              .token,
+                                          group.id)
+                                      .then((_) {
+                                    setState(() {
+                                      _groupsFuture =
+                                          _groupService.fetchMyGroups(
+                                              Provider.of<UserProvider>(context,
+                                                      listen: false)
+                                                  .user!
+                                                  .token,
+                                              Provider.of<UserProvider>(context,
+                                                      listen: false)
+                                                  .user!
+                                                  .id);
+                                    });
+                                  });
+                                  Fluttertoast.showToast(
+                                    msg: 'Group deleted',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                } catch (error) {
+                                  Fluttertoast.showToast(
+                                    msg: 'Failed to delete group',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
+                              },
+                            )
+                          : null,
                   onTap: () {
                     //for the moment just test the weather widget
                     Navigator.of(context).push(

@@ -4,6 +4,8 @@ import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
 import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/back/hikes_page.dart';
+import 'package:frontend/mobile/views/back/hike_management.dart';
+import 'package:frontend/mobile/views/back/user_management.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
 import 'package:frontend/mobile/views/back/admin_settings_page.dart';
@@ -13,6 +15,7 @@ import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
+import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
@@ -126,6 +129,20 @@ final GoRouter _router = GoRouter(
           name: "groups",
           path: '/groups',
           builder: (context, state) => const GroupsPage(),
+          routes: [
+            GoRoute(
+              name: "create-group",
+              path: 'create/:hikeId',
+              builder: (context, state) {
+                final hikeId = int.parse(state.pathParameters['hikeId']!);
+                final hikeProvider =
+                    Provider.of<HikeProvider>(context, listen: false);
+                final hike =
+                    hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
+                return CreateGroupPage(hike: hike);
+              },
+            ),
+          ],
         ),
         GoRoute(
           name: "admin",
@@ -146,6 +163,32 @@ final GoRouter _router = GoRouter(
               name: "admin-settings",
               path: 'settings',
               builder: (context, state) => const AdminSettingsPage(),
+            ),
+            GoRoute(
+              name: "admin-user-management",
+              path: 'user/management/:userId',
+              builder: (context, state) {
+                final userId = int.parse(state.pathParameters['userId']!);
+                final adminProvider =
+                    Provider.of<AdminProvider>(context, listen: false);
+                final user = adminProvider.users.firstWhere((user) {
+                  return user.id == userId;
+                });
+                return UserManagement(user: user);
+              },
+            ),
+            GoRoute(
+              name: "admin-hike-management",
+              path: 'hike/management/:hikeId',
+              builder: (context, state) {
+                final hikeId = int.parse(state.pathParameters['hikeId']!);
+                final adminProvider =
+                    Provider.of<AdminProvider>(context, listen: false);
+                final hike = adminProvider.hikes.firstWhere((hike) {
+                  return hike.id == hikeId;
+                });
+                return HikeManagement(hike: hike);
+              },
             ),
           ],
         ),
