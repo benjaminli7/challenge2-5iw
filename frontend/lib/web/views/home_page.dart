@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       appBar: const NavBar(),
       body: Center(
         child: Text(
-          'Welcome ${user?.email}! ${user!.isVerified ? 'Your email is verified' : 'Please verify your email'}',
+          'Welcome ${user?.email}! in the Admin Dashboard',
           style: const TextStyle(fontSize: 24),
         ),
       ),
