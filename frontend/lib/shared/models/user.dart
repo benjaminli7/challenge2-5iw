@@ -5,7 +5,6 @@ class User {
   String password;
   String role;
   String token;
-  String username;
   bool isVerified;
   String? profileImage;
 
