@@ -26,15 +26,6 @@ class ApiService {
   Future<String?> login(String email, String password,
       {bool isGoogle = false}) async {
     try {
-      // Envoyer la requête POST
-      print(jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-        'isGoogle': isGoogle.toString()
-      }));
-
-      print('$baseUrl/login');
-
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{
@@ -47,24 +38,15 @@ class ApiService {
         }),
       );
 
-      // Vérifier si la requête a réussi
       if (response.statusCode == 200) {
-        // Décoder la réponse JSON
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        print('Response: $responseData');
-        // Extraire le token (supposons qu'il est sous la clé 'token')
         final String? token = responseData['message'];
-
-        print('Token: $token'); // Afficher le token pour déboguer
-
         return token;
       } else {
-        // En cas d'erreur de la requête
         print('Failed to login. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      // En cas d'exception lors de la requête
       print('Error occurred: $e');
       return null;
     }
@@ -74,7 +56,6 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/hikes'));
   }
 
-  // add a POST request for create-hike
   Future<http.Response> createHike(
       String name,
       String description,
@@ -85,55 +66,40 @@ class ApiService {
       File? gpxFile) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
-    // Add headers
     request.headers['Content-Type'] = 'multipart/form-data';
 
-    // Add fields (non-file data)
     request.fields['name'] = name;
     request.fields['description'] = description;
     request.fields['organizer_id'] = organizerId.toString();
     request.fields['difficulty'] = difficulty;
     request.fields['duration'] = duration;
 
-    // Add image file if provided
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
       var length = await image.length();
-
-      // Create multipart file for image
       var multipartFile = http.MultipartFile(
         'image',
         fileStream,
         length,
-        filename: image.path.split('/').last, // File name
-        contentType:
-            MediaType('application', 'octet-stream'), // File content type
+        filename: image.path.split('/').last,
+        contentType: MediaType('application', 'octet-stream'),
       );
-
-      // Add image file to request
       request.files.add(multipartFile);
     }
 
-    // Add GPX file if provided
     if (gpxFile != null) {
       var fileStream = http.ByteStream(gpxFile.openRead());
       var length = await gpxFile.length();
-
-      // Create multipart file for GPX file
       var multipartFile = http.MultipartFile(
         'gpx_file',
         fileStream,
         length,
-        filename: gpxFile.path.split('/').last, // File name
-        contentType:
-            MediaType('application', 'octet-stream'), // File content type
+        filename: gpxFile.path.split('/').last,
+        contentType: MediaType('application', 'octet-stream'),
       );
-
-      // Add GPX file to request
       request.files.add(multipartFile);
     }
 
-    // Send the request
     var streamedResponse = await request.send();
     return http.Response.fromStream(streamedResponse);
   }
@@ -170,9 +136,7 @@ class ApiService {
     return http.get(Uri.parse('$baseUrl/reviews/user/$userId/hike/$hikeId'));
   }
 
-  // POST to subscribe to a hike
   Future<http.Response> subscribeToHike(int hikeId, int userId, String token) {
-    print('token: $token' 'userId: $userId' 'hikeId: $hikeId');
     return http.post(
       Uri.parse('$baseUrl/hikes/subscribe'),
       headers: <String, String>{
@@ -186,14 +150,29 @@ class ApiService {
     );
   }
 
-  Future<http.Response> updateUserProfile(User user) {
+  Future<User> getUserProfile(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/users/me'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
+
+  Future<http.Response> updateUserProfile(User user, String token) {
     return http.put(
       Uri.parse('$baseUrl/users/${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode(user.toJson()),
     );
   }
-
 }
