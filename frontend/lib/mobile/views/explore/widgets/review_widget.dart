@@ -56,7 +56,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
   Future<void> _submitReview() async {
     if (_formKey.currentState!.validate()) {
       final user = Provider.of<UserProvider>(context, listen: false).user;
-      final now = DateTime.now().toUtc();  // Ensure the time is in UTC
+      final now = DateTime.now().toUtc();
       final review = Review(
         id: _existingReview?.id ?? 0,
         userId: user!.id,

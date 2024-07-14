@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
