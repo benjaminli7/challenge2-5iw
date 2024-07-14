@@ -163,6 +163,8 @@ definitions:
         type: boolean
       password:
         type: string
+      profile_image:
+        type: string
       role:
         type: string
       token:
@@ -1086,6 +1088,21 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update user role
+      tags:
+      - users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      description: Get the profile of the logged-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get user profile
       tags:
       - users
   /validate:

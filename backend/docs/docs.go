@@ -1246,6 +1246,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/me": {
+            "get": {
+                "description": "Get the profile of the logged-in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "put": {
                 "description": "Update the profile of a user",
@@ -1632,6 +1655,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "profile_image": {
                     "type": "string"
                 },
                 "role": {
