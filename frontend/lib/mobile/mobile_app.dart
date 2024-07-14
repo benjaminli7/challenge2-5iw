@@ -12,6 +12,7 @@ import 'package:frontend/mobile/views/back/admin_settings_page.dart';
 import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/explore/hike_reviews_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
+import 'package:frontend/mobile/views/profile/profile_details_page.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
@@ -97,6 +98,11 @@ final GoRouter _router = GoRouter(
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
           routes: [
+            GoRoute(
+              name: "profileDetails",
+              path: 'details',
+              builder: (context, state) => const ProfileDetailsPage(),
+            ),
             GoRoute(
               name: "hike-history",
               path: 'hike-history',

@@ -683,6 +683,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/hikes/subscribe": {
+            "post": {
+                "description": "Post a subscription to a hike",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hikes"
+                ],
+                "summary": "Post a subscription to a hike",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Hike ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/hikes/{id}": {
             "get": {
                 "description": "Get details of a hike by its ID",
@@ -1070,6 +1115,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.Review"
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -1195,7 +1246,75 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/me": {
+            "get": {
+                "description": "Get the profile of the logged-in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
+            "put": {
+                "description": "Update the profile of a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User profile",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete a user",
                 "consumes": [
@@ -1423,6 +1542,12 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
+                "subscriptions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Subscription"
+                    }
+                },
                 "updated_at": {
                     "type": "string",
                     "example": "2024-05-28T12:54:10.517438+02:00"
@@ -1463,6 +1588,31 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Subscription": {
+            "type": "object",
+            "required": [
+                "hike_id",
+                "user_id"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-05-28T12:54:10.517438+02:00"
+                },
+                "hike_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1507,6 +1657,9 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "profile_image": {
+                    "type": "string"
+                },
                 "role": {
                     "type": "string"
                 },
@@ -1514,6 +1667,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
