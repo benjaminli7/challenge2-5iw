@@ -50,7 +50,8 @@ func main() {
 	r.GET("/users", middleware.RequireAuth(true), controllers.GetUsers)
 	r.PATCH("/users/:id/role", middleware.RequireAuth(true), controllers.UpdateRole)
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
-
+	r.PUT("/users/:id", controllers.UpdateUser)
+	r.GET("/users/me", controllers.GetUserProfile)
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)

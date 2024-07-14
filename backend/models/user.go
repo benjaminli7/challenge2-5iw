@@ -18,5 +18,5 @@ type User struct {
 	Donor      Advice     `gorm:"foreignKey:DonorID" json:"advice_donor" constraint:OnUpdate:CASCADE,OnDelete:CASCADE;`
 	Receiver   Advice     `gorm:"foreignKey:ReceiverID" json:"advice_receiver" constraint:OnUpdate:CASCADE,OnDelete:CASCADE`
 	Groups 		[]*Group   `gorm:"many2many:group_users;"`
-
+  ProfileImage string     `json:"profile_image,omitempty"`
 }
