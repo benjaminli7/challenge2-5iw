@@ -152,6 +152,7 @@ func Login(c *gin.Context) {
 		"email":    user.Email,
 		"roles":    user.Role,
 		"verified": user.IsVerified,
+		"username": user.Username,
 	})
 
 	secret := os.Getenv("SECRET")

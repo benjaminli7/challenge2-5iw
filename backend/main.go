@@ -77,10 +77,12 @@ func main() {
 
 	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.GET("/groups/hike/:id/:userId", middleware.RequireAuth(false), controllers.GetGroupsByHike)
+	r.GET("/groups/:id/messages", middleware.RequireAuth(false), controllers.GetGroupMessages)
 	r.PATCH("/groups/:id", controllers.UpdateGroup)
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
+
 
 	// Review routes
 	r.POST("/reviews", controllers.CreateReview)

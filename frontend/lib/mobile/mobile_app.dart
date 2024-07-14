@@ -2,31 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
-import 'package:frontend/mobile/views/back/users_page.dart';
-import 'package:frontend/mobile/views/back/hikes_page.dart';
+import 'package:frontend/mobile/views/back/admin_settings_page.dart';
 import 'package:frontend/mobile/views/back/hike_management.dart';
+import 'package:frontend/mobile/views/back/hikes_page.dart';
 import 'package:frontend/mobile/views/back/user_management.dart';
+import 'package:frontend/mobile/views/back/users_page.dart';
 import 'package:frontend/mobile/views/create-hike/create_hike_page.dart';
 import 'package:frontend/mobile/views/explore/explore_page.dart';
-import 'package:frontend/mobile/views/back/admin_settings_page.dart';
 import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/explore/hike_reviews_page.dart';
-import 'package:frontend/mobile/views/groups/groups_page.dart';
-import 'package:frontend/shared/providers/group_provider.dart';
-import 'package:frontend/mobile/views/home_page.dart';
-import 'package:frontend/mobile/views/profile/profile_page.dart';
-import 'package:frontend/mobile/widgets/footer.dart';
+import 'package:frontend/mobile/views/group-chat/group-chat.dart';
+import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
+import 'package:frontend/mobile/views/groups/groups_page.dart';
+import 'package:frontend/mobile/views/home_page.dart';
+import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
+import 'package:frontend/mobile/widgets/footer.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
+import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
-
+import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/mobile/views/intro_screen.dart';
 
 void main() {
   runApp(const MyMobileApp());
@@ -133,6 +134,22 @@ final GoRouter _router = GoRouter(
           name: "create-hike",
           path: '/create-hike',
           builder: (context, state) => const CreateHikePage(),
+        ),
+        GoRoute(
+          name: "group-detail",
+          path: '/group/:id',
+          builder: (context, state) {
+            final groupId = int.parse(state.pathParameters['id']!);
+            return GroupDetailPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          name: "group-chat",
+          path: '/group-chat/:id',
+          builder: (context, state) {
+            final groupId = int.parse(state.pathParameters['id']!);
+            return GroupChatPage(groupId: groupId);
+          },
         ),
         GoRoute(
           name: "groups",
