@@ -229,7 +229,7 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Select("id", "email", "role", "is_verified").Find(&users)
+	db.DB.Select("id", "email", "username", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
 
@@ -293,6 +293,24 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
 }
 
+// Get user profile
+// @Summary Get user profile
+// @Description Get the profile of the logged-in user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /users/me [get]
+func GetUserProfile(c *gin.Context) {
+	userID, _ := c.Get("userID")
+	var user models.User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
 // UpdateUser godoc
 // @Summary Update user profile
 // @Description Update the profile of a user
@@ -320,6 +338,10 @@ func UpdateUser(c *gin.Context) {
 
 	if body.Username != "" {
 		user.Username = body.Username
+	}
+
+	if body.ProfileImage != "" {
+		user.ProfileImage = body.ProfileImage
 	}
 
 	if err := db.DB.Save(&user).Error; err != nil {
