@@ -44,7 +44,12 @@ class HikeDetailsPage extends StatelessWidget {
                     final token = userProvider.user!.token;
                     await context.read<AdminProvider>().deleteHike(token, hike.id);
 
-                    context.pop();
+                    if (context.mounted) {
+                      context.go('/hikes');
+                    }
+                    else{
+                      print('context not mounted');
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

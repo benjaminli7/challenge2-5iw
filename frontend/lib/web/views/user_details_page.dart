@@ -29,7 +29,9 @@ class UsersDetailsPage extends StatelessWidget {
                   final token = userProvider.user!.token;
                   await context.read<AdminProvider>().deleteUser(token, user.id);
 
-                  context.pop();
+                  if (context.mounted) {
+                    context.go('/users');
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(

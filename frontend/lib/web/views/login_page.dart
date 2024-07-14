@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       _emailController.text,
       _passwordController.text,
     );
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return;
 
     if (token != null) {
 
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               role: parseJwt['roles'],
               isVerified: parseJwt['verified']),
         );
-        //print user info
+
         Fluttertoast.showToast(
           msg: 'Login successful',
           toastLength: Toast.LENGTH_SHORT,
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 16.0,
         );
 
-        GoRouter.of(context).go('/home');
+        GoRouter.of(context).go('/users');
       } else {
         Fluttertoast.showToast(
           msg: 'Vous n\'avez pas les droits d\'accès',

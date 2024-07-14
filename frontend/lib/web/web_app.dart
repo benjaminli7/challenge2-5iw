@@ -5,6 +5,7 @@ import 'package:frontend/web/views/login_page.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:frontend/web/views/home_page.dart';
 import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/web/views/users_page.dart';
@@ -137,6 +138,7 @@ class MyWebApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
