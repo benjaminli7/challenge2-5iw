@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../models/review.dart';
+import 'config_service.dart';
 
 class ApiService {
-  String baseUrl = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
+  String baseUrl = ConfigService.baseUrl;
 
   Future<http.Response> signup(String email, String password) {
     return http.post(
@@ -32,6 +31,9 @@ class ApiService {
         'password': password,
         'isGoogle': isGoogle.toString()
       }));
+
+      print('$baseUrl/login');
+
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: <String, String>{
@@ -155,11 +157,31 @@ class ApiService {
     );
   }
 
+  Future<http.Response> getHikesWithRatings() {
+    return http.get(Uri.parse('$baseUrl/hikes/withRatings'));
+  }
+
   Future<http.Response> getReviewsByHike(int hikeId) {
     return http.get(Uri.parse('$baseUrl/reviews/hike/$hikeId'));
   }
 
   Future<http.Response> getReviewByUser(int userId, int hikeId) {
     return http.get(Uri.parse('$baseUrl/reviews/user/$userId/hike/$hikeId'));
+  }
+
+  // POST to subscribe to a hike
+  Future<http.Response> subscribeToHike(int hikeId, int userId, String token) {
+    print('token: $token' 'userId: $userId' 'hikeId: $hikeId');
+    return http.post(
+      Uri.parse('$baseUrl/hikes/subscribe'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'hike_id': hikeId,
+        'user_id': userId,
+      }),
+    );
   }
 }

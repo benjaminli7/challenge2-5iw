@@ -130,8 +130,12 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the name of the hike';
                   }
-                  if (value.length > 100) {
-                    return 'Name cannot be longer than 100 characters';
+                  if (value.length > 50) {
+                    return 'Name cannot be longer than 50 characters';
+                  }
+                  final validName = RegExp(r'^[a-zA-Z0-9\s]+$');
+                  if (!validName.hasMatch(value)) {
+                    return 'Name can only contain alphanumeric characters and spaces';
                   }
                   return null;
                 },
@@ -143,8 +147,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
                   }
-                  if (value.length > 280) {
-                    return 'Description cannot be longer than 280 characters';
+                  if (value.length > 50) {
+                    return 'Description cannot be longer than 50 characters';
                   }
                   return null;
                 },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +7,8 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
+
+import '../../../shared/services/config_service.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -15,6 +18,7 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
+  String baseUrl = ConfigService.baseUrl;
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
 
@@ -50,15 +54,70 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      Uri.parse("http://192.168.1.19:8080${group.hike.image}")
-                          .toString(),
-                    ),
+
+                    backgroundImage: NetworkImage(Uri.parse("$baseUrl${group.hike.image}").toString(),),
+
+
                     radius: 30,
                   ),
                   title: Text(group.hike.name),
                   subtitle:
                       Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
+                  trailing:
+                      // if group.organizer.id == user.id then show a delete button
+                      group.organizer.id ==
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .user!
+                                  .id
+                          ? IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                // use group service to delete group with token and group id
+                                try {
+                                  _groupService
+                                      .deleteGroup(
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .user!
+                                              .token,
+                                          group.id)
+                                      .then((_) {
+                                    setState(() {
+                                      _groupsFuture =
+                                          _groupService.fetchMyGroups(
+                                              Provider.of<UserProvider>(context,
+                                                      listen: false)
+                                                  .user!
+                                                  .token,
+                                              Provider.of<UserProvider>(context,
+                                                      listen: false)
+                                                  .user!
+                                                  .id);
+                                    });
+                                  });
+                                  Fluttertoast.showToast(
+                                    msg: 'Group deleted',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                } catch (error) {
+                                  Fluttertoast.showToast(
+                                    msg: 'Failed to delete group',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
+                              },
+                            )
+                          : null,
                   onTap: () {
                     //for the moment just test the weather widget
                     Navigator.of(context).push(

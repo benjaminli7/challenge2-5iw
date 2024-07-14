@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/group.dart';
+import 'config_service.dart';
 
 class GroupService {
-  String baseUrl = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
+  String baseUrl = ConfigService.baseUrl;
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
@@ -83,6 +83,21 @@ class GroupService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to join the group');
+    }
+  }
+
+  // Add a method to delete a group
+  Future<void> deleteGroup(String token, int groupId) async {
+    final url = Uri.parse('$baseUrl/groups/$groupId');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete the group');
     }
   }
 }

@@ -13,6 +13,9 @@ import 'package:frontend/web/views/groups_page.dart';
 import 'package:frontend/web/views/hikes_page.dart';
 import 'package:frontend/web/views/hike_details_page.dart';
 import 'package:frontend/shared/models/hike.dart';
+import 'package:frontend/web/views/group_details_page.dart';
+import 'package:frontend/web/views/user_details_page.dart';
+
 void main() {
   runApp(const MyWebApp());
 }
@@ -81,6 +84,29 @@ final GoRouter _router = GoRouter(
                 .hikes
                 .firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsPage(hike: hike);
+          },
+        ),
+        GoRoute(
+          name: "userDetails",
+          path: '/user/:id',
+          builder: (context, state) {
+            final userId = int.parse(state.pathParameters['id']!);
+            final user = Provider.of<AdminProvider>(context, listen: false)
+                .users
+                .firstWhere((user) => user.id == userId);
+            return UsersDetailsPage(user: user);
+          },
+        ),
+        GoRoute(
+          name: "groupDetails",
+          path: '/group/:id',
+          builder: (context, state) {
+            final groupId = int.parse(state.pathParameters['id']!);
+            final group = Provider.of<AdminProvider>(context, listen: false)
+                .groups
+                .firstWhere((group) => group.id == groupId);
+            return GroupDetailsPage(group: group);
+
           },
         ),
 

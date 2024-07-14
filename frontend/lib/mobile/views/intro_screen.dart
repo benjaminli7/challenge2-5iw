@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class IntroPage extends StatelessWidget {
   @override
@@ -78,6 +79,12 @@ class IntroPage extends StatelessWidget {
               height: 40,
               width: 40,
               color: Colors.white,
+            ),
+          ),
+          Center(
+            child: Text(
+              dotenv.env['APP_VERSION'] ?? 'Env not loaded',
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],

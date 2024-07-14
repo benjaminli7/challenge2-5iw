@@ -4,12 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'config_service.dart';
+
 class WeatherService {
+  String baseUrl = ConfigService.baseUrl;
   late WeatherFactory _weatherFactory;
 
   WeatherService() {
     final String? apiKey = dotenv.env['WEATHER_API_KEY'];
-    print('Weather API key: $apiKey');
 
     _weatherFactory = WeatherFactory(apiKey!);
   }
@@ -18,7 +20,7 @@ class WeatherService {
     try {
       // Fetch GPX data from the provided URL
       final response = await http
-          .get(Uri.parse('http://10.0.2.2:8080${group.hike.gpxFile}'));
+          .get(Uri.parse('$baseUrl${group.hike.gpxFile}'));
       final points = await HikeProvider().parseGPX(response.body);
 
       // Extract coordinates from the first point

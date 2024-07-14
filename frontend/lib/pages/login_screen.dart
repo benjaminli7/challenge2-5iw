@@ -16,23 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
     // Implement your login logic here
     String username = _usernameController.text;
     String password = _passwordController.text;
-
-    print('Username: $username');
-    print('Password: $password');
-
-    // Dummy example, replace it with your actual login logic
-    // if (username == 'admin' && password == 'admin') {
-    //   // Navigate to the home page after successful login
-    //   Navigator.pushReplacementNamed(context, '/home');
-    // } else {
-    //   // Show an error message for incorrect credentials
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Invalid username or password'),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    // }
   }
 
   @override

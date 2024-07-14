@@ -58,7 +58,9 @@ func main() {
 	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
 	r.PATCH("/hikes/:id/validate", middleware.RequireAuth(true), controllers.ValidateHike)
-	r.DELETE("/hikes/:id", middleware.RequireAuth(true), controllers.DeleteHike)
+	r.DELETE("/hikes/:id", middleware.RequireAuth(false), controllers.DeleteHike)
+	r.POST("/hikes/subscribe", middleware.RequireAuth(false), controllers.UserSubscribtionHikes)
+
 
 	// Advice routes
 	r.POST("/advice", middleware.RequireAuth(false), controllers.CreateAdvice)
@@ -69,10 +71,10 @@ func main() {
 
 	// Group routes
 
-	r.POST("/groups",middleware.RequireAuth(false), controllers.CreateGroup)
+	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", middleware.RequireAuth(false), controllers.JoinGroup)
-	r.GET("/groups/user/:id",middleware.RequireAuth(false), controllers.GetMyGroups)
-	r.GET("/groups/:id",middleware.RequireAuth(false), controllers.GetGroup)
+	r.GET("/groups/user/:id", middleware.RequireAuth(false), controllers.GetMyGroups)
+	r.GET("/groups/:id", middleware.RequireAuth(false), controllers.GetGroup)
 
 	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.GET("/groups/hike/:id/:userId", middleware.RequireAuth(false), controllers.GetGroupsByHike)
@@ -88,8 +90,7 @@ func main() {
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
 	// Message routes
-    r.GET("/ws/:groupID", controllers.HandleWebSocket)
-
+	r.GET("/ws/:groupID", controllers.HandleWebSocket)
 
 	err := r.Run()
 	if err != nil {

@@ -6,20 +6,24 @@ import 'package:frontend/shared/models/group.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'config_service.dart';
+
 class AdminService {
-  String url = dotenv.env['BASE_URL'] ?? 'API_KEY not found';
+
+  String baseUrl = ConfigService.baseUrl;
+
+
 
   Future<List<User>> fetchUsers(String token) async {
     print('fetchUsers token: $token');
     final response = await http.get(
-      Uri.parse('$url/users'),
+      Uri.parse('$baseUrl/users'),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
 
     if (response.statusCode == 200) {
-      // Parsing the JSON assuming the response contains an object with a "users" key
       Map<String, dynamic> data = json.decode(response.body);
 
       List<dynamic> usersJson = data['users'];
@@ -34,7 +38,7 @@ class AdminService {
 
   Future<void> deleteUser(String token, int userId) async {
     final response = await http.delete(
-      Uri.parse('$url/users/$userId'),
+      Uri.parse('$baseUrl/users/$userId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -47,7 +51,7 @@ class AdminService {
   Future<void> upgradeAdmin(String token, int userId) async {
     var body = jsonEncode({"role": "admin"});
     final response = await http.patch(
-      Uri.parse('$url/users/$userId/role'),
+      Uri.parse('$baseUrl/users/$userId/role'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -62,7 +66,7 @@ class AdminService {
   Future<List<Hike>> fetchHikesNoValidate(String token) async {
     print('fetchUsers token: $token');
     final response = await http.get(
-      Uri.parse('$url/hikes/notValidated'),
+      Uri.parse('$baseUrl/hikes/notValidated'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -83,7 +87,7 @@ class AdminService {
   Future<void> validateHike(String token, int hikeId) async {
     var body = jsonEncode({"validated": true});
     final response = await http.patch(
-      Uri.parse('$url/hikes/$hikeId/validate'),
+      Uri.parse('$baseUrl/hikes/$hikeId/validate'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -107,7 +111,7 @@ class AdminService {
   }
   Future<List<Group>> fetchGroups(String token) async {
     final response = await http.get(
-      Uri.parse('$url/groups'),
+      Uri.parse('$baseUrl/groups'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -136,7 +140,7 @@ class AdminService {
 
   Future<void> deleteGroup(String token, int groupId) async {
     final response = await http.delete(
-      Uri.parse('$url/groups/$groupId'),
+      Uri.parse('$baseUrl/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

