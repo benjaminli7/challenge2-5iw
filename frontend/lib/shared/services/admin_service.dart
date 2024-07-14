@@ -100,7 +100,7 @@ class AdminService {
   }
   Future<void> deleteHike(String token, int hikeId) async {
     final response = await http.delete(
-      Uri.parse('$url/hikes/$hikeId'),
+      Uri.parse('$baseUrl/hikes/$hikeId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
