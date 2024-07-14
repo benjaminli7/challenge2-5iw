@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         User(
             id: parseJwt['sub'],
             email: parseJwt['email'],
+            username: parseJwt['username'],
             password: "",
             token: token,
             role: parseJwt['roles'],
@@ -103,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
         User(
             id: parseJwt['sub'],
             email: parseJwt['email'],
+            username: parseJwt['username'],
             password: "",
             token: token,
             role: parseJwt['roles'],

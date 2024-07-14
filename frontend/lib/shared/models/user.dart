@@ -5,31 +5,30 @@ class User {
   String password;
   String role;
   String token;
+  String username;
   bool isVerified;
   String? profileImage;
 
-  User({
-    required this.id,
-    required this.email,
-    this.username,
-    required this.password,
-    required this.role,
-    required this.token,
-    required this.isVerified,
-    this.profileImage,
-  });
+  User(
+      {required this.id,
+      required this.email,
+      required this.password,
+      required this.role,
+      required this.username,
+      required this.token,
+      this.profileImage,
+      required this.isVerified});
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'username': username,
-    'password': password,
-    'role': role,
-    'token': token,
-    'isVerified': isVerified,
-    'profile_image': profileImage,
-  };
-
+        'id': id,
+        'email': email,
+        'password': password,
+        'username': username,
+        'role': role,
+        'token': token,
+        'isVerified': isVerified,
+        'profile_image': profileImage,
+      };
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? 0,
