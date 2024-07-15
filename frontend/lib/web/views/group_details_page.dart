@@ -34,7 +34,9 @@ class GroupDetailsPage extends StatelessWidget {
                   final token = userProvider.user!.token;
                   await context.read<AdminProvider>().deleteGroup(token, group.id);
                 }
-                context.pop();
+                if (context.mounted) {
+                  context.go('/groups');
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

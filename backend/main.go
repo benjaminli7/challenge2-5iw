@@ -62,6 +62,7 @@ func main() {
 	r.DELETE("/hikes/:id", middleware.RequireAuth(false), controllers.DeleteHike)
 	r.POST("/hikes/subscribe", middleware.RequireAuth(false), controllers.UserSubscribtionHikes)
 
+
 	// Advice routes
 	r.POST("/advice", middleware.RequireAuth(false), controllers.CreateAdvice)
 	r.GET("/advice/:id/receiver", middleware.RequireAuth(false), controllers.GetAdviceByReceiver)
