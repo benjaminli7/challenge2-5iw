@@ -20,6 +20,7 @@ import 'package:frontend/web/views/user_details_page.dart';
 void main() {
   runApp(const MyWebApp());
 }
+
 final GoRouter _router = GoRouter(
   redirect: (context, state) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -27,14 +28,12 @@ final GoRouter _router = GoRouter(
     print(state.uri.path);
     print(isLoggedIn);
     // If the user is not logged in and trying to access a protected route, redirect to the login page
-    if (!isLoggedIn &&
-        state.uri.path != '/login') {
+    if (!isLoggedIn && state.uri.path != '/login') {
       print(1);
       return '/login';
     }
     // If the user is logged in and trying to access the login/signup page, redirect to the home page
-    if (isLoggedIn &&
-        (state.uri.path == '/login')) {
+    if (isLoggedIn && (state.uri.path == '/login')) {
       print(2);
       return '/home';
     }
@@ -69,13 +68,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => const HikesPage(),
         ),
         GoRoute(
-            path: '/params',
-            builder: (context, state) => const ParamsPage()
-        ),
+            path: '/params', builder: (context, state) => const ParamsPage()),
         GoRoute(
-            path: '/users',
-            builder: (context, state) => const UserListPage()
-        ),
+            path: '/users', builder: (context, state) => const UserListPage()),
         GoRoute(
           name: "hikeDetails",
           path: '/hike/:id',
@@ -110,7 +105,6 @@ final GoRouter _router = GoRouter(
 
           },
         ),
-
         GoRoute(
           path: '/',
           builder: (context, state) {
@@ -122,13 +116,12 @@ final GoRouter _router = GoRouter(
             }
           },
         ),
-
-
       ],
     ),
 
   ],
 );
+
 class MyWebApp extends StatelessWidget {
   const MyWebApp({super.key});
   @override
