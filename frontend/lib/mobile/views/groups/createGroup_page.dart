@@ -4,8 +4,9 @@ import 'package:frontend/mobile/views/groups/widgets/select_hike_date_section.da
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/services/group_service.dart'; // Importer le service
+import 'package:frontend/shared/services/group_service.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateGroupPage extends StatelessWidget {
   final Hike hike;
@@ -19,7 +20,6 @@ class CreateGroupPage extends StatelessWidget {
     final groupService = GroupService();
 
     try {
-      // Envoyer les données au backend
       final response = await groupService.createGroup(
           groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
 
@@ -27,7 +27,7 @@ class CreateGroupPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Group created successfully!')),
         );
-        Navigator.of(context).pop();
+        GoRouter.of(context).go('/groups');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create group: ${response.body}')),
@@ -48,7 +48,7 @@ class CreateGroupPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            GoRouter.of(context).go('/hike/${hike.id}');
           },
         ),
       ),

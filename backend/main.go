@@ -35,6 +35,7 @@ func main() {
 	r := gin.Default()
 
 	r.Static("/images", "./public/images")
+	r.Static("/gpx", "./public/gpx")
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -49,7 +50,8 @@ func main() {
 	r.GET("/users", middleware.RequireAuth(true), controllers.GetUsers)
 	r.PATCH("/users/:id/role", middleware.RequireAuth(true), controllers.UpdateRole)
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
-
+	r.PUT("/users/:id", controllers.UpdateUser)
+	r.GET("/users/me", controllers.GetUserProfile)
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
@@ -57,7 +59,9 @@ func main() {
 	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
 	r.PUT("/hikes/:id", controllers.UpdateHike)
 	r.PATCH("/hikes/:id/validate", middleware.RequireAuth(true), controllers.ValidateHike)
-	r.DELETE("/hikes/:id", controllers.DeleteHike)
+	r.DELETE("/hikes/:id", middleware.RequireAuth(false), controllers.DeleteHike)
+	r.POST("/hikes/subscribe", middleware.RequireAuth(false), controllers.UserSubscribtionHikes)
+
 
 	// Advice routes
 	r.POST("/advice", middleware.RequireAuth(false), controllers.CreateAdvice)
@@ -67,13 +71,29 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
-	r.POST("/groups", controllers.CreateGroup)
-	r.POST("/groups/join", controllers.JoinGroup)
-	r.GET("/groups/:id", controllers.GetGroup)
+
+	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
+	r.POST("/groups/join", middleware.RequireAuth(false), controllers.JoinGroup)
+	r.GET("/groups/user/:id", middleware.RequireAuth(false), controllers.GetMyGroups)
+	r.GET("/groups/:id", middleware.RequireAuth(false), controllers.GetGroup)
+
+	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
+	r.GET("/groups/hike/:id/:userId", middleware.RequireAuth(false), controllers.GetGroupsByHike)
+	r.GET("/groups/:id/messages", middleware.RequireAuth(false), controllers.GetGroupMessages)
 	r.PATCH("/groups/:id", controllers.UpdateGroup)
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
+
+
+	// Review routes
+	r.POST("/reviews", controllers.CreateReview)
+	r.PUT("/reviews/:id", controllers.UpdateReview)
+	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
+	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
+
+	// Message routes
+	r.GET("/ws/:groupID", controllers.HandleWebSocket)
 
 	err := r.Run()
 	if err != nil {

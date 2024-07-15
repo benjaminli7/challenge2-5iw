@@ -1,25 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:frontend/mobile/views/explore/hike_details_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../shared/services/config_service.dart';
 
-class HikeCard extends StatelessWidget {
+
+class HikeCard extends StatefulWidget {
   final Hike hike;
 
   const HikeCard({super.key, required this.hike});
 
   @override
+  _HikeCardState createState() => _HikeCardState();
+}
+
+class _HikeCardState extends State<HikeCard> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize isFavorite based on whether the user is subscribed
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = Provider.of<UserProvider>(context, listen: false).user;
+      bool contain = widget.hike.subscriptions
+          .any((element) => element.userId == user?.id);
+      if (user != null && contain) {
+        setState(() {
+          isFavorite = true;
+        });
+      }
+    });
+  }
+
+  void toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+      final hikeProvider = Provider.of<HikeProvider>(context, listen: false);
+      final user = Provider.of<UserProvider>(context, listen: false).user;
+      if (user != null) {
+        hikeProvider.userSubscribeToHike(widget.hike.id, user.id, user.token);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    String baseUrl = ConfigService.baseUrl;
+
     return GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HikeDetailsPage(hike: hike),
-            ),
-          );
-          // Use GoRouter to render the HikeDetailsPage with the hike data
-          // GoRouter.of(context).go('/explore/hikes/${hike.id}');
+          GoRouter.of(context).push('/hike/${widget.hike.id}');
         },
         child: Card(
           color: Colors.transparent,
@@ -27,15 +61,45 @@ class HikeCard extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: Image.network(
-                  Uri.parse("http://192.168.1.19:8080${hike.image}").toString(),
-                  fit: BoxFit.cover,
+
+                child: Stack(
+                  children: [
+                    Image.network(
+                      Uri.parse("${dotenv.env['BASE_URL']}${widget.hike.image}")
+                          .toString(),
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      top: 8.0,
+                      right: 8.0,
+                      child: GestureDetector(
+                        onTap: toggleFavorite,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                scale: animation, child: child);
+                          },
+                          child: Icon(
+                            isFavorite
+                                ? Icons.notifications_active
+                                : Icons.notifications_off,
+                            color:
+                                isFavorite ? Colors.redAccent : Colors.black26,
+                            size: 24.0,
+                            key: ValueKey<bool>(isFavorite),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text(
-                  hike.name,
+                  widget.hike.name,
                   style: const TextStyle(
                       fontSize: 13.0, fontWeight: FontWeight.bold),
                 ),

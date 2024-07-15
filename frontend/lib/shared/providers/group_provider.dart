@@ -11,10 +11,10 @@ class GroupProvider with ChangeNotifier {
       'hikeDate': hikeDate != null ? formatter.format(hikeDate!) : null,
     };
   }
-
   void selectDate(DateTime date) {
     hikeDate = date;
     notifyListeners();
   }
+
 
 }

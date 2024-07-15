@@ -31,9 +31,7 @@ class _FooterState extends State<Footer> {
       case 3:
         GoRouter.of(context).go('/params');
         break;
-        case 4:
-          GoRouter.of(context).go('/home');
-          break;
+       
     }
   }
 
@@ -42,26 +40,23 @@ class _FooterState extends State<Footer> {
     final user = Provider.of<UserProvider>(context).user;
 
     List<BottomNavigationBarItem> items = [
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.person, color: Colors.white),
         label: 'User',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.group, color: Colors.white),
         label: 'Group',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.hiking, color: Colors.white),
         label: 'Hike',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(Icons.camera_outlined, color: Colors.white),
         label: 'Params',
       ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home, color: Colors.white),
-        label: 'Home',
-      ),
+     
     ];
 
 

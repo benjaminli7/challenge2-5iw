@@ -75,8 +75,9 @@ func Login(c *gin.Context) {
 	var body struct {
 		Email    string
 		Password string
+		IsGoogle string
 	}
-
+	fmt.Println("Email", body.Email, "Password", body.Password, "IsGoogle", body.IsGoogle)
 	if c.Bind(&body) != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
 		return
@@ -86,14 +87,63 @@ func Login(c *gin.Context) {
 	db.DB.First(&user, "email = ?", body.Email)
 
 	if user.ID == 0 {
+		if body.IsGoogle == "true" {
+			// create user
+			//generate a random secured password
+			randomString, _ := services.GenerateRandomToken(16)
+			hash, err := bcrypt.GenerateFromPassword([]byte(randomString), 10)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
+				return
+			}
+			user = models.User{Email: body.Email, Password: string(hash), Role: "user", IsVerified: true}
+			result := db.DB.Create(&user)
+			if result.Error != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "Failed to create user.",
+				})
+				return
+			}
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+				"sub":      user.ID,
+				"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
+				"email":    user.Email,
+				"roles":    user.Role,
+				"verified": user.IsVerified,
+			})
+
+			secret := os.Getenv("SECRET")
+			if secret == "" {
+				c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Server configuration error"})
+				return
+			}
+
+			tokenString, err := token.SignedString([]byte(secret))
+			if err != nil {
+				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to create token"})
+				return
+			}
+
+			c.SetSameSite(http.SameSiteStrictMode)
+			c.SetCookie("Authorization", tokenString, 3600*24*30, "/", "", false, true)
+
+			//send email with generated password to the user
+			content := "<p>Votre mot de passe est : " + randomString + "<p>"
+			services.SendEmail(body.Email, content, "Votre mot de passe temporaire a Hike Mate")
+
+			c.JSON(http.StatusOK, models.SuccessResponse{Message: tokenString})
+			return
+		}
+
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
 		return
 	}
-
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
-		return
+	if body.IsGoogle == "false" {
+		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email or password"})
+			return
+		}
 	}
 	println("user", user.ID)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -102,9 +152,16 @@ func Login(c *gin.Context) {
 		"email":    user.Email,
 		"roles":    user.Role,
 		"verified": user.IsVerified,
+		"username": user.Username,
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	secret := os.Getenv("SECRET")
+	if secret == "" {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Server configuration error"})
+		return
+	}
+
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to create token"})
 		return
@@ -173,7 +230,7 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Select("id", "email", "role", "is_verified").Find(&users)
+	db.DB.Select("id", "email", "username", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
 
@@ -235,4 +292,63 @@ func DeleteUser(c *gin.Context) {
 	}
 	db.DB.Delete(&user)
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
+}
+
+// Get user profile
+// @Summary Get user profile
+// @Description Get the profile of the logged-in user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /users/me [get]
+func GetUserProfile(c *gin.Context) {
+	userID, _ := c.Get("userID")
+	var user models.User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+// UpdateUser godoc
+// @Summary Update user profile
+// @Description Update the profile of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User true "User profile"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [put]
+func UpdateUser(c *gin.Context) {
+	var user models.User
+	id := c.Param("id")
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	var body models.User
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	if body.Username != "" {
+		user.Username = body.Username
+	}
+
+	if body.ProfileImage != "" {
+		user.ProfileImage = body.ProfileImage
+	}
+
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
 }

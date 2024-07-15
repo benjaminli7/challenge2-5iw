@@ -3,8 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
-import 'package:frontend/shared/models/user.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:frontend/shared/models/hike.dart';
+
+import '../../../shared/services/config_service.dart';
+
 
 class HikeListPage extends StatefulWidget {
   const HikeListPage({super.key});
@@ -14,13 +19,14 @@ class HikeListPage extends StatefulWidget {
 }
 
 class _HikeListPageState extends State<HikeListPage> {
+  String baseUrl = ConfigService.baseUrl;
+
   @override
   void initState() {
     super.initState();
     final hike = Provider.of<HikeProvider>(context, listen: false).hikes;
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      // Fetch users when the page is first loaded
       context.read<AdminProvider>().fetchHikesNoValidate(user.token);
     }
   }
@@ -28,19 +34,19 @@ class _HikeListPageState extends State<HikeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Hikes validation Panel')),
+      appBar: AppBar(title: const Text('Hikes validation Panel')),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (adminProvider.hikes.isEmpty) {
-            return Center(child: Text('No hikes found'));
+            return const Center(child: Text('No hikes found'));
           }
 
           return DataTable(
-            columns: [
+            columns: const [
               DataColumn(label: Text('Image')),
               DataColumn(label: Text('Name')),
               DataColumn(label: Text('Description')),
@@ -49,25 +55,20 @@ class _HikeListPageState extends State<HikeListPage> {
               return DataRow(cells: [
                 DataCell(
                   Image.network(
-                    Uri.parse("http://192.168.1.19:8080${hike.image}")
-                        .toString(),
+
+                    Uri.parse("$baseUrl${hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      // Handle email click
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HikeDetailsPage(hike: hike),
-                        ),
-                      );
+                      GoRouter.of(context)
+                          .go('/admin/hike/management/${hike.id}');
                     },
                     child: Text(
                       hike.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
@@ -87,55 +88,9 @@ class _HikeListPageState extends State<HikeListPage> {
             context.read<AdminProvider>().fetchHikesNoValidate(user.token);
           }
         },
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
 }
 
-class HikeDetailsPage extends StatelessWidget {
-  final Hike hike;
-
-  const HikeDetailsPage({required this.hike, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Hike Details')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Name: ${hike.name}', style: TextStyle(fontSize: 20)),
-            Text('Description: ${hike.description}',
-                style: TextStyle(fontSize: 20)),
-            Text('Difficulty: ${hike.difficulty}',
-                style: TextStyle(fontSize: 20)),
-            Text('Duration: ${hike.duration}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final userProvider =
-                    Provider.of<UserProvider>(context, listen: false);
-                if (userProvider.user != null) {
-                  final token = userProvider.user!.token;
-                  await context
-                      .read<AdminProvider>()
-                      .validateHike(token, hike.id);
-
-                  // After deletion, navigate back to the previous page
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Valider'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

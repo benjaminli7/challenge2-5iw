@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectStartTimeSection extends StatefulWidget {
-  const SelectStartTimeSection({Key? key}) : super(key: key);
+  const SelectStartTimeSection({super.key});
 
   @override
   _SelectStartTimeSectionState createState() => _SelectStartTimeSectionState();
@@ -75,7 +75,6 @@ class _SelectStartTimeSectionState extends State<SelectStartTimeSection> {
             onChanged: (String? newValue) {
               setState(() {
                 _selectedTime = newValue;
-                // Ici, vous pouvez gérer la sélection de l'heure
               });
             },
             items: _times.map<DropdownMenuItem<String>>((String value) {

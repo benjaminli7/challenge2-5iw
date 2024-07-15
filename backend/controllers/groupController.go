@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,16 +24,25 @@ import (
 // @Router /groups [post]
 func CreateGroup(c *gin.Context) {
 	var group models.Group
+	var groupUser models.GroupUser
+	println(c.PostForm("description"))
 	if err := c.ShouldBindJSON(&group); err != nil {
 		println("Failed to bind JSON")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
-	println(c.ShouldBindJSON(group))
+
+
 	if err := db.DB.Create(&group).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	groupUser = models.GroupUser{UserID: group.OrganizerID, GroupID: group.ID, IsValidate: true}
+	if err := db.DB.Create(&groupUser).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, group)
 }
 
@@ -50,11 +60,106 @@ func CreateGroup(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var group models.Group
-	if err := db.DB.First(&group, id).Error; err != nil {
+	if err := db.DB.Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	println()
 	c.JSON(http.StatusOK, group)
+}
+
+// GetGroups godoc
+// @Summary Get all groups
+// @Description Get all groups
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.GroupListResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups [get]
+func GetGroups(c *gin.Context) {
+	var groups []models.Group
+	if err := db.DB.Preload("Hike").Preload("Organizer").Order("id desc").Find(&groups).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Réponse JSON avec les groupes récupérés
+	c.JSON(http.StatusOK, models.GroupListResponse{Groups: groups})
+}
+
+// GetMyGroups godoc
+// @Summary Get groups by user ID
+// @Description Get groups by user ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/user/{id} [get]
+func GetMyGroups(c *gin.Context) {
+	userIdParam := c.Param("id")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var groups []models.Group
+	today := time.Now().Format("2006-01-02")
+
+	err = db.DB.Preload("Hike").Preload("Organizer").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date >= ?", today).Find(&groups).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, groups)
+}
+
+// GetGroupsByHike godoc
+// @Summary Get groups by hike ID
+// @Description Get groups by hike ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "Hike ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/hike/{id}/{userId} [get]
+
+
+func GetGroupsByHike(c *gin.Context) {
+	hikeIdParam := c.Param("id")
+	hikeId, err := strconv.Atoi(hikeIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid hike ID"})
+		return
+	}
+
+	userId := c.Param("userId")
+
+	var groups []models.Group
+
+	subQuery := db.DB.Model(&models.GroupUser{}).
+		Select("group_id").
+		Where("user_id = ?", userId)
+
+	today := time.Now().Format("2006-01-02")
+	err = db.DB.Preload("Hike").Preload("Organizer").
+		Order("start_date").
+		Where("hike_id = ?", hikeId).
+		Where("start_date >= ?", today).
+		Not("id IN (?)", subQuery).
+		Find(&groups).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, groups)
 }
 
 // UpdateGroup godoc
@@ -99,6 +204,12 @@ func UpdateGroup(c *gin.Context) {
 // @Router /groups/{id} [delete]
 func DeleteGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
+
+	if err := db.DB.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	if err := db.DB.Delete(&models.Group{}, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -202,4 +313,15 @@ func ValidateUserGroup(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User validated"})
+}
+
+
+func GetGroupMessages(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var messages []models.Message
+	if err := db.DB.Preload("User").Where("group_id = ?", id).Find(&messages).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, messages)
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
-import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       appBar: const NavBar(),
       body: Center(
         child: Text(
-          'Welcome ${user?.email}! ${user!.isVerified ? 'Your email is verified' : 'Please verify your email'}',
+          'Welcome ${user?.email}! in the Admin Dashboard',
           style: const TextStyle(fontSize: 24),
         ),
       ),

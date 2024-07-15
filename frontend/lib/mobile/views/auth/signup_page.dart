@@ -4,7 +4,6 @@ import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
-import '../../widgets/footer.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -25,11 +24,10 @@ class _SignupPageState extends State<SignupPage> {
       _passwordController.text,
     );
 
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return; 
 
     if (response.statusCode == 200) {
-      // Handle successful signup
-      print('Signup successful');
+
       Fluttertoast.showToast(
         msg: 'Signup successful',
         toastLength: Toast.LENGTH_SHORT,
@@ -41,7 +39,7 @@ class _SignupPageState extends State<SignupPage> {
       );
       GoRouter.of(context).go('/login');
     } else {
-      // Handle signup error
+
       Fluttertoast.showToast(
         msg: 'Signup failed',
         toastLength: Toast.LENGTH_SHORT,

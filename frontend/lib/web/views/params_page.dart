@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/shared/providers/admin_provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/models/user.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ParamsPage extends StatefulWidget {
   const ParamsPage({super.key});
@@ -12,129 +12,70 @@ class ParamsPage extends StatefulWidget {
 }
 
 class _ParamsPageState extends State<ParamsPage> {
+  late SettingsProvider _settingsProvider;
+  late bool _isWeatherApiEnabled;
+  late bool _isGoogleAuthEnabled;
+
   @override
   void initState() {
     super.initState();
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (user != null) {
-      // Fetch users when the page is first loaded
-      context.read<AdminProvider>().fetchUsers(user.token);
-    }
+    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
+    _isGoogleAuthEnabled = _settingsProvider.settings.googleAuth;
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User List')),
-      body: Consumer<AdminProvider>(
-        builder: (context, adminProvider, child) {
-          if (adminProvider.loading) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (adminProvider.users.isEmpty) {
-            return Center(child: Text('No users found'));
-          }
-
-          return DataTable(
-            columns: [
-              DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Role')),
-            ],
-            rows: adminProvider.users.map((user) {
-              return DataRow(cells: [
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      // Handle email click
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserDetailsPage(user: user),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      user.email,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
+      appBar: AppBar(
+        title: const Text('Settings'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(children: [
+                Lottie.asset(
+                    _isWeatherApiEnabled
+                        ? 'assets/sun.json'
+                        : 'assets/thunder.json',
+                    width: 80,
+                    height: 80),
+                const SizedBox(width: 16),
+                Switch(
+                  value: _isWeatherApiEnabled,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isWeatherApiEnabled = value;
+                    });
+                    _settingsProvider.updateWeatherAPI(value);
+                  },
                 ),
-                DataCell(Text(user.role)),
-              ]);
-            }).toList(),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final user = Provider.of<UserProvider>(context, listen: false).user;
-          if (user != null) {
-            context.read<AdminProvider>().fetchUsers(user.token);
-          }
-        },
-        child: Icon(Icons.refresh),
-      ),
-    );
-  }
-}
-
-// Sample UserDetailsPage to navigate to
-class UserDetailsPage extends StatelessWidget {
-  final User user;
-
-  const UserDetailsPage({required this.user, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('User Details')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Email: ${user.email}', style: TextStyle(fontSize: 20)),
-            Text('Role: ${user.role}', style: TextStyle(fontSize: 20)),
-            Text('IsValide: ${user.isVerified.toString()}', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
-                if (userProvider.user != null) {
-                  final token = userProvider.user!.token;
-                  await context.read<AdminProvider>().deleteUser(token, user.id);
-
-                  // After deletion, navigate back to the previous page
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Delete User'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
-                if (userProvider.user != null) {
-                  final token = userProvider.user!.token;
-                  await context.read<AdminProvider>().upgradeAdmin(token, user.id);
-
-                  // After deletion, navigate back to the previous page
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Devenir Admin'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
-            ),
-          ],
+              ]),
+              Row(children: [
+                const SizedBox(width: 16),
+                SvgPicture.asset(
+                  'assets/images/google.svg',
+                  height: 50,
+                  width: 50,
+                ),
+                const SizedBox(width: 32),
+                Switch(
+                  value: _isGoogleAuthEnabled,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isGoogleAuthEnabled = value;
+                    });
+                    _settingsProvider.updateGoogleAuth(value);
+                  },
+                ),
+              ]),
+            ],
+          ),
         ),
       ),
     );

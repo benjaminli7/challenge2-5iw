@@ -1,3 +1,5 @@
+import 'package:frontend/shared/models/subscriptions.dart';
+
 class Hike {
   final int id;
   final String name;
@@ -6,15 +8,22 @@ class Hike {
   final String duration;
   final bool isApproved;
   final String image;
+  final String gpxFile;
+  final List<Subscriptions> subscriptions;
+  final double averageRating;
 
-  Hike(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.difficulty,
-      required this.duration,
-      required this.isApproved,
-      required this.image});
+  Hike({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.difficulty,
+    required this.duration,
+    required this.isApproved,
+    required this.image,
+    required this.gpxFile,
+    required this.subscriptions,
+    required this.averageRating,
+  });
 
   factory Hike.fromJson(Map<String, dynamic> json) {
     return Hike(
@@ -24,6 +33,14 @@ class Hike {
         difficulty: json['difficulty'],
         duration: json['duration'],
         isApproved: json['is_approved'],
-        image: json['image']);
+        image: json['image'],
+        gpxFile: json['gpx_file'],
+        subscriptions: json['subscriptions'] != null
+            ? List<Subscriptions>.from(json['subscriptions']
+                .map((user) => Subscriptions.fromJson(user)))
+            : [],
+        averageRating: (json['average_rating'] is int)
+            ? (json['average_rating'] as int).toDouble()
+            : (json['average_rating'] ?? 0.0));
   }
 }
