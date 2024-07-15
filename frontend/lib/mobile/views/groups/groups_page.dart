@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/shared/models/group.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/services/group_service.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'package:frontend/shared/services/group_service.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/models/group.dart';
-import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 
 import '../../../shared/services/config_service.dart';
 
@@ -54,10 +53,9 @@ class _GroupsPageState extends State<GroupsPage> {
                 final group = groups[index];
                 return ListTile(
                   leading: CircleAvatar(
-
-                    backgroundImage: NetworkImage(Uri.parse("$baseUrl${group.hike.image}").toString(),),
-
-
+                    backgroundImage: NetworkImage(
+                      Uri.parse("$baseUrl${group.hike.image}").toString(),
+                    ),
                     radius: 30,
                   ),
                   title: Text(group.hike.name),
@@ -119,12 +117,7 @@ class _GroupsPageState extends State<GroupsPage> {
                             )
                           : null,
                   onTap: () {
-                    //for the moment just test the weather widget
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => WeatherWidget(group: group),
-                      ),
-                    );
+                    GoRouter.of(context).push('/group/${group.id}');
                   },
                 );
               },

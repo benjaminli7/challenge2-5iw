@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
-import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
-import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
@@ -61,7 +61,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Joined group ${group.id} successfully'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
         setState(() {
@@ -73,13 +73,13 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to join group ${group.id}: $e'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('User not logged in'),
           duration: Duration(seconds: 2),
         ),
@@ -123,16 +123,20 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 children: [
                   Column(
                     children: [
-                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Difficulty level',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.difficulty, style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.difficulty,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Duration',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.duration, style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.duration,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
@@ -170,11 +174,11 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 future: _groupsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: const CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No groups found for this hike'));
+                    return const Center(child: Text('No groups found for this hike'));
                   } else {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
@@ -206,7 +210,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
+                    GoRouter.of(context)
+                        .push('/hike/${widget.hike.id}/reviews');
                   },
                   child: const Text('View All Reviews'),
                 ),
@@ -222,28 +227,27 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         child: const Icon(Icons.add),
       ),
     );
-
   }
 
   Widget _buildGroupCard(Group group) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               group.organizer.email,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
                 'Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () => _joinGroup(group),
-              child: Text('Join Group'),
+              child: const Text('Join Group'),
             ),
           ],
         ),

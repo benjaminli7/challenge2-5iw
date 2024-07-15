@@ -29,12 +29,12 @@ var manager = ConnectionManager{
     connections: make(map[uint][]*websocket.Conn),
 }
 
-func broadcastMessage(groupID uint, content string) {
+func broadcastMessage(groupID uint, message models.Message) {
     manager.mutex.Lock()
     defer manager.mutex.Unlock()
 
     for _, conn := range manager.connections[groupID] {
-        if err := conn.WriteJSON(content); err != nil {
+        if err := conn.WriteJSON(message); err != nil {
             log.Printf("Error broadcasting message: %v", err)
         }
     }
@@ -92,7 +92,12 @@ func HandleWebSocket(c *gin.Context) {
             break
         }
 
-        broadcastMessage(groupID, message.Content)
-        log.Printf("Message broadcasted: %s", message.Content)
+        if err := db.DB.Preload("User").First(&message, message.ID).Error; err != nil {
+            log.Printf("Error loading user data: %v", err)
+            break
+        }
+
+        broadcastMessage(groupID, message)
+        log.Printf("Message broadcasted: %s", message)
     }
 }
