@@ -4,12 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:frontend/web/views/login_page.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:frontend/web/views/home_page.dart';
 import 'package:frontend/web/widgets/footer.dart';
 import 'package:frontend/web/views/users_page.dart';
 import 'package:frontend/web/views/params_page.dart';
 import 'package:frontend/web/views/groups_page.dart';
 import 'package:frontend/web/views/hikes_page.dart';
+import 'package:frontend/web/views/hike_details_page.dart';
+import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/web/views/group_details_page.dart';
 import 'package:frontend/web/views/user_details_page.dart';
 
@@ -68,6 +72,17 @@ final GoRouter _router = GoRouter(
         GoRoute(
             path: '/users', builder: (context, state) => const UserListPage()),
         GoRoute(
+          name: "hikeDetails",
+          path: '/hike/:id',
+          builder: (context, state) {
+            final hikeId = int.parse(state.pathParameters['id']!);
+            final hike = Provider.of<HikeProvider>(context, listen: false)
+                .hikes
+                .firstWhere((hike) => hike.id == hikeId);
+            return HikeDetailsPage(hike: hike);
+          },
+        ),
+        GoRoute(
           name: "userDetails",
           path: '/user/:id',
           builder: (context, state) {
@@ -87,6 +102,7 @@ final GoRouter _router = GoRouter(
                 .groups
                 .firstWhere((group) => group.id == groupId);
             return GroupDetailsPage(group: group);
+
           },
         ),
         GoRoute(
@@ -102,7 +118,7 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-    // Default route, redirects to login or home based on user state
+
   ],
 );
 
@@ -114,6 +130,8 @@ class MyWebApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => HikeProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

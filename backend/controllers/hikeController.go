@@ -250,13 +250,64 @@ func UpdateHike(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /hikes/{id} [delete]
 func DeleteHike(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	if err := db.DB.Delete(&models.Hike{}, id).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Hike deleted"})
+    id, err := strconv.Atoi(c.Param("id"))
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+        return
+    }
+
+    tx := db.DB.Begin()
+    if tx.Error != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": tx.Error.Error()})
+        return
+    }
+
+
+    var groups []models.Group
+    if err := tx.Where("hike_id = ?", id).Find(&groups).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+
+    groupIDs := make([]uint, len(groups))
+    for i, group := range groups {
+        groupIDs[i] = group.ID
+    }
+
+    if len(groupIDs) > 0 {
+        if err := tx.Unscoped().Where("group_id IN ?", groupIDs).Delete(&models.GroupUser{}).Error; err != nil {
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+    }
+
+
+    if err := tx.Unscoped().Where("hike_id = ?", id).Delete(&models.Group{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+
+    if err := tx.Delete(&models.Hike{}, id).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    if err := tx.Commit().Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "Hike and associated groups and group users deleted"})
 }
+
+
+
 
 // ValidateHike godoc
 // @Summary Validate a hike by ID
