@@ -39,6 +39,8 @@ class GroupService {
       body: jsonEncode(<String, dynamic>{
         'hike_id': hikeId,
         'start_date': groupData['hikeDate'],
+        'name': groupData['name'],
+        'description': groupData['description'],
         'organizer_id': userId,
       }),
     );
