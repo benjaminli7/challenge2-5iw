@@ -4,6 +4,8 @@ import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/models/settings.dart';
 
 class AdminSettingsPage extends StatefulWidget {
   const AdminSettingsPage({super.key});
@@ -20,11 +22,15 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
-    _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
-    _isGoogleAuthEnabled = _settingsProvider.settings.googleAuth;
+    final user = Provider.of<UserProvider>(context, listen: false).user;
 
-    // Set the animation asset based on the weather API setting
+    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    _settingsProvider.fetchSettings();
+    _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
+    _isGoogleAuthEnabled = _settingsProvider.settings.googleAPI;
+
+    print('isWeatherApiEnabled: $_isWeatherApiEnabled');
+    print('isGoogleAuthEnabled: $_isGoogleAuthEnabled');
   }
 
   @override
@@ -53,7 +59,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     setState(() {
                       _isWeatherApiEnabled = value;
                     });
-                    _settingsProvider.updateWeatherAPI(value);
+                    _settingsProvider.updateSettings(
+                      context.read<UserProvider>().user!.token,
+                      Settings(
+                          weatherAPI: value, googleAPI: _isGoogleAuthEnabled),
+                    );
                   },
                 ),
               ]),
@@ -71,7 +81,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     setState(() {
                       _isGoogleAuthEnabled = value;
                     });
-                    _settingsProvider.updateGoogleAuth(value);
+                    _settingsProvider.updateSettings(
+                      context.read<UserProvider>().user!.token,
+                      Settings(
+                          weatherAPI: _isWeatherApiEnabled, googleAPI: value),
+                    );
                   },
                 ),
               ]),

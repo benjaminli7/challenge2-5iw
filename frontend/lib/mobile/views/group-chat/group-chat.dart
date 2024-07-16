@@ -32,12 +32,20 @@ class _GroupChatPageState extends State<GroupChatPage> {
     _channel = WebSocketChannel.connect(
       Uri.parse('$wsUrl/ws/${widget.groupId}'),
     );
-    _channel.stream.listen((message) {
-      print(message);
-      setState(() {
-        _messages.add(Message.fromJson(jsonDecode(message)));
-      });
-    });
+    _channel.stream.listen(
+      (message) {
+        print(message);
+        setState(() {
+          _messages.add(Message.fromJson(jsonDecode(message)));
+        });
+      },
+      onError: (error) {
+        print('WebSocket error: $error');
+      },
+      onDone: () {
+        print('WebSocket closed');
+      },
+    );
   }
 
   void _fetchMessages() async {

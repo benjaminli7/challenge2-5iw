@@ -119,6 +119,10 @@ func main() {
 	// Message routes
 	r.GET("/ws/:groupID", controllers.HandleWebSocket)
 
+	//Options route
+	r.GET("/options", controllers.GetOptions)
+	r.PATCH("/options", middleware.RequireAuth(true), controllers.UpdateOptions)
+
 	err := r.Run()
 	if err != nil {
 		logger.Fatal(err)

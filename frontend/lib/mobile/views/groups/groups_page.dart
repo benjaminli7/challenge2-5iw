@@ -58,7 +58,7 @@ class _GroupsPageState extends State<GroupsPage> {
                     ),
                     radius: 30,
                   ),
-                  title: Text(group.hike.name),
+                  title: Text(group.name),
                   subtitle:
                       Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
                   trailing:

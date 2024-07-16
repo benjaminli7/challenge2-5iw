@@ -1,12 +1,20 @@
 class Settings {
   bool weatherAPI;
-  bool googleAuth;
-  Settings({required this.weatherAPI, required this.googleAuth});
+  bool googleAPI;
 
-  factory(Map<String, dynamic> json) {
+  Settings({required this.weatherAPI, required this.googleAPI});
+
+  factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
-      weatherAPI: json['weatherAPI'] ?? true,
-      googleAuth: json['googleAuth'] ?? true,
+      weatherAPI: json['weather_api'],
+      googleAPI: json['google_api'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'weather_api': weatherAPI,
+      'google_api': googleAPI,
+    };
   }
 }

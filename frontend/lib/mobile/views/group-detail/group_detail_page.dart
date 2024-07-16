@@ -55,6 +55,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const SizedBox(height: 16.0),
                     Text(
                       AppLocalizations.of(context)!.hikeName(group.hike.name),
+
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
