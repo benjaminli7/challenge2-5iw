@@ -175,4 +175,18 @@ class ApiService {
       body: jsonEncode(user.toJson()),
     );
   }
+
+  Future<http.Response> setFcmToken(int userId, String fcmToken, String token) {
+    print("From service: token: $token userId: $userId fcmToken: $fcmToken");
+    return http.patch(
+      Uri.parse('$baseUrl/users/$userId/fcmToken'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'fcm_token': fcmToken,
+      }),
+    );
+  }
 }

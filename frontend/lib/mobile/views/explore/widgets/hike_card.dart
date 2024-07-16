@@ -7,7 +7,6 @@ import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../shared/services/config_service.dart';
 
-
 class HikeCard extends StatefulWidget {
   final Hike hike;
 
@@ -61,7 +60,6 @@ class _HikeCardState extends State<HikeCard> {
           child: Column(
             children: [
               Expanded(
-
                 child: Stack(
                   children: [
                     Image.network(

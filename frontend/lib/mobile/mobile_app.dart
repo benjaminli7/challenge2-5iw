@@ -30,11 +30,10 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/shared/widgets/notification_page.dart';
 
 void main() {
   runApp(const MyMobileApp());
-  final settingsProvider = SettingsProvider();
-  settingsProvider.fetchSettings();
 }
 
 final GoRouter _router = GoRouter(
@@ -104,6 +103,11 @@ final GoRouter _router = GoRouter(
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
+        ),
+        GoRoute(
+          name: "notifications",
+          path: '/user-notifications',
+          builder: (context, state) => const NotificationPage(),
         ),
         GoRoute(
           name: "explore",

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -105,11 +106,12 @@ func Login(c *gin.Context) {
 				return
 			}
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"sub":      user.ID,
-				"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
-				"email":    user.Email,
-				"roles":    user.Role,
-				"verified": user.IsVerified,
+				"sub":       user.ID,
+				"exp":       time.Now().Add(time.Hour * 24 * 30).Unix(),
+				"email":     user.Email,
+				"roles":     user.Role,
+				"verified":  user.IsVerified,
+				"fcm_token": user.FcmToken,
 			})
 
 			secret := os.Getenv("SECRET")
@@ -351,4 +353,43 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
+}
+
+// UpdateFcmToken godoc
+// @Summary Update user FCM token
+// @Description Update the FCM token of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User.fcmToken true "User FCM token"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/fcmToken [patch]
+func UpdateFcmToken(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var user models.User
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	// get fcm token from request body
+	var body struct {
+		FcmToken string `json:"fcm_token"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	// update user's fcm token
+	user.FcmToken = body.FcmToken
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "FCM token updated successfully"})
+
 }

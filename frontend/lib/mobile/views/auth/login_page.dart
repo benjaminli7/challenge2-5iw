@@ -12,6 +12,7 @@ import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   final ApiService _apiService = ApiService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _isLoading = false; // Loading state
+  String _fcmToken = "";
 
   void _login() async {
     setState(() {
@@ -58,8 +60,30 @@ class _LoginPageState extends State<LoginPage> {
             password: "",
             token: token,
             role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
+            isVerified: parseJwt['verified'],
+            fcmToken: parseJwt['fcm_token'] ?? ""),
       );
+      await SharedPreferences.getInstance().then((prefs) {
+        _fcmToken = prefs.getString('fcmToken') ?? "";
+      });
+
+      // print('fcm token from shared preferences: $_fcmToken');
+      // print('fcm token from jwt: ${parseJwt['fcm_token']}');
+      String fcmTokenFromJwt = parseJwt['fcm_token'] ?? "";
+      if (fcmTokenFromJwt == "" && _fcmToken != "") {
+        final response = await _apiService.setFcmToken(
+            Provider.of<UserProvider>(context, listen: false).user!.id,
+            _fcmToken,
+            Provider.of<UserProvider>(context, listen: false).user!.token);
+        if (response.statusCode == 200) {
+          // set fcm token on the user object
+          Provider.of<UserProvider>(context, listen: false)
+              .setFcmToken(_fcmToken);
+          print('fcm token set');
+        } else {
+          print('failed to set fcm token');
+        }
+      }
       Fluttertoast.showToast(
         msg: 'Login successful',
         toastLength: Toast.LENGTH_SHORT,
@@ -127,8 +151,26 @@ class _LoginPageState extends State<LoginPage> {
             password: "",
             token: token,
             role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
+            isVerified: parseJwt['verified'],
+            fcmToken: parseJwt['fcm_token']),
       );
+
+      SharedPreferences.getInstance().then((prefs) {
+        // get the fcm token from the shared preferences
+        _fcmToken = prefs.getString('fcmToken')!;
+      });
+      //if fcm token is not set, set it
+      if (parseJwt['fcm_token'] == null && _fcmToken != "") {
+        final response = await _apiService.setFcmToken(
+            Provider.of<UserProvider>(context, listen: false).user!.id,
+            _fcmToken,
+            Provider.of<UserProvider>(context, listen: false).user!.token);
+        if (response.statusCode == 200) {
+          print('fcm token set');
+        } else {
+          print('failed to set fcm token');
+        }
+      }
 
       Fluttertoast.showToast(
         msg: 'Connected with Google',

@@ -3,6 +3,8 @@ package controllers
 import (
 	"backend/db"
 	"backend/models"
+	"backend/services"
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -31,7 +33,6 @@ func CreateGroup(c *gin.Context) {
 		return
 	}
 
-
 	if err := db.DB.Create(&group).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -42,9 +43,46 @@ func CreateGroup(c *gin.Context) {
 		return
 	}
 
+	// get fcm token of the user that subscribed to the hike
+	var token string
+	var title string
+	var body string
+	var route string
+	var users []models.User
+	var subscribedUsers []models.Subscription
+
+	db.DB.Where("hike_id = ?", group.HikeID).Find(&subscribedUsers)
+	for _, sub := range subscribedUsers {
+		var user models.User
+		db.DB.First(&user, sub.UserID)
+		users = append(users, user)
+	}
+
+	for _, user := range users {
+		if user.ID == group.OrganizerID {
+			continue
+		}
+		token = user.FcmToken
+		title = "New group created for " + group.Hike.Name
+		body = "Join the group to meet new people and share your experience"
+		route = "/group/" + strconv.Itoa(int(group.ID))
+		if token != "" {
+			err := services.SendNotification(context.Background(), token, title, body, route)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
+				return
+			}
+		}
+	}
+
+	err := services.SendNotification(context.Background(), token, title, body, route)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
+		return
+	}
+
 	c.JSON(http.StatusOK, group)
 }
-
 
 // GetGroup godoc
 // @Summary Get a group by ID
@@ -127,7 +165,6 @@ func GetMyGroups(c *gin.Context) {
 // @Success 200 {object} models.Group
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/hike/{id}/{userId} [get]
-
 
 func GetGroupsByHike(c *gin.Context) {
 	hikeIdParam := c.Param("id")
@@ -229,7 +266,7 @@ func DeleteGroup(c *gin.Context) {
 
 func JoinGroup(c *gin.Context) {
 	var body struct {
-		UserId uint
+		UserId  uint
 		GroupId uint
 	}
 	if c.Bind(&body) != nil {
@@ -248,7 +285,7 @@ func JoinGroup(c *gin.Context) {
 	}
 	var accepted bool = false
 
-	groupUser :=  models.GroupUser{UserID: body.UserId, GroupID: body.GroupId, IsValidate: accepted}
+	groupUser := models.GroupUser{UserID: body.UserId, GroupID: body.GroupId, IsValidate: accepted}
 
 	if err := db.DB.Create(&groupUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
@@ -269,7 +306,7 @@ func JoinGroup(c *gin.Context) {
 // @Router /groups/leave [delete]
 func LeaveGroup(c *gin.Context) {
 	var body struct {
-		UserId uint
+		UserId  uint
 		GroupId uint
 	}
 	if c.Bind(&body) != nil {
@@ -313,7 +350,6 @@ func ValidateUserGroup(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User validated"})
 }
-
 
 func GetGroupMessages(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))

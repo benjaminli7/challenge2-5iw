@@ -31,7 +31,8 @@ class UserProvider with ChangeNotifier {
   Future<void> updateUser(User updatedUser) async {
     if (_user != null) {
       try {
-        final response = await _apiService.updateUserProfile(updatedUser, _user!.token);
+        final response =
+            await _apiService.updateUserProfile(updatedUser, _user!.token);
         if (response.statusCode == 200) {
           _user = User.fromJson(jsonDecode(response.body));
           _user!.token = updatedUser.token;
@@ -43,5 +44,9 @@ class UserProvider with ChangeNotifier {
         print('Failed to update profile: $e');
       }
     }
+  }
+
+  void setFcmToken(String fcmToken) {
+    user!.fcmToken = fcmToken;
   }
 }

@@ -23,7 +23,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Profile of ${user?.email}!',
+                'Profile of ${user?.email}! ',
                 style: const TextStyle(fontSize: 24),
               ),
             ),
