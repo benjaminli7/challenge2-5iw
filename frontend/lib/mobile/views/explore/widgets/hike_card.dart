@@ -7,7 +7,6 @@ import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../shared/services/config_service.dart';
 
-
 class HikeCard extends StatefulWidget {
   final Hike hike;
 
@@ -49,62 +48,83 @@ class _HikeCardState extends State<HikeCard> {
   @override
   Widget build(BuildContext context) {
     String baseUrl = ConfigService.baseUrl;
+    final hikeProvider = Provider.of<HikeProvider>(context);
 
     return GestureDetector(
-        onTap: () {
-          GoRouter.of(context).push('/hike/${widget.hike.id}');
-        },
-        child: Card(
-          color: Colors.transparent,
-          elevation: 0,
-          child: Column(
-            children: [
-              Expanded(
-
-                child: Stack(
-                  children: [
-                    Image.network(
-                      Uri.parse("${dotenv.env['BASE_URL']}${widget.hike.image}")
-                          .toString(),
-                      fit: BoxFit.cover,
-                    ),
-                    Positioned(
-                      top: 8.0,
-                      right: 8.0,
-                      child: GestureDetector(
-                        onTap: toggleFavorite,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                                scale: animation, child: child);
-                          },
-                          child: Icon(
-                            isFavorite
-                                ? Icons.notifications_active
-                                : Icons.notifications_off,
-                            color:
-                                isFavorite ? Colors.redAccent : Colors.black26,
-                            size: 24.0,
-                            key: ValueKey<bool>(isFavorite),
-                          ),
+      onTap: () {
+        GoRouter.of(context).push('/hike/${widget.hike.id}');
+      },
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        child: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Image.network(
+                    Uri.parse("${dotenv.env['BASE_URL']}${widget.hike.image}")
+                        .toString(),
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    top: 8.0,
+                    right: 8.0,
+                    child: GestureDetector(
+                      onTap: toggleFavorite,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                              scale: animation, child: child);
+                        },
+                        child: Icon(
+                          isFavorite
+                              ? Icons.notifications_active
+                              : Icons.notifications_off,
+                          color:
+                          isFavorite ? Colors.redAccent : Colors.black26,
+                          size: 24.0,
+                          key: ValueKey<bool>(isFavorite),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  widget.hike.name,
-                  style: const TextStyle(
-                      fontSize: 13.0, fontWeight: FontWeight.bold),
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.hike.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 13.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow[700], size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        widget.hike.averageRating.toStringAsFixed(1),
+                        style: const TextStyle(
+                            fontSize: 13.0, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
+  
