@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-//import go_router.dart;
-import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/services/config_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,111 +11,84 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    final String baseUrl = ConfigService.baseUrl;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu'),
+        title: const Text('Profile'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: user != null
+          ? SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Text(
-                'Profile of ${user?.email}!',
-                style: const TextStyle(fontSize: 24),
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: user.profileImage != null
+                        ? NetworkImage('$baseUrl${user.profileImage}')
+                        : const AssetImage('assets/images/profile_placeholder.png')
+                    as ImageProvider,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    user.username ?? 'No Username',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    user.email,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 32),
-            // First block with Profile and Trail Pass buttons
-            buildMenuBlock([
-              buildMenuItem(Icons.person, 'Profile', () {
-                GoRouter.of(context).go('/profile/details');
-              }),
-            ]),
-            buildMenuBlock([
-              buildMenuItem(Icons.directions_walk, 'Trail pass', () {
-                GoRouter.of(context).go('/profile/hike-history');
-              }),
-            ]),
-            const SizedBox(height: 16),
-            // Second block with Filters, Security, Alerts, Theme, Advanced buttons
-            buildMenuBlock([
-              buildMenuItem(Icons.filter_list, 'Filters', () {}),
-              buildMenuItem(Icons.security, 'Security', () {
-                // Handle Security tap
-              }),
-              buildMenuItem(Icons.notifications, 'Alerts', () {
-                // Handle Alerts tap
-              }),
-              buildMenuItem(Icons.color_lens, 'Theme', () {
-                // Handle Theme tap
-              }),
-              buildMenuItem(Icons.settings, 'Advanced', () {
-                // Handle Advanced tap
-              }),
-            ]),
-            const SizedBox(height: 16),
-            // Third block with Support and Sign Out buttons
-            buildMenuBlock([
-              buildMenuItem(Icons.support, 'Support', () {
-                // Handle Support tap
-              }),
-              buildMenuItem(Icons.logout, 'Sign out', () {
-                // Handle Sign Out tap
-                // Clear the user from the provider
-                Provider.of<UserProvider>(context, listen: false).clearUser();
-                // Show a toast message
-                Fluttertoast.showToast(
-                  msg: "Disconnected",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: Colors.black,
-                  textColor: Colors.white,
-                );
-                // Navigate to the login page
-                GoRouter.of(context).go('/login');
-              }),
-            ]),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.history, color: Colors.blueAccent),
+                    title: Text('Hike History'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      GoRouter.of(context).go('/profile/hike-history');
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(Icons.logout, color: Colors.red),
+                    title: Text('Sign Out'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Provider.of<UserProvider>(context, listen: false).clearUser();
+                      Fluttertoast.showToast(
+                        msg: "Disconnected",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                      );
+                      GoRouter.of(context).go('/login');
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildMenuBlock(List<Widget> items) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[800],
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        children: items
-            .asMap()
-            .entries
-            .map((entry) => Column(
-                  children: [
-                    entry.value,
-                    if (entry.key != items.length - 1)
-                      Divider(height: 1, color: Colors.grey[700]),
-                  ],
-                ))
-            .toList(),
-      ),
-    );
-  }
-
-  Widget buildMenuItem(IconData icon, String text, VoidCallback onTap) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      color: Colors.grey[800],
-      child: ListTile(
-        leading: Icon(icon, color: Colors.white),
-        title: Text(text, style: const TextStyle(color: Colors.white)),
-        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-        onTap: onTap,
-      ),
+      )
+          : const Center(child: Text('No user data available')),
     );
   }
 }
