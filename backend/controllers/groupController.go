@@ -25,7 +25,6 @@ import (
 func CreateGroup(c *gin.Context) {
 	var group models.Group
 	var groupUser models.GroupUser
-	println(c.PostForm("description"))
 	if err := c.ShouldBindJSON(&group); err != nil {
 		println("Failed to bind JSON")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})

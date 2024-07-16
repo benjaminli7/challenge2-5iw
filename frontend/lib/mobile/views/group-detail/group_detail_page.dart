@@ -52,7 +52,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   children: [
                     const SizedBox(height: 16.0),
                     Text(
-                      'Name: ${group.hike.name}',
+                      'Name: ${group.name}',
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
