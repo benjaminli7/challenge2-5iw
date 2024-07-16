@@ -11,10 +11,10 @@ type Group struct {
 	Description string    `json:"description"`
 	StartDate   time.Time `json:"start_date"`
 	Name        string    `json:"name"`
-	Users 		[]*User `gorm:"many2many:group_users;"`
+	Users       []*User   `gorm:"many2many:group_users;"`
 	HikeID      uint      `json:"hike_id"`
 	Hike        Hike      `json:"hike" gorm:"foreignKey:HikeID "`
 	OrganizerID uint      `json:"organizer_id"`
 	Organizer   User      `json:"organizer" gorm:"foreignKey:OrganizerID"`
-	Messages    []Message
+	Messages    []Message `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
