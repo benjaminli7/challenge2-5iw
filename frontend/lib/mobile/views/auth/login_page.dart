@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final isGoogleActivated = settingsProvider.settings.googleAuth;
+    final isGoogleActivated = settingsProvider.settings.googleAPI;
     return Scaffold(
       appBar: const NavBar(),
       body: Padding(

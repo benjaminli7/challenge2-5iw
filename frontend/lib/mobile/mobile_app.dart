@@ -31,9 +31,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 void main() {
   runApp(const MyMobileApp());
+  final settingsProvider = SettingsProvider();
+  settingsProvider.fetchSettings();
 }
 
 final GoRouter _router = GoRouter(
@@ -91,7 +92,6 @@ final GoRouter _router = GoRouter(
           name: "profile",
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
-
           routes: [
             GoRoute(
               name: "profileDetails",
@@ -104,7 +104,6 @@ final GoRouter _router = GoRouter(
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
-
         ),
         GoRoute(
           name: "explore",
@@ -117,9 +116,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final hikeId = int.parse(state.pathParameters['id']!);
             final hikeProvider =
-            Provider.of<HikeProvider>(context, listen: false);
-            final hike = hikeProvider.hikes
-                .firstWhere((hike) => hike.id == hikeId);
+                Provider.of<HikeProvider>(context, listen: false);
+            final hike =
+                hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsExplorePage(hike: hike);
           },
         ),
@@ -221,7 +220,6 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-
   ],
 );
 
@@ -231,9 +229,7 @@ class MyMobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-
       providers: [
-
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
@@ -249,7 +245,6 @@ class MyMobileApp extends StatelessWidget {
             ),
           );
         },
-
       ),
     );
   }
