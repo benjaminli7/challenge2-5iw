@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserListPage extends StatefulWidget {
   const UserListPage({super.key});
@@ -24,7 +25,7 @@ class _UserListPageState extends State<UserListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User List')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.userList)),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
@@ -32,13 +33,13 @@ class _UserListPageState extends State<UserListPage> {
           }
 
           if (adminProvider.users.isEmpty) {
-            return const Center(child: Text('No users found'));
+            return Center(child: Text(AppLocalizations.of(context)!.noUsersFound));
           }
 
           return DataTable(
-            columns: const [
-              DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Role')),
+            columns:  [
+              DataColumn(label: Text(AppLocalizations.of(context)!.email)),
+              DataColumn(label: Text(AppLocalizations.of(context)!.role)),
             ],
             rows: adminProvider.users.map((user) {
               return DataRow(cells: [

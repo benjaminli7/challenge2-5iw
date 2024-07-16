@@ -5,6 +5,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
@@ -25,7 +26,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     if (user != null) {
       _groupFuture = _groupService.getGroupById(user.token, widget.groupId);
     } else {
-      _groupFuture = Future.error('User not logged in');
+      _groupFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
   }
 
@@ -33,7 +34,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Group Detail'),
+          title: Text(AppLocalizations.of(context)!.groupDetail),
         ),
         body: FutureBuilder<Group>(
           future: _groupFuture,
@@ -43,7 +44,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData) {
-              return const Center(child: Text('No group found'));
+              return Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
             } else {
               final group = snapshot.data!;
               return Padding(
@@ -53,22 +54,23 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   children: [
                     const SizedBox(height: 16.0),
                     Text(
-                      'Name: ${group.name}',
+                      AppLocalizations.of(context)!.hikeName(group.hike.name),
+
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Description: ${group.description}',
+                      AppLocalizations.of(context)!.hikeDescription(group.description),
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Start Date: ${group.startDate}',
+                      AppLocalizations.of(context)!.startDateArg(group.startDate),
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Organizer: ${group.organizer.username}',
+                      AppLocalizations.of(context)!.organizerArg(group.organizer.username.toString()),
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 16.0),
@@ -80,7 +82,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       onPressed: () {
                         GoRouter.of(context).push('/group-chat/${group.id}');
                       },
-                      label: const Text('Group Chat'),
+                      label: Text(AppLocalizations.of(context)!.groupChat),
                     ),
                     const SizedBox(height: 16.0),
                     Expanded(

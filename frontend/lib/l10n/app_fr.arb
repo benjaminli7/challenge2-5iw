@@ -1,0 +1,109 @@
+{
+    "helloWorld": "Bonjour le monde",
+
+    "login": "Connexion",
+    "logInSuccess": "Connexion réussie",
+    "logInFailure": "Erreur de connexion",
+    "logInFailureGoogle2": "Erreur de connexion Google2",
+    "connectedGoogle": "Connecté avec Google",
+    "logInFailureGoogle3": "Erreur de connexion Google3",
+    "password": "Mot de passe",
+    "signInGoogle": "Connexion avec Google",
+    "notAccount": "Pas de compte ? Inscription",
+
+    "signUpSuccess": "Inscription réussie",
+    "signUpFailure": "Erreur d'inscription",
+    "signUp": "Inscription",
+    "alreadyRegister":"Déjà inscrit ? Connexion",
+
+    "menu": "Menu",
+    "profileOf": "Profil de {email}!",
+    "users" : "Utilisateurs",
+    "hike" : "Randonnées",
+    "settings":"Paramètres",
+
+     "hikeDetails": "Détails de la randonnée",
+     "hikeName": "Nom {name}",
+     "hikeDescription": "Description {description}",
+     "hikeDifficulty": "Difficulté {difficulty}",
+     "hikeDuration": "Durée {duration}",
+     "hikeValidation" : "Validée",
+
+     "hikeValidationPannel" : "Validation des randonnées",
+     "noHikesFound" : "Aucune randonnée trouvée",
+     "image" : "Image",
+     "name" : "Nom",
+     "description" : "Description",
+
+     "userDetail": "Détails de l'utilisateur",
+     "userEmail": "Email {email}",
+     "userRole": "Role {role}",
+     "userIsValide" : "Valide? {isValide}",
+     "deleteUser" : "Supprimer l'utilisateur",
+     "upgradeAdmin" : "Promouvoir en admin",
+
+     "userList" : "Liste des utilisateurs",
+     "noUsersFound" : "Aucun utilisateur trouvé",
+     "role" : "Role",
+     "isValide" : "Valide",
+     "email": "Email",
+
+
+  "createHike" : "Créé une randonnée",
+  "enterNameHike": "S'il vous plaît entrer le nom de la randonnée",
+  "nameHike50": "Le nom ne peut pas dépasser 50 caractères",
+  "nameHikeAlpha": "Le nom ne peut contenir que des lettres",
+  "enterDescriptionHike": "S'il vous plaît entrer la description de la randonnée",
+   "descriptionHike50": "La description ne peut pas dépasser 50 caractères",
+   "difficulty": "Difficulté",
+   "easy": "Facile",
+   "moderate": "Modéré",
+    "hard": "Difficile",
+    "selectDifficulty": "Sélectionnez la difficulté",
+    "durationHour" : "Durée (en heures)",
+    "enterDurationHike": "S'il vous plaît entrer la durée de la randonnée",
+    "durationBetween" : "La durée doit être comprise entre 1 et 96 heures",
+    "noImage" : "Aucune image sélectionnée",
+    "uploadImage" : "Télécharger une image",
+    "noGpxFile" : "Aucun fichier gpx sélectionné",
+    "uploadGpx" : "Télécharger un fichier gpx",
+    "processingData" : "Traitement des données",
+    "submit" : "Valider",
+
+    "gpxRouteViewer" : "Visualiseur de route gpx",
+    "noDataAvailable" : "Aucune donnée disponible",
+
+     "reviewSubmit" : "Votre avis a été soumis",
+     "rateHike":"Note de la randonnée:",
+     "comment" : "Commentaire (Optionnel)",
+     "commentLonger":"Le commentaire ne peut pas dépasser 280 caractères",
+     "invalidComment":"Le commentaire contient des charactères invalides",
+     "submitReview" : "Valider l'avis",
+
+     "discoverHike" : "Decouvrez les randonnées \npres de chez vous",
+     "searchTrail":"Rechercher une randonnée",
+
+     "userNotLogged":"Utilisateur non connecté",
+     "joinGroupSuccess":"Groupe {group} rejoint avec succès",
+     "joinGroupFailure":"Erreur lors du groupe {group}: {e}",
+
+     "groups":"Groupes",
+     "noGroupFound" :"Aucun groupe trouvé",
+     "reviews":"Avis",
+     "viewReviews":"Voir les avis",
+     "joinGroup":"Rejoindre le groupe",
+
+     "hikeReviews":"Avis sur la randonnée",
+     "noReviewsFound":"Aucun avis trouvé",
+     "ratingHike":"Avis :{rating}",
+     "noCommentProvided":"Aucun commentaire fourni",
+
+     "enterMessage" : "Entrer un message",
+
+     "groupDetail":"Détails du groupe",
+     "startDateArg":"Date début {startDate}",
+     "organizerArg":"Organisateur {organizer}",
+     "groupChat": "Chat du groupe"
+
+
+}

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,7 +10,10 @@ import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -61,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
       Fluttertoast.showToast(
-        msg: 'Login successful',
+        msg: AppLocalizations.of(context)!.logInSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -72,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
       GoRouter.of(context).go('/explore');
     } else {
       Fluttertoast.showToast(
-        msg: 'Login failed',
+        msg: AppLocalizations.of(context)!.logInFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -96,7 +98,9 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         Fluttertoast.showToast(
-            msg: 'Failed to connect with Google',
+
+            msg: AppLocalizations.of(context)!.logInFailureGoogle2,
+
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -130,8 +134,9 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
 
+
       Fluttertoast.showToast(
-        msg: 'Connected with Google',
+         msg: AppLocalizations.of(context)!.connectedGoogle,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -140,9 +145,12 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
       GoRouter.of(context).go('/explore');
+
     } catch (e) {
+
       Fluttertoast.showToast(
-        msg: 'Failed to connect with Google',
+        msg: AppLocalizations.of(context)!.logInFailureGoogle3,
+
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -164,6 +172,7 @@ class _LoginPageState extends State<LoginPage> {
     final isGoogleActivated = settingsProvider.settings.googleAPI;
     return Scaffold(
       appBar: const NavBar(),
+
       body: Stack(
         children: [
           Padding(
@@ -171,8 +180,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Login',
+                 Text(
+                   AppLocalizations.of(context)!.login,
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -183,12 +192,12 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 CustomTextField(
                   controller: _passwordController,
-                  labelText: 'Password',
+                  labelText: AppLocalizations.of(context)!.password,
                   obscureText: true,
                 ),
                 ElevatedButton(
                   onPressed: _login,
-                  child: const Text('Login',
+                  child: Text(AppLocalizations.of(context)!.login,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -207,8 +216,8 @@ class _LoginPageState extends State<LoginPage> {
                               width: 24,
                             ),
                             const SizedBox(width: 10),
-                            const Text(
-                              'Sign in with Google',
+                             Text(
+                              AppLocalizations.of(context)!.connectedGoogle,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -232,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                  child: const Text('No account yet? Sign up'),
+                  child: Text(AppLocalizations.of(context)!.notAccount),
                 ),
               ],
             ),

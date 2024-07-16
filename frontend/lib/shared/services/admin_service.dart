@@ -9,6 +9,7 @@ import 'package:frontend/shared/models/settings.dart';
 import 'config_service.dart';
 
 class AdminService {
+
   String baseUrl = ConfigService.baseUrl;
 
   Future<List<User>> fetchUsers(String token) async {

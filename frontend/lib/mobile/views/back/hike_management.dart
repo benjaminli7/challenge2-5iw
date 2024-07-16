@@ -3,6 +3,7 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HikeManagement extends StatelessWidget {
   final Hike hike;
@@ -12,18 +13,18 @@ class HikeManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Hike Details')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.hikeDetails)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: ${hike.name}', style: const TextStyle(fontSize: 20)),
-            Text('Description: ${hike.description}',
+            Text(AppLocalizations.of(context)!.hikeName(hike.name), style: const TextStyle(fontSize: 20)),
+            Text(AppLocalizations.of(context)!.hikeDescription(hike.description),
                 style: const TextStyle(fontSize: 20)),
-            Text('Difficulty: ${hike.difficulty}',
+            Text(AppLocalizations.of(context)!.hikeDifficulty(hike.difficulty),
                 style: const TextStyle(fontSize: 20)),
-            Text('Duration: ${hike.duration}',
+            Text(AppLocalizations.of(context)!.hikeDuration(hike.duration.toString()),
                 style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -42,7 +43,7 @@ class HikeManagement extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text('Valider'),
+              child: Text(AppLocalizations.of(context)!.hikeValidation),
             ),
           ],
         ),

@@ -26,10 +26,14 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyMobileApp());
@@ -236,15 +240,23 @@ class MyMobileApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, child) {
-          return MaterialApp.router(
-            routerConfig: _router,
-            theme: ThemeData(
-              brightness: Brightness.dark,
-            ),
-          );
-        },
+
+      child: MaterialApp.router(
+        routerConfig: _router,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('fr'),
+        ],
+
       ),
     );
   }

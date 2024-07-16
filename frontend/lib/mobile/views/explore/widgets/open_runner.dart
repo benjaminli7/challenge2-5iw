@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/providers/hike_provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../shared/services/config_service.dart';
 
 class GPXMapScreen extends StatefulWidget {
@@ -60,13 +60,13 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GPX Route Viewer'),
+        title:  Text(AppLocalizations.of(context)!.gpxRouteViewer),
         automaticallyImplyLeading: false,
       ),
       body: noDataAvailable
-          ? const Center(
+          ?  Center(
               child: Text(
-                'No data available',
+                AppLocalizations.of(context)!.noDataAvailable,
                 style: TextStyle(fontSize: 18, color: Colors.red),
               ),
             )
