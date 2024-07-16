@@ -9,6 +9,7 @@ class Group {
   final DateTime startDate;
   final Hike hike;
   final User organizer;
+  final String name;
 
   Group({
     required this.id,
@@ -18,6 +19,7 @@ class Group {
     required this.startDate,
     required this.hike,
     required this.organizer,
+    required this.name,
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class Group {
       startDate: DateTime.parse(json['start_date']),
       hike: Hike.fromJson(json['hike']),
       organizer: User.fromJson(json['organizer']),
+      name: json['name'],
     );
   }
 }

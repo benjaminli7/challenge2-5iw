@@ -5,8 +5,8 @@ import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class CreateGroupPage extends StatelessWidget {
   final Hike hike;
@@ -20,19 +20,26 @@ class CreateGroupPage extends StatelessWidget {
     final groupService = GroupService();
 
     try {
-      final response = await groupService.createGroup(
-          groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
-
-      if (response.statusCode == 200) {
+      print(groupData["name"]);
+      if (groupData['name'] == null || groupData['name'] == '') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Group created successfully!')),
+          const SnackBar(content: Text('Group name is required')),
         );
-        GoRouter.of(context).go('/groups');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create group: ${response.body}')),
-        );
+        return;
       }
+      // final response = await groupService.createGroup(
+      //     groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
+
+      // if (response.statusCode == 200) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text('Group created successfully!')),
+      //   );
+      //   GoRouter.of(context).go('/groups');
+      // } else {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Failed to create group: ${response.body}')),
+      //   );
+      // }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -44,7 +51,7 @@ class CreateGroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Group'),
+        title: const Text('Create group'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -59,6 +66,28 @@ class CreateGroupPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               HikeDetailsSection(hike: hike),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Group name',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  Provider.of<GroupProvider>(context, listen: false)
+                      .setGroupName(value);
+                },
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Group description',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  Provider.of<GroupProvider>(context, listen: false)
+                      .setGroupDescription(value);
+                },
+              ),
               const SizedBox(height: 20),
               const SelectHikeDateSection(),
               const SizedBox(height: 20),
