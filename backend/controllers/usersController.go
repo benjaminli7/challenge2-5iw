@@ -152,6 +152,7 @@ func Login(c *gin.Context) {
 		"email":    user.Email,
 		"roles":    user.Role,
 		"verified": user.IsVerified,
+		"username": user.Username,
 	})
 
 	secret := os.Getenv("SECRET")
@@ -229,7 +230,7 @@ func Logout(c *gin.Context) {
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	db.DB.Select("id", "email", "role", "is_verified").Find(&users)
+	db.DB.Select("id", "email", "username", "role", "is_verified").Find(&users)
 	c.JSON(http.StatusOK, models.UserListResponse{Users: users})
 }
 
@@ -291,4 +292,63 @@ func DeleteUser(c *gin.Context) {
 	}
 	db.DB.Delete(&user)
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
+}
+
+// Get user profile
+// @Summary Get user profile
+// @Description Get the profile of the logged-in user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /users/me [get]
+func GetUserProfile(c *gin.Context) {
+	userID, _ := c.Get("userID")
+	var user models.User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+// UpdateUser godoc
+// @Summary Update user profile
+// @Description Update the profile of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User true "User profile"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id} [put]
+func UpdateUser(c *gin.Context) {
+	var user models.User
+	id := c.Param("id")
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	var body models.User
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	if body.Username != "" {
+		user.Username = body.Username
+	}
+
+	if body.ProfileImage != "" {
+		user.ProfileImage = body.ProfileImage
+	}
+
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
 }

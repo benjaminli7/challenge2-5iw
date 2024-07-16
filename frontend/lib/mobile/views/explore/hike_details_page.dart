@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
+import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
-import 'package:frontend/mobile/views/groups/createGroup_page.dart';
-import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
-import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsExplorePage({Key? key, required this.hike}) : super(key: key);
+  const HikeDetailsExplorePage({Key? key, required this.hike})
+      : super(key: key);
 
   @override
   _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
 }
 
 class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
+  String baseUrl = ConfigService.baseUrl;
   late Future<List<Group>> _groupsFuture;
   final GroupService _groupService = GroupService();
   DateTime? _selectedDate;
@@ -28,7 +32,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
+      _groupsFuture =
+          _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
     } else {
       _groupsFuture = Future.error('User not logged in');
     }
@@ -56,24 +61,25 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Joined group ${group.id} successfully'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
         setState(() {
           // Re-fetch groups to update the list after joining a group
-          _groupsFuture = _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
+          _groupsFuture = _groupService.fetchHikeGroups(
+              user.token, widget.hike.id, user.id);
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to join group ${group.id}: $e'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('User not logged in'),
           duration: Duration(seconds: 2),
         ),
@@ -107,7 +113,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 width: double.infinity,
                 height: 200,
                 child: Image.network(
-                  Uri.parse("http://192.168.1.94:8080${widget.hike.image}").toString(),
+                  Uri.parse("$baseUrl${widget.hike.image}").toString(),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -117,30 +123,35 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 children: [
                   Column(
                     children: [
-                      const Text('Difficulty level', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Difficulty level',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.difficulty, style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.difficulty,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   Column(
                     children: [
-                      const Text('Duration', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Duration',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.duration, style: const TextStyle(fontSize: 16)),
+                      Text(widget.hike.duration,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 300,
-                  child: GPXMapScreen(hike: widget.hike),
+              if (widget.hike.gpxFile.isNotEmpty)
+                Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 300,
+                    child: GPXMapScreen(hike: widget.hike),
+                  ),
                 ),
-              ),
               const SizedBox(height: 16),
               const Text(
                 'Groups',
@@ -163,21 +174,24 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 future: _groupsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: const CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No groups found for this hike'));
+                    return const Center(child: Text('No groups found for this hike'));
                   } else {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
                       groups = groups.where((group) {
-                        return group.startDate.isAtSameMomentAs(_selectedDate!) ||
+                        return group.startDate
+                                .isAtSameMomentAs(_selectedDate!) ||
                             group.startDate.isAfter(_selectedDate!);
                       }).toList();
                     }
                     return Column(
-                      children: groups.map((group) => _buildGroupCard(group)).toList(),
+                      children: groups
+                          .map((group) => _buildGroupCard(group))
+                          .toList(),
                     );
                   }
                 },
@@ -192,18 +206,23 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               ),
               const SizedBox(height: 16),
               ReviewWidget(hikeId: widget.hike.id),
+              const SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    GoRouter.of(context)
+                        .push('/hike/${widget.hike.id}/reviews');
+                  },
+                  child: const Text('View All Reviews'),
+                ),
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateGroupPage(hike: widget.hike),
-            ),
-          );
+          GoRouter.of(context).go('/groups/create/${widget.hike.id}');
         },
         child: const Icon(Icons.add),
       ),
@@ -212,23 +231,23 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
 
   Widget _buildGroupCard(Group group) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               group.organizer.email,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Text('Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
-            SizedBox(height: 8),
-
+            const SizedBox(height: 8),
+            Text(
+                'Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
+            const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () => _joinGroup(group),
-              child: Text('Join Group'),
+              child: const Text('Join Group'),
             ),
           ],
         ),

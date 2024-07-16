@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/models/review.dart';
+import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 
@@ -36,9 +37,16 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           _rating = review.rating;
           _commentController.text = review.comment;
         });
+      } else {
+        setState(() {
+          _existingReview = null;
+          _rating = 0;
+          _commentController.text = '';
+        });
       }
     }
   }
+
 
   bool _isValidInput(String value) {
     final regex = RegExp(r'[<>]');
@@ -48,12 +56,16 @@ class _ReviewWidgetState extends State<ReviewWidget> {
   Future<void> _submitReview() async {
     if (_formKey.currentState!.validate()) {
       final user = Provider.of<UserProvider>(context, listen: false).user;
+      final now = DateTime.now().toUtc();
       final review = Review(
         id: _existingReview?.id ?? 0,
         userId: user!.id,
+        user: user,
         hikeId: widget.hikeId,
         rating: _rating,
         comment: _commentController.text,
+        createdAt: _existingReview?.createdAt ?? now,
+        updatedAt: now,
       );
 
       if (_existingReview == null) {

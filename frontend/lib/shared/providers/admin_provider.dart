@@ -46,7 +46,11 @@ class AdminProvider with ChangeNotifier {
     _hikes.removeWhere((hike) => hike.id == hikeId);
     _notifyListenersDeferred();
   }
-
+  Future<void> deleteHike(String token, int hikeId) async {
+    await _adminService.deleteHike(token, hikeId);
+    _users.removeWhere((hike) => hike.id == hikeId);
+    _notifyListenersDeferred();
+  }
   void _setLoading(bool value) {
     _loading = value;
     _notifyListenersDeferred();

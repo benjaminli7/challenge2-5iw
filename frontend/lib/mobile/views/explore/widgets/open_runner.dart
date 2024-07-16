@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/shared/providers/hike_provider.dart';
+
+import '../../../../shared/services/config_service.dart';
 
 class GPXMapScreen extends StatefulWidget {
   final Hike hike;
@@ -13,6 +16,7 @@ class GPXMapScreen extends StatefulWidget {
 }
 
 class _GPXMapScreenState extends State<GPXMapScreen> {
+  String baseUrl = ConfigService.baseUrl;
   List<LatLng> routePoints = [];
   bool noDataAvailable = false;
 
@@ -22,6 +26,8 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
     loadGpxData();
   }
 
+
+
   Future<void> loadGpxData() async {
     if (widget.hike.gpxFile.isEmpty) {
       setState(() {
@@ -29,9 +35,9 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       });
       return;
     }
-    print('http://10.0.2.2:8080${widget.hike.gpxFile}');
+    print('$baseUrl${widget.hike.gpxFile}');
     final response = await http
-        .get(Uri.parse('http://10.0.2.2:8080${widget.hike.gpxFile}'));
+        .get(Uri.parse('$baseUrl${widget.hike.gpxFile}'));
     if (response.statusCode == 200) {
       final gpxString = response.body;
       print('GPX String: $gpxString');
@@ -59,44 +65,44 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       ),
       body: noDataAvailable
           ? const Center(
-        child: Text(
-          'No data available',
-          style: TextStyle(fontSize: 18, color: Colors.red),
-        ),
-      )
+              child: Text(
+                'No data available',
+                style: TextStyle(fontSize: 18, color: Colors.red),
+              ),
+            )
           : routePoints.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-        builder: (context, constraints) {
-          return FlutterMap(
-            options: MapOptions(
-              initialCenter: routePoints.isNotEmpty
-                  ? routePoints.first
-                  : const LatLng(0, 0),
-              initialZoom: 10.0,
-              interactionOptions: const InteractionOptions(
-                // flags: InteractiveFlag.none,
-              ),
-            ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-              ),
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: routePoints,
-                    strokeWidth: 4.0,
-                    color: Colors.blue,
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
+              ? const Center(child: CircularProgressIndicator())
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return FlutterMap(
+                      options: MapOptions(
+                        initialCenter: routePoints.isNotEmpty
+                            ? routePoints.first
+                            : const LatLng(0, 0),
+                        initialZoom: 10.0,
+                        interactionOptions: const InteractionOptions(
+                            // flags: InteractiveFlag.none,
+                            ),
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          subdomains: const ['a', 'b', 'c'],
+                        ),
+                        PolylineLayer(
+                          polylines: [
+                            Polyline(
+                              points: routePoints,
+                              strokeWidth: 4.0,
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
     );
   }
 }

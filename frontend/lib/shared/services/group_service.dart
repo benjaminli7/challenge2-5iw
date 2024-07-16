@@ -1,13 +1,30 @@
 import 'dart:convert';
 
+import 'package:frontend/shared/models/message.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/group.dart';
+import 'config_service.dart';
 
 class GroupService {
+  String baseUrl = ConfigService.baseUrl;
 
-  static const String baseUrl = 'http://192.168.1.94:8080';
+  // get a group by id
+  Future<Group> getGroupById(String token, int groupId) async {
+    final url = Uri.parse('$baseUrl/groups/$groupId');
+    final response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      return Group.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load group');
+    }
+  }
 
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
@@ -48,11 +65,11 @@ class GroupService {
     }
   }
 
-  Future<List<Group>> fetchHikeGroups(String token, int hikeId, int userId) async {
+  Future<List<Group>> fetchHikeGroups(
+      String token, int hikeId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
 
     final response = await http.get(
-
       url,
       headers: <String, String>{
         'Authorization': 'Bearer $token',
@@ -67,7 +84,6 @@ class GroupService {
       throw Exception('Failed to load groups');
     }
   }
-
 
   Future<void> joinGroup(String token, int groupId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/join');
@@ -85,6 +101,40 @@ class GroupService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to join the group');
+    }
+  }
+
+  // Add a method to delete a group
+  Future<void> deleteGroup(String token, int groupId) async {
+    final url = Uri.parse('$baseUrl/groups/$groupId');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete the group');
+    }
+  }
+
+  // fetch group messages
+  Future<List<Message>> fetchGroupMessages(String token, int groupId) async {
+    final url = Uri.parse('$baseUrl/groups/$groupId/messages');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> messageList = json.decode(response.body);
+      print(messageList);
+      return messageList.map((json) => Message.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load messages');
     }
   }
 }

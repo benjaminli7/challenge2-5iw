@@ -62,17 +62,44 @@ class _CreateHikePageState extends State<CreateHikePage> {
   }
 
   Future<void> _pickGPXFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['gpx'],
-    );
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['gpx'], // Ensure no dot before the extension
+      );
 
-    if (result != null && result.files.single.path != null) {
-      setState(() {
-        _gpxFile = File(result.files.single.path!);
-      });
-    } else {
-      print('No GPX file selected.');
+      print('File picking result: $result'); // Debug print
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _gpxFile = File(result.files.single.path!);
+          print('GPX file path: ${_gpxFile!.path}'); // Debug print
+        });
+      } else {
+        print('No GPX file selected.');
+      }
+    } catch (e) {
+      print('Error picking GPX file: $e');
+      print('Attempting to use FileType.any as a fallback');
+
+      // Fallback to FileType.any
+      try {
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.any,
+        );
+
+        if (result != null && result.files.single.path != null) {
+          setState(() {
+            _gpxFile = File(result.files.single.path!);
+            print(
+                'GPX file path with fallback: ${_gpxFile!.path}'); // Debug print
+          });
+        } else {
+          print('No file selected in fallback.');
+        }
+      } catch (e) {
+        print('Error picking file in fallback: $e');
+      }
     }
   }
 
@@ -103,8 +130,12 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the name of the hike';
                   }
-                  if (value.length > 100) {
-                    return 'Name cannot be longer than 100 characters';
+                  if (value.length > 50) {
+                    return 'Name cannot be longer than 50 characters';
+                  }
+                  final validName = RegExp(r'^[a-zA-Z0-9\s]+$');
+                  if (!validName.hasMatch(value)) {
+                    return 'Name can only contain alphanumeric characters and spaces';
                   }
                   return null;
                 },
@@ -116,8 +147,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
                   }
-                  if (value.length > 280) {
-                    return 'Description cannot be longer than 280 characters';
+                  if (value.length > 50) {
+                    return 'Description cannot be longer than 50 characters';
                   }
                   return null;
                 },
@@ -127,9 +158,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
                 decoration: const InputDecoration(labelText: 'Difficulty'),
                 items: ['Easy', 'Moderate', 'Hard']
                     .map((difficulty) => DropdownMenuItem<String>(
-                  value: difficulty,
-                  child: Text(difficulty),
-                ))
+                          value: difficulty,
+                          child: Text(difficulty),
+                        ))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -146,12 +177,14 @@ class _CreateHikePageState extends State<CreateHikePage> {
               TextFormField(
                 controller: _durationController,
                 decoration:
-                const InputDecoration(labelText: 'Duration (hours)'),
+                    const InputDecoration(labelText: 'Duration (hours)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the duration of the hike';
                   }
-                  if (double.tryParse(value) == null || double.parse(value) <= 0 || double.parse(value) >= 96) {
+                  if (double.tryParse(value) == null ||
+                      double.parse(value) <= 0 ||
+                      double.parse(value) >= 96) {
                     return 'Duration must be between 0 and 96h (its not Trekking!)';
                   }
                   return null;

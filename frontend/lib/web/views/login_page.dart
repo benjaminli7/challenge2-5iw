@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'dart:convert';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,26 +28,26 @@ class _LoginPageState extends State<LoginPage> {
       _emailController.text,
       _passwordController.text,
     );
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return;
 
     if (token != null) {
-
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
       print('parseJwt, $parseJwt');
       print(token);
-      if(parseJwt['roles'] == 'admin'){
+      if (parseJwt['roles'] == 'admin') {
         Provider.of<UserProvider>(context, listen: false).setUser(
           User(
               id: parseJwt['sub'],
               email: parseJwt['email'],
+              username: parseJwt['username'],
               password: "",
               token: token,
               role: parseJwt['roles'],
               isVerified: parseJwt['verified']),
         );
-        //print user info
+
         Fluttertoast.showToast(
           msg: 'Login successful',
           toastLength: Toast.LENGTH_SHORT,
@@ -57,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 16.0,
         );
 
-        GoRouter.of(context).go('/home');
+        GoRouter.of(context).go('/users');
       } else {
         Fluttertoast.showToast(
           msg: 'Vous n\'avez pas les droits d\'accès',
@@ -69,7 +70,6 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 16.0,
         );
       }
-
     } else {
       // Handle login error
       Fluttertoast.showToast(
@@ -118,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   )),
             ),
-
           ],
         ),
       ),

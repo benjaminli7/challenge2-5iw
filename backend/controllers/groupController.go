@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,14 +25,14 @@ import (
 func CreateGroup(c *gin.Context) {
 	var group models.Group
 	var groupUser models.GroupUser
+	println(c.PostForm("description"))
 	if err := c.ShouldBindJSON(&group); err != nil {
 		println("Failed to bind JSON")
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
-	println(c.ShouldBindJSON(group))
 
-	
+
 	if err := db.DB.Create(&group).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -59,10 +60,11 @@ func CreateGroup(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var group models.Group
-	if err := db.DB.First(&group, id).Error; err != nil {
+	if err := db.DB.Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	println()
 	c.JSON(http.StatusOK, group)
 }
 
@@ -136,7 +138,7 @@ func GetGroupsByHike(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("userId") 
+	userId := c.Param("userId")
 
 	var groups []models.Group
 
@@ -311,4 +313,15 @@ func ValidateUserGroup(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User validated"})
+}
+
+
+func GetGroupMessages(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var messages []models.Message
+	if err := db.DB.Preload("User").Where("group_id = ?", id).Find(&messages).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, messages)
 }

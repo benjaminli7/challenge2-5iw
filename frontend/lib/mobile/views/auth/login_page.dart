@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
@@ -8,10 +9,10 @@ import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -44,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         User(
             id: parseJwt['sub'],
             email: parseJwt['email'],
+            username: parseJwt['username'],
             password: "",
             token: token,
             role: parseJwt['roles'],
@@ -103,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
         User(
             id: parseJwt['sub'],
             email: parseJwt['email'],
+            username: parseJwt['username'],
             password: "",
             token: token,
             role: parseJwt['roles'],
