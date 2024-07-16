@@ -8,7 +8,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
       _groupsFuture =
           _groupService.fetchHikeGroups(user.token, widget.hike.id, user.id);
     } else {
-      _groupsFuture = Future.error('User not logged in');
+      _groupsFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
   }
 
@@ -60,7 +60,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         await _groupService.joinGroup(user.token, group.id, user.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Joined group ${group.id} successfully'),
+            content: Text(AppLocalizations.of(context)!.joinGroupSuccess(group.id)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -72,15 +72,15 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to join group ${group.id}: $e'),
+            content: Text(AppLocalizations.of(context)!.joinGroupFailure(group.id,e.toString())),
             duration: const Duration(seconds: 2),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('User not logged in'),
+         SnackBar(
+          content: Text(AppLocalizations.of(context)!.userNotLogged),
           duration: Duration(seconds: 2),
         ),
       );
@@ -91,7 +91,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hike Details'),
+        title: Text(AppLocalizations.of(context)!.hikeDetails),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -123,7 +123,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 children: [
                   Column(
                     children: [
-                      const Text('Difficulty level',
+                      Text(AppLocalizations.of(context)!.difficulty,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text(widget.hike.difficulty,
@@ -132,7 +132,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   ),
                   Column(
                     children: [
-                      const Text('Duration',
+                      Text(AppLocalizations.of(context)!.durationHour,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text(widget.hike.duration,
@@ -153,8 +153,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   ),
                 ),
               const SizedBox(height: 16),
-              const Text(
-                'Groups',
+              Text(
+                AppLocalizations.of(context)!.groups,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No groups found for this hike'));
+                    return  Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
                   } else {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
@@ -197,8 +197,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 },
               ),
               const Divider(),
-              const Text(
-                'Reviews',
+              Text(
+                AppLocalizations.of(context)!.reviews,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -213,7 +213,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                     GoRouter.of(context)
                         .push('/hike/${widget.hike.id}/reviews');
                   },
-                  child: const Text('View All Reviews'),
+                  child: Text(AppLocalizations.of(context)!.viewReviews),
                 ),
               ),
             ],
@@ -247,8 +247,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () => _joinGroup(group),
-              child: const Text('Join Group'),
-            ),
+              child: Text(AppLocalizations.of(context)!.joinGroup))
           ],
         ),
       ),

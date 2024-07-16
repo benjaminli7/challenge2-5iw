@@ -71,6 +71,39 @@
     "submit" : "Valider",
 
     "gpxRouteViewer" : "Visualiseur de route gpx",
-    "noDataAvailable" : "Aucune donnée disponible"
+    "noDataAvailable" : "Aucune donnée disponible",
+
+     "reviewSubmit" : "Votre avis a été soumis",
+     "rateHike":"Note de la randonnée:",
+     "comment" : "Commentaire (Optionnel)",
+     "commentLonger":"Le commentaire ne peut pas dépasser 280 caractères",
+     "invalidComment":"Le commentaire contient des charactères invalides",
+     "submitReview" : "Valider l'avis",
+
+     "discoverHike" : "Decouvrez les randonnées \npres de chez vous",
+     "searchTrail":"Rechercher une randonnée",
+
+     "userNotLogged":"Utilisateur non connecté",
+     "joinGroupSuccess":"Groupe {group} rejoint avec succès",
+     "joinGroupFailure":"Erreur lors du groupe {group}: {e}",
+
+     "groups":"Groupes",
+     "noGroupFound" :"Aucun groupe trouvé",
+     "reviews":"Avis",
+     "viewReviews":"Voir les avis",
+     "joinGroup":"Rejoindre le groupe",
+
+     "hikeReviews":"Avis sur la randonnée",
+     "noReviewsFound":"Aucun avis trouvé",
+     "ratingHike":"Avis :{rating}",
+     "noCommentProvided":"Aucun commentaire fourni",
+
+     "enterMessage" : "Entrer un message",
+
+     "groupDetail":"Détails du groupe",
+     "startDateArg":"Date début {startDate}",
+     "organizerArg":"Organisateur {organizer}",
+     "groupChat": "Chat du groupe"
+
 
 }

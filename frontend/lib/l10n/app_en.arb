@@ -73,7 +73,42 @@
     "submit" : "Submit",
 
     "gpxRouteViewer" : "GPX Route Viewer",
-    "noDataAvailable" : "No data available"
+    "noDataAvailable" : "No data available",
+
+    "reviewSubmit" : "Review submitted",
+    "rateHike":"Rate this hike:",
+    "comment" : "Comment (optional)",
+    "commentLonger":"Comment cannot be longer than 280 characters",
+    "invalidComment":"Invalid characters in comment",
+    "submitReview" : "Submit review",
+
+    "discoverHike" : "Discover hiking trails \nnear you",
+    "searchTrail":"Search for a trail",
+
+    "userNotLogged":"User not logged in",
+    "joinGroupSuccess":"Joined group {group} successfully",
+    "joinGroupFailure":"Failed to join group {group}: {e}",
+
+    "groups":"Groups",
+    "noGroupFound" :"No groups found",
+    "reviews":"Reviews",
+    "viewReviews":"View all reviews",
+    "joinGroup":"Join group",
+
+    "hikeReviews":"Hike Reviews",
+    "noReviewsFound":"No reviews found for this hike",
+    "ratingHike":"Rating :{rating}",
+    "noCommentProvided":"No comment provided",
+
+    "enterMessage" : "Enter your message",
+
+    "groupDetail":"Group details",
+    "startDateArg":"Start date {startDate}",
+    "organizerArg":"Organizer {organizer}",
+    "groupChat": "Group chat"
+
+
+
 
 
 
