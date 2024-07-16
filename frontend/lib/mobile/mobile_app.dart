@@ -33,6 +33,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 void main() {
   runApp(const MyMobileApp());
 }
@@ -247,12 +249,13 @@ class MyMobileApp extends StatelessWidget {
         theme: ThemeData(
           brightness: Brightness.dark,
         ),
-        localizationsDelegates: [
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [
+        supportedLocales: const [
           Locale('en'),
           Locale('fr'),
         ],

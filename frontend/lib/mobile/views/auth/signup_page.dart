@@ -4,6 +4,7 @@ import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -29,7 +30,7 @@ class _SignupPageState extends State<SignupPage> {
     if (response.statusCode == 200) {
 
       Fluttertoast.showToast(
-        msg: 'Signup successful',
+        msg: AppLocalizations.of(context)!.signUpSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -41,7 +42,7 @@ class _SignupPageState extends State<SignupPage> {
     } else {
 
       Fluttertoast.showToast(
-        msg: 'Signup failed',
+        msg: AppLocalizations.of(context)!.signUpFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -62,8 +63,8 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Signup',
+             Text(
+              AppLocalizations.of(context)!.signUp,
               style: TextStyle(
                 fontSize: 24,
               ),
@@ -74,12 +75,12 @@ class _SignupPageState extends State<SignupPage> {
             ),
             CustomTextField(
               controller: _passwordController,
-              labelText: 'Password',
+              labelText: AppLocalizations.of(context)!.password,
               obscureText: true,
             ),
             ElevatedButton(
               onPressed: _signup,
-              child: const Text('Register',
+              child: Text(AppLocalizations.of(context)!.signUp,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -97,7 +98,7 @@ class _SignupPageState extends State<SignupPage> {
                   decoration: TextDecoration.underline,
                 ),
               ),
-              child: const Text('Already registered? Login here.'),
+              child: Text(AppLocalizations.of(context)!.alreadyRegister),
             ),
           ],
         ),
