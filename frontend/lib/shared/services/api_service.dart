@@ -10,7 +10,7 @@ import 'config_service.dart';
 class ApiService {
   String baseUrl = ConfigService.baseUrl;
 
-  Future<http.Response> signup(String email, String password) {
+  Future<http.Response> signup(String email,String username, String password) {
     return http.post(
       Uri.parse('$baseUrl/signup'),
       headers: <String, String>{
@@ -19,6 +19,7 @@ class ApiService {
       body: jsonEncode(<String, String>{
         'email': email,
         'password': password,
+        'username': username,
       }),
     );
   }
@@ -173,6 +174,20 @@ class ApiService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode(user.toJson()),
+    );
+  }
+
+  Future<http.Response> validateAccount(String token) {
+    return http.patch(
+      Uri.parse('$baseUrl/validate'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'token': token,
+        },
+      ),
     );
   }
 }

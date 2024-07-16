@@ -15,12 +15,14 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final ApiService _apiService = ApiService();
 
   void _signup() async {
     final response = await _apiService.signup(
       _emailController.text,
+      _usernameController.text,
       _passwordController.text,
     );
 
@@ -71,6 +73,10 @@ class _SignupPageState extends State<SignupPage> {
             CustomTextField(
               controller: _emailController,
               labelText: 'Email',
+            ),
+            CustomTextField(
+              controller: _usernameController,
+              labelText: 'Username',
             ),
             CustomTextField(
               controller: _passwordController,

@@ -26,6 +26,7 @@ import (
 // @Router /signup [post]
 func Signup(c *gin.Context) {
 	var body struct {
+		Username string
 		Email    string
 		Password string
 	}
@@ -34,7 +35,7 @@ func Signup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
 		return
 	}
-
+	
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
@@ -42,8 +43,12 @@ func Signup(c *gin.Context) {
 	}
 
 	emailToken, _ := services.GenerateRandomToken(32)
-	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
-
+	user := models.User{Email: body.Email, Username: body.Username, Password: string(hash), Token: emailToken}
+	db.DB.First(&user, "username = ?", body.Username)
+	if user.ID != 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Username already in use"})
+		return
+	}
 	result := db.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -52,7 +57,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 	fmt.Println("token" + emailToken)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken + "'> cliquer ici</a>"
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='http://localhost:54775/#/validate?token=" + emailToken + "'> cliquer ici</a>"
 	services.SendEmail(body.Email, content, "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
