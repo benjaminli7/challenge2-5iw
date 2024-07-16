@@ -5,8 +5,12 @@ import (
 	"backend/db"
 	_ "backend/docs"
 	middleware "backend/middleware"
+	"log"
+	"net"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -25,14 +29,37 @@ import (
 
 // @host localhost:8080
 // @BasePath /
+var logger *logrus.Logger
 
 func init() {
+	// Set up the logger
+	logger = logrus.New()
+	conn, err := net.Dial("tcp", "localhost:5005")
+	if err != nil {
+		// Fallback to standard logger
+		log.Println("Could not connect to log server, using default stdout logger:", err)
+		// Set logger to output to stdout
+		logger.SetOutput(os.Stdout)
+	} else {
+		logger.SetOutput(conn)
+		logger.SetFormatter(&logrus.JSONFormatter{})
+	}
+
 	db.ConnectToDb()
 	db.SyncDatabase()
 }
 
 func main() {
 	r := gin.Default()
+
+	r.Use(func(c *gin.Context) {
+		c.Next()
+		logger.WithFields(logrus.Fields{
+			"method": c.Request.Method,
+			"path":   c.Request.URL.Path,
+			"status": c.Writer.Status(),
+		}).Info("request handled")
+	})
 
 	r.Static("/images", "./public/images")
 	r.Static("/gpx", "./public/gpx")
@@ -52,6 +79,7 @@ func main() {
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.UpdateUser)
 	r.GET("/users/me", controllers.GetUserProfile)
+
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
@@ -70,12 +98,10 @@ func main() {
 	r.DELETE("/advice/:id", middleware.RequireAuth(false), controllers.DeleteAdvice)
 
 	// Group routes
-
 	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", middleware.RequireAuth(false), controllers.JoinGroup)
 	r.GET("/groups/user/:id", middleware.RequireAuth(false), controllers.GetMyGroups)
 	r.GET("/groups/:id", middleware.RequireAuth(false), controllers.GetGroup)
-
 	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.GET("/groups/hike/:id/:userId", middleware.RequireAuth(false), controllers.GetGroupsByHike)
 	r.GET("/groups/:id/messages", middleware.RequireAuth(false), controllers.GetGroupMessages)
@@ -83,7 +109,6 @@ func main() {
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
-
 
 	// Review routes
 	r.POST("/reviews", controllers.CreateReview)
@@ -96,6 +121,6 @@ func main() {
 
 	err := r.Run()
 	if err != nil {
-		return
+		logger.Fatal(err)
 	}
 }

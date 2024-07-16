@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-import 'package:frontend/shared/models/user.dart';
+import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class HikesPage extends StatefulWidget {
   const HikesPage({super.key});
@@ -17,124 +17,58 @@ class _HikesPageState extends State<HikesPage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      // Fetch users when the page is first loaded
-      context.read<AdminProvider>().fetchUsers(user.token);
+      context.read<HikeProvider>().fetchHikes();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User List')),
-      body: Consumer<AdminProvider>(
-        builder: (context, adminProvider, child) {
-          if (adminProvider.loading) {
-            return const Center(child: CircularProgressIndicator());
+      appBar: AppBar(title: const Text('Hikes List')),
+      body: Consumer<HikeProvider>(
+        builder: (context, hikeProvider, child) {
+          if (hikeProvider.hikes.isEmpty) {
+            return const Center(child: Text('No hikes found'));
           }
 
-          if (adminProvider.users.isEmpty) {
-            return const Center(child: Text('No users found'));
-          }
-
-          return DataTable(
-            columns: const [
-              DataColumn(label: Text('Email')),
-              DataColumn(label: Text('Role')),
-            ],
-            rows: adminProvider.users.map((user) {
-              return DataRow(cells: [
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserDetailsPage(user: user),
+          return Center(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              constraints: BoxConstraints(maxWidth: 800),
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Name')),
+                  DataColumn(label: Text('Description')),
+                  DataColumn(label: Text('Duration')),
+                  DataColumn(label: Text('Difficulty')),
+                  DataColumn(label: Text('IsApproved')),
+                ],
+                rows: hikeProvider.hikes.map((hike) {
+                  return DataRow(cells: [
+                    DataCell(
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/hike/${hike.id}');
+                        },
+                        child: Text(
+                          hike.name,
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
-                      );
-                    },
-                    child: Text(
-                      user.email,
-                      style: const TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
                       ),
                     ),
-                  ),
-                ),
-                DataCell(Text(user.role)),
-              ]);
-            }).toList(),
+                    DataCell(Text(hike.description)),
+                    DataCell(Text(hike.duration.toString())),
+                    DataCell(Text(hike.difficulty)),
+                    DataCell(Text(hike.isApproved.toString())),
+                  ]);
+                }).toList(),
+              ),
+            ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final user = Provider.of<UserProvider>(context, listen: false).user;
-          if (user != null) {
-            context.read<AdminProvider>().fetchUsers(user.token);
-          }
-        },
-        child: const Icon(Icons.refresh),
-      ),
-    );
-  }
-}
-
-// Sample UserDetailsPage to navigate to
-class UserDetailsPage extends StatelessWidget {
-  final User user;
-
-  const UserDetailsPage({required this.user, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('User Details')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Email: ${user.email}', style: const TextStyle(fontSize: 20)),
-            Text('Role: ${user.role}', style: const TextStyle(fontSize: 20)),
-            Text('IsValide: ${user.isVerified.toString()}', style: const TextStyle(fontSize: 20)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
-                if (userProvider.user != null) {
-                  final token = userProvider.user!.token;
-                  await context.read<AdminProvider>().deleteUser(token, user.id);
-
-                  // After deletion, navigate back to the previous page
-                  Navigator.of(context).pop();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              child: const Text('Delete User'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final userProvider = Provider.of<UserProvider>(context, listen: false);
-                if (userProvider.user != null) {
-                  final token = userProvider.user!.token;
-                  await context.read<AdminProvider>().upgradeAdmin(token, user.id);
-
-                  // After deletion, navigate back to the previous page
-                  Navigator.of(context).pop();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
-              child: const Text('Devenir Admin'),
-            ),
-          ],
-        ),
       ),
     );
   }

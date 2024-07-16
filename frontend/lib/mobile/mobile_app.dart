@@ -31,37 +31,29 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 void main() {
   runApp(const MyMobileApp());
 }
 
 final GoRouter _router = GoRouter(
-  redirect: (context, state) async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool introSeen = prefs.getBool('intro_seen') ?? false;
+  redirect: (context, state) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
-
-    if (!introSeen && state.uri.path != '/intro') {
-      return '/intro';
-    }
-    if (introSeen &&
-        !isLoggedIn &&
+    if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
+      //print(1);
       return '/login';
     }
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
+      //print(2);
       return '/home';
     }
     return null;
   },
   routes: <RouteBase>[
-    GoRoute(
-      path: '/intro',
-      builder: (context, state) => IntroPage(),
-    ),
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupPage(),
@@ -99,6 +91,7 @@ final GoRouter _router = GoRouter(
           name: "profile",
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
+
           routes: [
             GoRoute(
               name: "profileDetails",
@@ -111,6 +104,7 @@ final GoRouter _router = GoRouter(
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
+
         ),
         GoRoute(
           name: "explore",
@@ -123,9 +117,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final hikeId = int.parse(state.pathParameters['id']!);
             final hikeProvider =
-                Provider.of<HikeProvider>(context, listen: false);
-            final hike =
-                hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
+            Provider.of<HikeProvider>(context, listen: false);
+            final hike = hikeProvider.hikes
+                .firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsExplorePage(hike: hike);
           },
         ),
@@ -227,6 +221,7 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
+
   ],
 );
 
@@ -236,18 +231,25 @@ class MyMobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+
       providers: [
+
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: MaterialApp.router(
-        routerConfig: _router,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-        ),
+      child: Consumer<SettingsProvider>(
+        builder: (context, settingsProvider, child) {
+          return MaterialApp.router(
+            routerConfig: _router,
+            theme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+          );
+        },
+
       ),
     );
   }

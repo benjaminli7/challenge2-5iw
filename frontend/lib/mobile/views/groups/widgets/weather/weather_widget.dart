@@ -106,8 +106,9 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[Expanded(child: _resultView())],
+    return SizedBox(
+      height: 200, // Set a fixed height or adjust as needed
+      child: _resultView(),
     );
   }
 }

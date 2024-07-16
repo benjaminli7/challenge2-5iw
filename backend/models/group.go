@@ -13,8 +13,8 @@ type Group struct {
 	Name        string    `json:"name"`
 	Users 		[]*User `gorm:"many2many:group_users;"`
 	HikeID      uint      `json:"hike_id"`
-	Hike        Hike      `json:"hike" gorm:"foreignKey:HikeID"`
+	Hike        Hike      `json:"hike" gorm:"foreignKey:HikeID "`
 	OrganizerID uint      `json:"organizer_id"`
 	Organizer   User      `json:"organizer" gorm:"foreignKey:OrganizerID"`
-	Messages []Message
+	Messages    []Message
 }

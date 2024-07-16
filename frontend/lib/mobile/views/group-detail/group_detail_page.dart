@@ -4,6 +4,7 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
@@ -81,6 +82,12 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       },
                       label: const Text('Group Chat'),
                     ),
+                    const SizedBox(height: 16.0),
+                    Expanded(
+                      child: WeatherWidget(
+                        group: group,
+                      ),
+                    )
                   ],
                 ),
               );

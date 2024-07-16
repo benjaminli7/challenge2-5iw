@@ -31,9 +31,7 @@ class _FooterState extends State<Footer> {
       case 3:
         GoRouter.of(context).go('/params');
         break;
-        case 4:
-          GoRouter.of(context).go('/home');
-          break;
+       
     }
   }
 
@@ -58,10 +56,7 @@ class _FooterState extends State<Footer> {
         icon: Icon(Icons.camera_outlined, color: Colors.white),
         label: 'Params',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.home, color: Colors.white),
-        label: 'Home',
-      ),
+     
     ];
 
 
