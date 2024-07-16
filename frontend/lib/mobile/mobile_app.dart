@@ -20,7 +20,7 @@ import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 void main() {
   runApp(const MyMobileApp());
 }
@@ -154,6 +154,15 @@ class MyMobileApp extends StatelessWidget {
         theme: ThemeData(
           brightness: Brightness.dark,
         ),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'),
+          Locale('fr'),
+        ],
       ),
     );
   }

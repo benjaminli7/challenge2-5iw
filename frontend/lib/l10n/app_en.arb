@@ -1,0 +1,17 @@
+{
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  // Login
+  "login": "Login",
+  "logInSuccess": "You have successfully logged in!",
+  "logInFailure": "Login failed. Please try again.",
+  "logInFailureGoogle2": "Failed to connect with Google2",
+  "connectedGoogle": "Connected with Google",
+  "logInFailureGoogle3": "Failed to connect with Google3",
+  "password": "Password",
+  "signInGoogle": "Sign in with Google",
+  "notAccount": "No account yet? Sign up"
+
+}

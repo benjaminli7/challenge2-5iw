@@ -1,0 +1,14 @@
+{
+    "helloWorld": "Bonjour le monde",
+    //Login
+    "login": "Connexion",
+    "logInSuccess": "Connexion réussie",
+    "logInFailure": "Erreur de connexion",
+    "logInFailureGoogle2": "Erreur de connexion Google2",
+    "connectedGoogle": "Connecté avec Google"
+    "logInFailureGoogle3": "Erreur de connexion Google3",
+    "password": "Mot de passe",
+    "signInGoogle": "Connexion avec Google",
+    "notAccount": "Pas de compte ? Inscription"
+
+}

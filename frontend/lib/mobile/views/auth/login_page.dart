@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
       Fluttertoast.showToast(
-        msg: "Log in success",
+        msg: AppLocalizations.of(context)!.logInSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -118,9 +119,9 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
       GoRouter.of(context).go('/explore');
-      // print email
+
     } catch (e) {
-      // Handle login error
+
       Fluttertoast.showToast(
         msg: 'Failed to connect with Google 3',
         toastLength: Toast.LENGTH_SHORT,
