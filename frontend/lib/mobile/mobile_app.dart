@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
@@ -18,6 +20,8 @@ import 'package:frontend/mobile/views/groups/groups_page.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/home_page.dart';
+import 'package:frontend/mobile/views/profile/profile_details_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -25,14 +29,10 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
-import 'package:flutter_translate/flutter_translate.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyMobileApp());
@@ -41,9 +41,11 @@ void main() {
 }
 
 final GoRouter _router = GoRouter(
-  redirect: (context, state) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final isLoggedIn = userProvider.user != null;
+  redirect: (context, state) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    final isLoggedIn = userJson != null;
+
     if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
@@ -53,7 +55,7 @@ final GoRouter _router = GoRouter(
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
       //print(2);
-      return '/home';
+      return '/explore';
     }
     return null;
   },
@@ -85,9 +87,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final userProvider = Provider.of<UserProvider>(context);
             if (userProvider.user == null) {
-              return const LoginPage();
+              return const Center(child: CircularProgressIndicator());
             } else {
-              return const HomePage();
+              return const ExplorePage();
             }
           },
         ),
@@ -234,7 +236,6 @@ class MyMobileApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-
       child: MaterialApp.router(
         routerConfig: _router,
         theme: ThemeData(
@@ -250,7 +251,6 @@ class MyMobileApp extends StatelessWidget {
           Locale('en'),
           Locale('fr'),
         ],
-
       ),
     );
   }
