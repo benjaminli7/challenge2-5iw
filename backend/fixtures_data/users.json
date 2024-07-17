@@ -1,20 +1,32 @@
 [
   {
-    "email": "user1@example.com",
-    "username": "user1",
-    "password": "password1",
+    "ID": 1,
+    "email": "admin@admin.com",
+    "username": "admin",
+    "password": "$2a$10$uAIKKzTuXLI2mZ0QQjCPxOl1krxfAOehuTrF6hOQ0Ft2FZ1sLqVUK",
     "role": "admin",
     "token": "token1",
     "is_verified": true,
-    "profile_image": null
+    "profile_image": "/avatar/admin.webp"
   },
   {
-    "email": "user2@example.com",
-    "username": "user2",
-    "password": "password2",
+    "ID": 2,
+    "email": "user@user.com",
+    "username": "CamilleBorra",
+    "password": "$2a$10$KpADwpOJiIybXIL9nXdmHO/M4StfEk1mx8OPiJPfDtVwBIPBKhRhS",
     "role": "user",
     "token": "token2",
-    "is_verified": false,
-    "profile_image": null
+    "is_verified": true,
+    "profile_image": "/avatar/camille.jpg"
+  },
+  {
+    "ID": 3,
+    "email": "user2@user.com",
+    "username": "AlexandreSamson",
+    "password": "$2a$10$KpADwpOJiIybXIL9nXdmHO/M4StfEk1mx8OPiJPfDtVwBIPBKhRhS",
+    "role": "user",
+    "token": "token3",
+    "is_verified": true,
+    "profile_image": "/avatar/alexandre.jpg"
   }
 ]
