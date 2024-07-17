@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/services/api_service.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:xml/xml.dart' as xml;
+import 'package:frontend/shared/services/api_service.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:xml/xml.dart' as xml;
 
 import '../models/review.dart';
 
@@ -43,7 +44,7 @@ class HikeProvider with ChangeNotifier {
   // }
 
   Future<void> createHike(String name, String description, int organizerId,
-      String difficulty, String duration, File image, File gpxFile) async {
+      String difficulty, int duration, File image, File gpxFile) async {
     try {
       final response = await ApiService().createHike(
           name, description, organizerId, difficulty, duration, image, gpxFile);
@@ -111,6 +112,7 @@ class HikeProvider with ChangeNotifier {
     try {
       final response = await ApiService().updateReview(review);
       if (response.statusCode == 200) {
+        await fetchHikes();
         print('Review updated successfully');
       } else {
         print('Failed to update review_widget.dart: ${response.statusCode}');
@@ -154,8 +156,7 @@ class HikeProvider with ChangeNotifier {
 
   Future<void> userSubscribeToHike(int hikeId, int userId, String token) async {
     try {
-      final response =
-          await ApiService().subscribeToHike(hikeId, userId, token);
+      final response = await ApiService().subscribeToHike(hikeId, userId, token);
       if (response.statusCode == 200) {
         print('User subscribed to hike successfully');
       } else {

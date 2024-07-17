@@ -26,7 +26,7 @@ var validate = validator.New()
 // @Param description formData string true "Hike Description"
 // @Param organizer_id formData uint true "Organizer ID"
 // @Param difficulty formData string true "Difficulty"
-// @Param duration formData string true "Duration"
+// @Param duration formData int true "Duration"
 // @Param is_approved formData bool false "Is Approved"
 // @Param image formData file false "Hike Image"
 // @Success 200 {object} models.Hike
@@ -45,7 +45,7 @@ func CreateHike(c *gin.Context) {
 	}
 	hike.OrganizerID = uint(organizerID)
 	hike.Difficulty = c.PostForm("difficulty")
-	hike.Duration = c.PostForm("duration")
+	hike.Duration, _ = strconv.Atoi(c.PostForm("duration"))
 	isApproved, err := strconv.ParseBool(c.PostForm("is_approved"))
 	if err != nil {
 		hike.IsApproved = false
@@ -115,7 +115,6 @@ func GetAllHikes(c *gin.Context) {
 		return
 	}
 
-	// Calculate average rating for each hike
 	for i, hike := range hikes {
 		var avgRating float64
 		db.DB.Model(&models.Review{}).Where("hike_id = ?", hike.ID).Select("avg(rating)").Row().Scan(&avgRating)
@@ -197,7 +196,7 @@ func UpdateHike(c *gin.Context) {
 		hike.Difficulty = difficulty
 	}
 	if duration := c.PostForm("duration"); duration != "" {
-		hike.Duration = duration
+		hike.Duration, _ = strconv.Atoi(duration)
 	}
 	if isApproved := c.PostForm("is_approved"); isApproved != "" {
 		approved, err := strconv.ParseBool(isApproved)
@@ -250,64 +249,57 @@ func UpdateHike(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /hikes/{id} [delete]
 func DeleteHike(c *gin.Context) {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
-        return
-    }
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-    tx := db.DB.Begin()
-    if tx.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": tx.Error.Error()})
-        return
-    }
+	tx := db.DB.Begin()
+	if tx.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": tx.Error.Error()})
+		return
+	}
 
+	var groups []models.Group
+	if err := tx.Where("hike_id = ?", id).Find(&groups).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    var groups []models.Group
-    if err := tx.Where("hike_id = ?", id).Find(&groups).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	groupIDs := make([]uint, len(groups))
+	for i, group := range groups {
+		groupIDs[i] = group.ID
+	}
 
+	if len(groupIDs) > 0 {
+		if err := tx.Unscoped().Where("group_id IN ?", groupIDs).Delete(&models.GroupUser{}).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
 
-    groupIDs := make([]uint, len(groups))
-    for i, group := range groups {
-        groupIDs[i] = group.ID
-    }
+	if err := tx.Unscoped().Where("hike_id = ?", id).Delete(&models.Group{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    if len(groupIDs) > 0 {
-        if err := tx.Unscoped().Where("group_id IN ?", groupIDs).Delete(&models.GroupUser{}).Error; err != nil {
-            tx.Rollback()
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
-    }
+	if err := tx.Delete(&models.Hike{}, id).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    if err := tx.Unscoped().Where("hike_id = ?", id).Delete(&models.Group{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-
-
-    if err := tx.Delete(&models.Hike{}, id).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-
-    if err := tx.Commit().Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-
-    c.JSON(http.StatusOK, gin.H{"message": "Hike and associated groups and group users deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": "Hike and associated groups and group users deleted"})
 }
-
-
-
 
 // ValidateHike godoc
 // @Summary Validate a hike by ID
