@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/web/views/validation_page.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/web/views/login_page.dart';
@@ -21,22 +22,29 @@ void main() {
   runApp(const MyWebApp());
 }
 
+bool _isValidateTokenPath(String path) {
+  final validateTokenPattern = RegExp(r'^/validate/[^/]+$');
+  return validateTokenPattern.hasMatch(path);
+}
+
 final GoRouter _router = GoRouter(
   redirect: (context, state) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
     print(state.uri.path);
     print(isLoggedIn);
-    // If the user is not logged in and trying to access a protected route, redirect to the login page
-    if (!isLoggedIn && state.uri.path != '/login') {
+
+    if (!isLoggedIn && state.uri.path != '/login' && !_isValidateTokenPath(state.uri.path)) {
       print(1);
       return '/login';
     }
+
     // If the user is logged in and trying to access the login/signup page, redirect to the home page
-    if (isLoggedIn && (state.uri.path == '/login')) {
+    else if (isLoggedIn && (state.uri.path == '/login') && state.uri.path !='/validate/:token'){
       print(2);
       return '/home';
     }
+
     return null;
   },
   routes: <RouteBase>[
@@ -46,6 +54,17 @@ final GoRouter _router = GoRouter(
       path: '/login',
       builder: (context, state) => const LoginPage(),
     ),
+
+
+      GoRoute(
+        path: '/validate/:token',
+        builder: (context, state) {
+          final token = state.pathParameters['token']!;
+          return ValidatePage(token: token);
+        }
+
+
+      ),
     // ShellRoute with a footer
     ShellRoute(
       builder: (context, state, child) {
@@ -54,7 +73,9 @@ final GoRouter _router = GoRouter(
           bottomNavigationBar: const Footer(),
         );
       },
+
       routes: [
+
         GoRoute(
           path: '/home',
           builder: (context, state) => const HomePage(),

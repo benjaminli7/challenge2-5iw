@@ -67,6 +67,10 @@ final GoRouter _router = GoRouter(
       path: '/login',
       builder: (context, state) => const LoginPage(),
     ),
+    GoRoute(
+      path: '/validate',
+      builder: (context, state) => const LoginPage(),
+    ),
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(

@@ -55,27 +55,39 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
-
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            username: parseJwt['username'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
-      );
-      Fluttertoast.showToast(
-        msg: AppLocalizations.of(context)!.logInSuccess,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      GoRouter.of(context).go('/explore');
+      if (parseJwt['verified'] == true) {
+        Provider.of<UserProvider>(context, listen: false).setUser(
+          User(
+              id: parseJwt['sub'],
+              email: parseJwt['email'],
+              username: parseJwt['username'],
+              password: "",
+              token: token,
+              role: parseJwt['roles'],
+              isVerified: parseJwt['verified']),
+        );
+        Fluttertoast.showToast(
+          msg: 'Login successful',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        GoRouter.of(context).go('/explore');
+      } else {
+        Fluttertoast.showToast(
+          msg: 'You are not verified',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        print('You are not verified');
+      }
     } else {
       Fluttertoast.showToast(
         msg: AppLocalizations.of(context)!.logInFailure,
@@ -124,19 +136,32 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token!.split('.')[1]))),
       );
-
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            username: parseJwt['username'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified']),
-      );
-
-      Fluttertoast.showToast(
+      print(parseJwt['verified']);
+      if (parseJwt['verified'] == true) {
+        Provider.of<UserProvider>(context, listen: false).setUser(
+          User(
+              id: parseJwt['sub'],
+              email: parseJwt['email'],
+              username: parseJwt['username'],
+              password: "",
+              token: token,
+              role: parseJwt['roles'],
+              isVerified: parseJwt['verified']),
+        );
+      }
+      else{
+        Fluttertoast.showToast(
+          msg: 'You are not verified',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+      final credential = Fluttertoast.showToast(
         msg: AppLocalizations.of(context)!.connectedGoogle,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,

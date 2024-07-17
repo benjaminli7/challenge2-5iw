@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       print('parseJwt, $parseJwt');
       print(token);
-      if (parseJwt['roles'] == 'admin') {
+      if (parseJwt['roles'] == 'admin' && parseJwt['verified'] == true) {
         Provider.of<UserProvider>(context, listen: false).setUser(
           User(
               id: parseJwt['sub'],
