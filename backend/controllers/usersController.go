@@ -9,7 +9,7 @@ import (
 	"os"
 	"strconv"
 	"time"
-
+	"path/filepath"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -26,25 +26,46 @@ import (
 // @Failure 400 {object} models.ErrorResponse
 // @Router /signup [post]
 func Signup(c *gin.Context) {
-	var body struct {
-		Email    string
-		Password string
-	}
 
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
-		return
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	email := c.PostForm("email")
+    username := c.PostForm("username")
+    password := c.PostForm("password")
+	println("email",email)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 		return
 	}
 
 	emailToken, _ := services.GenerateRandomToken(32)
-	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
-
+	user := models.User{Email: email, Username: username, Password: string(hash), Token: emailToken}
+	db.DB.First(&user, "username = ?", username)
+	if user.ID != 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{"Username already in use"})
+		return
+	}
+	db.DB.First(&user, "email = ?", email)
+	if user.ID != 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{"Email already in use"})
+		return
+	}
+	file, err := c.FormFile("image")
+	// println("err",err.Error())
+	if err == nil {
+		println("file", file)
+		filename := filepath.Base(file.Filename)
+		filePath := filepath.Join("public", "avatar", filename)
+		if err := c.SaveUploadedFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+		user.ProfileImage = "/avatar/" + filename
+	} else if err == http.ErrMissingFile {
+		user.ProfileImage = "/avatar/default_avatar.png"
+	} else {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 	result := db.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -53,8 +74,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 	fmt.Println("token" + emailToken)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken + "'> cliquer ici</a>"
-	services.SendEmail(body.Email, content, "Validation de compte")
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='https://api.autoequip.dev/web/#/validate/" + emailToken + "'> cliquer ici</a>"
+	services.SendEmail(email, content, "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
 

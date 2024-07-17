@@ -46,3 +46,4 @@ app.*.map.json
 /backend/public/images
 
 *.env
+./firebase.json

@@ -1,5 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
@@ -16,10 +18,10 @@ import 'package:frontend/mobile/views/group-chat/group-chat.dart';
 import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
-import 'package:frontend/mobile/views/profile/profile_details_page.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -32,24 +34,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/shared/widgets/notification_page.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:frontend/firebase_options.dart';
-import 'package:frontend/shared/services/firebase_service.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:frontend/firebase_options.dart';
+// import 'package:frontend/shared/services/firebase_service.dart';
 
 Future<void> main() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseService().initNotifications();
-  final token = await FirebaseMessaging.instance.getToken();
-
-  prefs.setString('fcmToken', token!);
-  if (prefs.containsKey('fcmToken')) {
-    print('FCM Token: ${prefs.getString('fcmToken')}');
-  }
-
-  // setupFirebaseMessagingHandlers();
-
   runApp(const MyMobileApp());
 }
 
@@ -58,8 +47,10 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GoRouter _router = GoRouter(
   navigatorKey: navigatorKey,
   redirect: (context, state) async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final isLoggedIn = userProvider.user != null;
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    final isLoggedIn = userJson != null;
+
     if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
@@ -69,7 +60,7 @@ final GoRouter _router = GoRouter(
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
       //print(2);
-      return '/home';
+      return '/explore';
     }
     return null;
   },
@@ -80,6 +71,10 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/validate',
       builder: (context, state) => const LoginPage(),
     ),
     ShellRoute(
@@ -101,9 +96,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final userProvider = Provider.of<UserProvider>(context);
             if (userProvider.user == null) {
-              return const LoginPage();
+              return const Center(child: CircularProgressIndicator());
             } else {
-              return const HomePage();
+              return const ExplorePage();
             }
           },
         ),
@@ -112,11 +107,6 @@ final GoRouter _router = GoRouter(
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
           routes: [
-            GoRoute(
-              name: "profileDetails",
-              path: 'details',
-              builder: (context, state) => const ProfileDetailsPage(),
-            ),
             GoRoute(
               name: "hike-history",
               path: 'hike-history',
@@ -281,6 +271,16 @@ class MyMobileApp extends StatelessWidget {
             theme: ThemeData(
               brightness: Brightness.dark,
             ),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('fr'),
+            ],
             builder: (context, child) {
               // Navigate based on initial message if exists
               if (initialMessage != null &&

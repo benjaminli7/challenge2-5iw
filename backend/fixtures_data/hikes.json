@@ -1,0 +1,134 @@
+[
+    {
+      "Name": "Tour du Mont Blanc",
+      "Description": "Une des randonnées les plus célèbres d'Europe, parcourant les frontières de la France, de la Suisse et de l'Italie.",
+      "OrganizerID": 1,
+      "Difficulty": "Hard",
+      "Duration": 24,
+      "IsApproved": true,
+      "Image": "/images/mont-blanc.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Sentier des Douaniers (GR34)",
+      "Description": "Un sentier côtier qui longe la Bretagne offrant des vues spectaculaires sur l'océan Atlantique.",
+      "OrganizerID": 2,
+      "Difficulty": "Moderate",
+      "Duration": 6,
+      "IsApproved": true,
+      "Image": "/images/sentier-douanier.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Inca Trail",
+      "Description": "Un trek de quatre jours menant au Machu Picchu, avec des vues imprenables sur les Andes péruviennes.",
+      "OrganizerID": 1,
+      "Difficulty": "Hard",
+      "Duration": 96,
+      "IsApproved": true,
+      "Image": "/images/machu-pichu.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Pacific Crest Trail",
+      "Description": "Un sentier de 4,270 km à travers la Californie, l'Oregon et l'État de Washington, des déserts aux forêts alpines.",
+      "OrganizerID": 2,
+      "Difficulty": "Hard",
+      "Duration": 3600,
+      "IsApproved": true,
+      "Image": "/images/pacific-crest.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Kilimanjaro",
+      "Description": "Ascension du plus haut sommet d'Afrique, offrant une diversité de paysages depuis la forêt tropicale jusqu'aux glaciers.",
+      "OrganizerID": 1,
+      "Difficulty": "Hard",
+      "Duration": 168,
+      "IsApproved": true,
+      "Image": "/images/kilimanjaro.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Appalachian Trail",
+      "Description": "Un sentier de randonnée de 3,500 km parcourant les Appalaches aux États-Unis, du Maine à la Géorgie.",
+      "OrganizerID": 2,
+      "Difficulty": "Hard",
+      "Duration": 4320,
+      "IsApproved": true,
+      "Image": "/images/appalachian.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Milford Track",
+      "Description": "Une des plus belles randonnées de Nouvelle-Zélande, traversant des forêts luxuriantes et des vallées glaciaires.",
+      "OrganizerID": 1,
+      "Difficulty": "Moderate",
+      "Duration": 60,
+      "IsApproved": true,
+      "Image": "/images/milford.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "W Trek in Torres del Paine",
+      "Description": "Un trek populaire en Patagonie chilienne, offrant des vues sur les tours de granit emblématiques du parc.",
+      "OrganizerID": 2,
+      "Difficulty": "Hard",
+      "Duration": 86,
+      "IsApproved": true,
+      "Image": "/images/w-trek.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Annapurna Circuit",
+      "Description": "Un trek classique au Népal, passant par une grande diversité de paysages et culminant au col de Thorong La.",
+      "OrganizerID": 1,
+      "Difficulty": "Hard",
+      "Duration": 480,
+      "IsApproved": true,
+      "Image": "/images/annapurna-circuit.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Great Ocean Walk",
+      "Description": "Un sentier côtier en Australie, offrant des vues sur des falaises spectaculaires et l'océan Austral.",
+      "OrganizerID": 2,
+      "Difficulty": "Moderate",
+      "Duration": 72,
+      "IsApproved": true,
+      "Image": "/images/great-ocean-walk.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Tour du Mont Rose",
+      "Description": "Une randonnée en boucle autour du deuxième plus haut massif des Alpes, à cheval entre la Suisse et l'Italie.",
+      "OrganizerID": 1,
+      "Difficulty": "Hard",
+      "Duration": 120,
+      "IsApproved": true,
+      "Image": "/images/mont-rose.jpg",
+      "GpxFile": "",
+      "Groups": null
+    },
+    {
+      "Name": "Les Gorges du Verdon",
+      "Description": "Randonnée à travers le plus grand canyon d'Europe, avec des vues époustouflantes sur les gorges.",
+      "OrganizerID": 2,
+      "Difficulty": "Moderate",
+      "Duration": 8,
+      "IsApproved": true,
+      "Image": "/images/verdon.jpg",
+      "GpxFile": "",
+      "Groups": null
+    }
+  ]

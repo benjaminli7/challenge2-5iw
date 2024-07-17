@@ -1,11 +1,14 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
@@ -33,7 +36,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'name': _nameController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
-        'duration': _durationController.text,
+        'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
       };
@@ -118,7 +121,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Hike'),
+        title: Text(AppLocalizations.of(context)!.createHike),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,38 +131,41 @@ class _CreateHikePageState extends State<CreateHikePage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.name),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the name of the hike';
+                    return AppLocalizations.of(context)!.enterNameHike;
                   }
                   if (value.length > 50) {
-                    return 'Name cannot be longer than 50 characters';
+                    return AppLocalizations.of(context)!.nameHike50;
                   }
                   final validName = RegExp(r'^[a-zA-Z0-9\s]+$');
                   if (!validName.hasMatch(value)) {
-                    return 'Name can only contain alphanumeric characters and spaces';
+                    return AppLocalizations.of(context)!.nameHikeAlpha;
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.description),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
+                    return AppLocalizations.of(context)!.enterDescriptionHike;
                   }
                   if (value.length > 50) {
-                    return 'Description cannot be longer than 50 characters';
+                    return AppLocalizations.of(context)!.descriptionHike50;
                   }
                   return null;
                 },
               ),
               DropdownButtonFormField<String>(
                 value: _difficulty,
-                decoration: const InputDecoration(labelText: 'Difficulty'),
-                items: ['Easy', 'Moderate', 'Hard']
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.difficulty),
+                items: ['Easy', 'Medium', 'Hard']
                     .map((difficulty) => DropdownMenuItem<String>(
                           value: difficulty,
                           child: Text(difficulty),
@@ -172,56 +178,62 @@ class _CreateHikePageState extends State<CreateHikePage> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select a difficulty level';
+                    return AppLocalizations.of(context)!.selectDifficulty;
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _durationController,
-                decoration:
-                    const InputDecoration(labelText: 'Duration (hours)'),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.durationHour,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the duration of the hike';
+                    return AppLocalizations.of(context)!.enterDurationHike;
                   }
-                  if (double.tryParse(value) == null ||
-                      double.parse(value) <= 0 ||
-                      double.parse(value) >= 96) {
-                    return 'Duration must be between 0 and 96h (its not Trekking!)';
+                  final number = double.tryParse(value);
+                  if (number == null || number <= 0 || number >= 96) {
+                    return AppLocalizations.of(context)!.durationBetween;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
               _image == null
-                  ? const Text('No image selected.')
+                  ? Text(AppLocalizations.of(context)!.noImage)
                   : Image.file(_image!),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: const Text('Upload Image'),
+                child: Text(AppLocalizations.of(context)!.uploadImage),
               ),
               const SizedBox(height: 20),
               _gpxFile == null
-                  ? const Text('No GPX file selected.')
+                  ? Text(AppLocalizations.of(context)!.noGpxFile)
                   : Text(_gpxFile!.path),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _pickGPXFile,
-                child: const Text('Upload GPX File'),
+                child: Text(AppLocalizations.of(context)!.uploadGpx),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                      SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)!.processingData)),
                     );
                     _createHike();
                   }
                 },
-                child: const Text('Submit'),
+                child: Text(AppLocalizations.of(context)!.submit),
               ),
             ],
           ),

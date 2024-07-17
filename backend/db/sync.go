@@ -1,9 +1,22 @@
 package db
 
-import "backend/models"
+import (
+	"backend/models"
+)
 
 func SyncDatabase() {
-	if err := DB.AutoMigrate(&models.User{}, &models.Message{}, &models.Hike{}, &models.Advice{}, &models.Group{}, &models.GroupUser{}, &models.Review{}, &models.Subscription{}, &models.Options{}); err != nil {
+	if err := DB.AutoMigrate(
+		&models.User{},
+		&models.Material{},
+		&models.MaterialUser{},
+		&models.Message{},
+		&models.Hike{},
+		&models.Advice{},
+		&models.Group{},
+		&models.GroupUser{},
+		&models.Review{},
+		&models.Options{},
+		&models.Subscription{}); err != nil {
 		panic("Failed to migrate database: " + err.Error())
 	}
 	DB.Model(&models.Hike{}).Association("Groups").Clear()
@@ -11,7 +24,7 @@ func SyncDatabase() {
 	fixtures()
 }
 
-func fixtures() {
+func fixtures()  {
 	initialData := []models.Options{
 		{GoogleAPI: true, WeatherAPI: false},
 	}
@@ -23,4 +36,5 @@ func fixtures() {
 			DB.Create(&data)
 		}
 	}
+
 }

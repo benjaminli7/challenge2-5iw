@@ -3,11 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:frontend/shared/models/hike.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../shared/services/config_service.dart';
 
 
@@ -34,7 +31,7 @@ class _HikeListPageState extends State<HikeListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Hikes validation Panel')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.hikeValidationPannel)),
       body: Consumer<AdminProvider>(
         builder: (context, adminProvider, child) {
           if (adminProvider.loading) {
@@ -42,14 +39,14 @@ class _HikeListPageState extends State<HikeListPage> {
           }
 
           if (adminProvider.hikes.isEmpty) {
-            return const Center(child: Text('No hikes found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noHikesFound));
           }
 
           return DataTable(
-            columns: const [
-              DataColumn(label: Text('Image')),
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Description')),
+            columns:  [
+              DataColumn(label: Text(AppLocalizations.of(context)!.image)),
+              DataColumn(label: Text(AppLocalizations.of(context)!.name)),
+              DataColumn(label: Text(AppLocalizations.of(context)!.description)),
             ],
             rows: adminProvider.hikes.map((hike) {
               return DataRow(cells: [

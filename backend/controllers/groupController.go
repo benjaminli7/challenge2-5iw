@@ -48,27 +48,26 @@ func CreateGroup(c *gin.Context) {
 	var title string
 	var body string
 	var route string
-	var users []models.User
+
 	var subscribedUsers []models.Subscription
 
-	db.DB.Where("hike_id = ?", group.HikeID).Find(&subscribedUsers)
-	for _, sub := range subscribedUsers {
-		var user models.User
-		db.DB.First(&user, sub.UserID)
-		users = append(users, user)
+	if err := db.DB.Preload("User").Preload("Hike").Where("hike_id = ?", group.HikeID).Find(&subscribedUsers).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
-	_hike := models.Hike{}
-	db.DB.Where("id = ?", group.HikeID).First(&_hike)
+	// for _, sub := range subscribedUsers {
+	// 	users = append(users, sub.User)
+	// }
 
-	for _, user := range users {
-		if user.ID == group.OrganizerID {
+	for _, sub := range subscribedUsers {
+		if sub.UserID == group.OrganizerID {
 			continue
 		}
-		token = user.FcmToken
-		title = "New group created for " + group.Hike.Name
+		token = sub.User.FcmToken
+		title = sub.User.Username + " created a new group for the hike " + sub.Hike.Name + "! try to join it"
 		body = "Join the group to meet new people and share your experience"
-		route = "/hike/" + strconv.Itoa(int(_hike.ID))
+		route = "/hike/" + strconv.Itoa(int(group.HikeID))
 		if token != "" {
 			err := services.SendNotification(context.Background(), token, title, body, route)
 			if err != nil {
@@ -76,12 +75,6 @@ func CreateGroup(c *gin.Context) {
 				return
 			}
 		}
-	}
-
-	err := services.SendNotification(context.Background(), token, title, body, route)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
-		return
 	}
 
 	c.JSON(http.StatusOK, group)
@@ -100,7 +93,7 @@ func CreateGroup(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var group models.Group
-	if err := db.DB.Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
+	if err := db.DB.Preload("Materials.Users").Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}

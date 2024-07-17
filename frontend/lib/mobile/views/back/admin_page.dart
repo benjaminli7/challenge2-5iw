@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-//import go_router.dart;
 import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -12,7 +12,7 @@ class AdminPage extends StatelessWidget {
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu'),
+        title:  Text(AppLocalizations.of(context)!.menu),
         centerTitle: true,
       ),
       body: Padding(
@@ -22,19 +22,19 @@ class AdminPage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Profile of ${user?.email}!',
+                AppLocalizations.of(context)!.profileOf(user?.email?? ''),
                 style: const TextStyle(fontSize: 24),
               ),
             ),
             const SizedBox(height: 32),
             buildMenuBlock([
-              buildMenuItem(Icons.person, 'Users', () {
+              buildMenuItem(Icons.person, AppLocalizations.of(context)!.users, () {
                 GoRouter.of(context).go('/admin/users');
               }),
-              buildMenuItem(Icons.hiking, 'Hike', () {
+              buildMenuItem(Icons.hiking, AppLocalizations.of(context)!.hike, () {
                 GoRouter.of(context).go('/admin/hikes');
               }),
-              buildMenuItem(Icons.settings, 'Settings', () {
+              buildMenuItem(Icons.settings, AppLocalizations.of(context)!.settings, () {
                 GoRouter.of(context).go('/admin/settings');
               }),
             ]),

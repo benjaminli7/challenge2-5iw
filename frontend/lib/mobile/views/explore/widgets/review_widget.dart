@@ -4,7 +4,7 @@ import 'package:frontend/shared/models/review.dart';
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ReviewWidget extends StatefulWidget {
   final int hikeId;
 
@@ -77,7 +77,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Review submitted')),
+         SnackBar(content: Text(AppLocalizations.of(context)!.reviewSubmit)),
       );
 
       setState(() {
@@ -93,8 +93,8 @@ class _ReviewWidgetState extends State<ReviewWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Rate this hike:',
+           Text(
+           AppLocalizations.of(context)!.rateHike ,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -116,18 +116,18 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           const SizedBox(height: 16),
           TextFormField(
             controller: _commentController,
-            decoration: const InputDecoration(
-              labelText: 'Comment (optional)',
+            decoration:  InputDecoration(
+              labelText: AppLocalizations.of(context)!.comment,
               border: OutlineInputBorder(),
             ),
             maxLength: 280,
             validator: (value) {
               if (value != null && value.isNotEmpty) {
                 if (value.length > 280) {
-                  return 'Comment cannot be longer than 280 characters';
+                  return AppLocalizations.of(context)!.commentLonger;
                 }
                 if (!_isValidInput(value)) {
-                  return 'Invalid characters in comment';
+                  return AppLocalizations.of(context)!.invalidComment;
                 }
               }
               return null;
@@ -137,7 +137,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           Center(
             child: ElevatedButton(
               onPressed: _submitReview,
-              child: const Text('Submit Review'),
+              child:  Text(AppLocalizations.of(context)!.submitReview),
             ),
           ),
         ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
@@ -30,6 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false; // Loading state
   String _fcmToken = "";
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _login() async {
     setState(() {
       _isLoading = true;
@@ -51,54 +57,66 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
+      if (parseJwt['verified'] == true) {
+        Provider.of<UserProvider>(context, listen: false).setUser(
+          User(
+              id: parseJwt['sub'],
+              email: parseJwt['email'],
+              username: parseJwt['username'],
+              password: "",
+              token: token,
+              role: parseJwt['roles'],
+              isVerified: parseJwt['verified'],
+              fcmToken: parseJwt['fcm_token'] ?? ""),
+        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        _fcmToken = prefs.getString('fcmToken')!;
 
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            username: parseJwt['username'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified'],
-            fcmToken: parseJwt['fcm_token'] ?? ""),
-      );
-      await SharedPreferences.getInstance().then((prefs) {
-        _fcmToken = prefs.getString('fcmToken') ?? "";
-      });
+        //if fcm token is not set, set it
+        if ((parseJwt['fcm_token'] == null || parseJwt['fcm_token'] == "") &&
+                _fcmToken != "" ||
+            parseJwt['fcm_token'] != _fcmToken) {
+          print("Depuis le loging de base : $_fcmToken ");
+          final response = await _apiService.setFcmToken(
+              Provider.of<UserProvider>(context, listen: false).user!.id,
+              _fcmToken,
+              Provider.of<UserProvider>(context, listen: false).user!.token);
 
-      // print('fcm token from shared preferences: $_fcmToken');
-      // print('fcm token from jwt: ${parseJwt['fcm_token']}');
-      String fcmTokenFromJwt = parseJwt['fcm_token'] ?? "";
-      if (fcmTokenFromJwt == "" && _fcmToken != "" ||
-          fcmTokenFromJwt != _fcmToken) {
-        final response = await _apiService.setFcmToken(
-            Provider.of<UserProvider>(context, listen: false).user!.id,
-            _fcmToken,
-            Provider.of<UserProvider>(context, listen: false).user!.token);
-        if (response.statusCode == 200) {
-          // set fcm token on the user object
-          Provider.of<UserProvider>(context, listen: false)
-              .setFcmToken(_fcmToken);
-          print(_fcmToken);
-          print('fcm token set');
-        } else {
-          print('failed to set fcm token');
+          if (response.statusCode == 200) {
+            // set fcm token on the user object
+            Provider.of<UserProvider>(context, listen: false)
+                .setFcmToken(_fcmToken);
+            print(_fcmToken);
+            print('fcm token set');
+          } else {
+            print('failed to set fcm token');
+          }
         }
+        Fluttertoast.showToast(
+          msg: 'Login successful',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        GoRouter.of(context).go('/explore');
+      } else {
+        Fluttertoast.showToast(
+          msg: 'You are not verified',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        print('You are not verified');
       }
-      Fluttertoast.showToast(
-        msg: 'Login successful',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      GoRouter.of(context).go('/explore');
     } else {
       Fluttertoast.showToast(
-        msg: 'Login failed',
+        msg: AppLocalizations.of(context)!.logInFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -122,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         Fluttertoast.showToast(
-            msg: 'Failed to connect with Google',
+            msg: AppLocalizations.of(context)!.logInFailureGoogle2,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -144,57 +162,74 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token!.split('.')[1]))),
       );
-
-      Provider.of<UserProvider>(context, listen: false).setUser(
-        User(
-            id: parseJwt['sub'],
-            email: parseJwt['email'],
-            username: parseJwt['username'],
-            password: "",
-            token: token,
-            role: parseJwt['roles'],
-            isVerified: parseJwt['verified'],
-            fcmToken: parseJwt['fcm_token']),
-      );
-
-      SharedPreferences.getInstance().then((prefs) {
-        // get the fcm token from the shared preferences
+      if (parseJwt['verified'] == true) {
+        Provider.of<UserProvider>(context, listen: false).setUser(
+          User(
+              id: parseJwt['sub'],
+              email: parseJwt['email'],
+              username: parseJwt['username'],
+              password: "",
+              token: token,
+              role: parseJwt['roles'],
+              isVerified: parseJwt['verified'],
+              fcmToken: parseJwt['fcm_token']),
+        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         _fcmToken = prefs.getString('fcmToken')!;
-      });
-      //if fcm token is not set, set it
-      if (parseJwt['fcm_token'] == null && _fcmToken != "") {
-        final response = await _apiService.setFcmToken(
-            Provider.of<UserProvider>(context, listen: false).user!.id,
-            _fcmToken,
-            Provider.of<UserProvider>(context, listen: false).user!.token);
-        if (response.statusCode == 200) {
-          print('fcm token set');
-        } else {
-          print('failed to set fcm token');
-        }
-      }
 
-      Fluttertoast.showToast(
-        msg: 'Connected with Google',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      GoRouter.of(context).go('/explore');
+        //if fcm token is not set, set it
+        if ((parseJwt['fcm_token'] == null || parseJwt['fcm_token'] == "") &&
+                _fcmToken != "" ||
+            parseJwt['fcm_token'] != _fcmToken) {
+          print("Depuis le loging google : $_fcmToken ");
+          final response = await _apiService.setFcmToken(
+              Provider.of<UserProvider>(context, listen: false).user!.id,
+              _fcmToken,
+              Provider.of<UserProvider>(context, listen: false).user!.token);
+          if (response.statusCode == 200) {
+            // set fcm token on the user object
+            Provider.of<UserProvider>(context, listen: false)
+                .setFcmToken(_fcmToken);
+            print(_fcmToken);
+            print('fcm token set');
+          } else {
+            print('failed to set fcm token');
+          }
+        }
+
+        Fluttertoast.showToast(
+          msg: 'Connected with Google',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        GoRouter.of(context).go('/explore');
+      } else {
+        Fluttertoast.showToast(
+          msg: 'You are not verified',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Failed to connect with Google',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      print('error: $e');
+      print(e);
+      // Fluttertoast.showToast(
+      //   msg: AppLocalizations.of(context)!.logInFailureGoogle3,
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Colors.red,
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
     } finally {
       setState(() {
         _isLoading = false;
@@ -215,8 +250,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Login',
+                Text(
+                  AppLocalizations.of(context)!.login,
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -227,12 +262,12 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 CustomTextField(
                   controller: _passwordController,
-                  labelText: 'Password',
+                  labelText: AppLocalizations.of(context)!.password,
                   obscureText: true,
                 ),
                 ElevatedButton(
                   onPressed: _login,
-                  child: const Text('Login',
+                  child: Text(AppLocalizations.of(context)!.login,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -251,8 +286,8 @@ class _LoginPageState extends State<LoginPage> {
                               width: 24,
                             ),
                             const SizedBox(width: 10),
-                            const Text(
-                              'Sign in with Google',
+                            Text(
+                              AppLocalizations.of(context)!.connectedGoogle,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -276,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                  child: const Text('No account yet? Sign up'),
+                  child: Text(AppLocalizations.of(context)!.notAccount),
                 ),
               ],
             ),

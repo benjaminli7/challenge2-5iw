@@ -71,6 +71,7 @@ func main() {
 
 	r.Static("/images", "./public/images")
 	r.Static("/gpx", "./public/gpx")
+	r.Static("/avatar", "./public/avatar")
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -125,6 +126,11 @@ func main() {
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
+	// Material routes
+	r.POST("/groups/:id/materials", controllers.GroupAddMaterials)
+	r.POST("/materials/:materialId/bring/:userId", controllers.MemberAddMaterial)
+	r.DELETE("/materials/:materialId/bring/:userId", controllers.MemberRemoveMaterial)
+	r.GET("/groups/:id/materials", controllers.GetGroupMaterials)
 	// Message routes
 	r.GET("/ws/:groupID", controllers.HandleWebSocket)
 
