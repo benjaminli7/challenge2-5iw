@@ -10,6 +10,8 @@ class Group {
   final Hike hike;
   final User organizer;
   final String name;
+  final int maxUsers;
+  final List<User> users;
 
   Group({
     required this.id,
@@ -20,6 +22,8 @@ class Group {
     required this.hike,
     required this.organizer,
     required this.name,
+    required this.maxUsers,
+    required this.users,
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,9 @@ class Group {
       hike: Hike.fromJson(json['hike']),
       organizer: User.fromJson(json['organizer']),
       name: json['name'],
+      maxUsers: json['max_users'],
+      users:
+          (json['Users'] as List).map((user) => User.fromJson(user)).toList(),
     );
   }
 }
