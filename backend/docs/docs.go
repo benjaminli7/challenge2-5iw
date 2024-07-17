@@ -610,7 +610,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Duration",
                         "name": "duration",
                         "in": "formData",
@@ -1352,6 +1352,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/{id}/password": {
+            "patch": {
+                "description": "Update the password of a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User password update",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.PasswordUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}/role": {
             "patch": {
                 "description": "Update the role of a user",
@@ -1507,8 +1554,8 @@ const docTemplate = `{
                     "example": "Intermediate"
                 },
                 "duration": {
-                    "type": "string",
-                    "example": "3 hours"
+                    "type": "integer",
+                    "example": 3
                 },
                 "gpx_file": {
                     "type": "string",
@@ -1551,6 +1598,46 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2024-05-28T12:54:10.517438+02:00"
+                }
+            }
+        },
+        "models.Material": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "group": {
+                    "$ref": "#/definitions/models.Group"
+                },
+                "groupID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.User"
+                    }
+                }
+            }
+        },
+        "models.PasswordUpdate": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
                 }
             }
         },
@@ -1653,6 +1740,12 @@ const docTemplate = `{
                 },
                 "is_verified": {
                     "type": "boolean"
+                },
+                "materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Material"
+                    }
                 },
                 "password": {
                     "type": "string"
