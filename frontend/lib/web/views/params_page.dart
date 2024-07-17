@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:frontend/shared/models/settings.dart';
 
 class ParamsPage extends StatefulWidget {
   const ParamsPage({super.key});
@@ -19,11 +21,12 @@ class _ParamsPageState extends State<ParamsPage> {
   @override
   void initState() {
     super.initState();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+
     _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    final _settings = _settingsProvider.fetchSettings();
     _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
-    _isGoogleAuthEnabled = _settingsProvider.settings.googleAuth;
-
-
+    _isGoogleAuthEnabled = _settingsProvider.settings.googleAPI;
   }
 
   @override
@@ -52,7 +55,12 @@ class _ParamsPageState extends State<ParamsPage> {
                     setState(() {
                       _isWeatherApiEnabled = value;
                     });
-                    _settingsProvider.updateWeatherAPI(value);
+                    // update the settings with the new value and user token
+                    _settingsProvider.updateSettings(
+                      context.read<UserProvider>().user!.token,
+                      Settings(
+                          weatherAPI: value, googleAPI: _isGoogleAuthEnabled),
+                    );
                   },
                 ),
               ]),
@@ -70,7 +78,11 @@ class _ParamsPageState extends State<ParamsPage> {
                     setState(() {
                       _isGoogleAuthEnabled = value;
                     });
-                    _settingsProvider.updateGoogleAuth(value);
+                    _settingsProvider.updateSettings(
+                      context.read<UserProvider>().user!.token,
+                      Settings(
+                          weatherAPI: _isWeatherApiEnabled, googleAPI: value),
+                    );
                   },
                 ),
               ]),

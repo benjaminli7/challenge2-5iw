@@ -23,7 +23,6 @@ class _HikeCardState extends State<HikeCard> {
   @override
   void initState() {
     super.initState();
-    // Initialize isFavorite based on whether the user is subscribed
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = Provider.of<UserProvider>(context, listen: false).user;
       bool contain = widget.hike.subscriptions

@@ -27,19 +27,19 @@ class CreateGroupPage extends StatelessWidget {
         );
         return;
       }
-      // final response = await groupService.createGroup(
-      //     groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
+      final response = await groupService.createGroup(
+          groupData, hike.id, userProvider.user!.id, userProvider.user!.token);
 
-      // if (response.statusCode == 200) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(content: Text('Group created successfully!')),
-      //   );
-      //   GoRouter.of(context).go('/groups');
-      // } else {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Failed to create group: ${response.body}')),
-      //   );
-      // }
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Group created successfully!')),
+        );
+        GoRouter.of(context).push('/groups');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create group: ${response.body}')),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),

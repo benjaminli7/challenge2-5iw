@@ -7,7 +7,7 @@ import 'package:frontend/shared/services/config_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class GroupChatPage extends StatefulWidget {
   final int groupId;
 
@@ -32,12 +32,20 @@ class _GroupChatPageState extends State<GroupChatPage> {
     _channel = WebSocketChannel.connect(
       Uri.parse('$wsUrl/ws/${widget.groupId}'),
     );
-    _channel.stream.listen((message) {
-      print(message);
-      setState(() {
-        _messages.add(Message.fromJson(jsonDecode(message)));
-      });
-    });
+    _channel.stream.listen(
+      (message) {
+        print(message);
+        setState(() {
+          _messages.add(Message.fromJson(jsonDecode(message)));
+        });
+      },
+      onError: (error) {
+        print('WebSocket error: $error');
+      },
+      onDone: () {
+        print('WebSocket closed');
+      },
+    );
   }
 
   void _fetchMessages() async {
@@ -138,7 +146,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                   child: TextField(
                     controller: _controller,
                     decoration:
-                        const InputDecoration(hintText: 'Enter message'),
+                         InputDecoration(hintText: AppLocalizations.of(context)!.enterMessage),
                   ),
                 ),
                 IconButton(
