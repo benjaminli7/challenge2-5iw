@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,7 +10,10 @@ import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,12 +28,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final ApiService _apiService = ApiService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  bool _isLoading = false; // Loading state
 
   void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final String? token = await _apiService.login(
       _emailController.text,
       _passwordController.text,
     );
+
+    setState(() {
+      _isLoading = false;
+    });
+
     if (!mounted) return;
 
     if (token != null) {
@@ -51,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
       Fluttertoast.showToast(
-        msg: 'Login successful',
+        msg: AppLocalizations.of(context)!.logInSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -62,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
       GoRouter.of(context).go('/explore');
     } else {
       Fluttertoast.showToast(
-        msg: 'Login failed',
+        msg: AppLocalizations.of(context)!.logInFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -75,20 +87,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _googleLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
+        setState(() {
+          _isLoading = false;
+        });
         Fluttertoast.showToast(
-            msg: 'Failed to connect with Google2 ',
+
+            msg: AppLocalizations.of(context)!.logInFailureGoogle2,
+
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
+        return;
       }
+
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+          await googleUser.authentication;
 
       // login process
       final String? token = await _apiService.login(
@@ -111,8 +134,9 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
 
-      final credential = Fluttertoast.showToast(
-        msg: 'Connected with Google',
+
+      Fluttertoast.showToast(
+         msg: AppLocalizations.of(context)!.connectedGoogle,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -121,11 +145,12 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
       GoRouter.of(context).go('/explore');
-      // print email
+
     } catch (e) {
-      // Handle login error
+
       Fluttertoast.showToast(
-        msg: 'Failed to connect with Google 3',
+        msg: AppLocalizations.of(context)!.logInFailureGoogle3,
+
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -134,85 +159,101 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
       print('error: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final isGoogleActivated = settingsProvider.settings.googleAuth;
+    final isGoogleActivated = settingsProvider.settings.googleAPI;
     return Scaffold(
       appBar: const NavBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Login',
-              style: TextStyle(
-                fontSize: 24,
-              ),
-            ),
-            CustomTextField(
-              controller: _emailController,
-              labelText: 'Email',
-            ),
-            CustomTextField(
-              controller: _passwordController,
-              labelText: 'Password',
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Login',
+
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                 Text(
+                   AppLocalizations.of(context)!.login,
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-            isGoogleActivated
-                ? ElevatedButton(
-                    onPressed: _googleLogin,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/google.svg',
-                          height: 24,
-                          width: 24,
-                        ),
-                        const SizedBox(width: 10),
-                        const Text(
-                          'Sign in with Google',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    height: 0,
+                    fontSize: 24,
                   ),
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).go('/signup');
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
                 ),
-              ),
-              child: const Text('No account yet? Sign up'),
+                CustomTextField(
+                  controller: _emailController,
+                  labelText: 'Email',
+                ),
+                CustomTextField(
+                  controller: _passwordController,
+                  labelText: AppLocalizations.of(context)!.password,
+                  obscureText: true,
+                ),
+                ElevatedButton(
+                  onPressed: _login,
+                  child: Text(AppLocalizations.of(context)!.login,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
+                isGoogleActivated
+                    ? ElevatedButton(
+                        onPressed: _googleLogin,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/google.svg',
+                              height: 24,
+                              width: 24,
+                            ),
+                            const SizedBox(width: 10),
+                             Text(
+                              AppLocalizations.of(context)!.connectedGoogle,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(
+                        height: 0,
+                      ),
+                TextButton(
+                  onPressed: () {
+                    GoRouter.of(context).go('/signup');
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  child: Text(AppLocalizations.of(context)!.notAccount),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }

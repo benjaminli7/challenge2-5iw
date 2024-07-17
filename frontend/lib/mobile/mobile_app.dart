@@ -26,14 +26,19 @@ import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:frontend/shared/providers/settings_provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyMobileApp());
+  final settingsProvider = SettingsProvider();
+  settingsProvider.fetchSettings();
 }
 
 final GoRouter _router = GoRouter(
@@ -91,7 +96,6 @@ final GoRouter _router = GoRouter(
           name: "profile",
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
-
           routes: [
             GoRoute(
               name: "profileDetails",
@@ -104,7 +108,6 @@ final GoRouter _router = GoRouter(
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
-
         ),
         GoRoute(
           name: "explore",
@@ -117,9 +120,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final hikeId = int.parse(state.pathParameters['id']!);
             final hikeProvider =
-            Provider.of<HikeProvider>(context, listen: false);
-            final hike = hikeProvider.hikes
-                .firstWhere((hike) => hike.id == hikeId);
+                Provider.of<HikeProvider>(context, listen: false);
+            final hike =
+                hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsExplorePage(hike: hike);
           },
         ),
@@ -221,7 +224,6 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-
   ],
 );
 
@@ -231,24 +233,29 @@ class MyMobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-
       providers: [
-
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, child) {
-          return MaterialApp.router(
-            routerConfig: _router,
-            theme: ThemeData(
-              brightness: Brightness.dark,
-            ),
-          );
-        },
+
+      child: MaterialApp.router(
+        routerConfig: _router,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('fr'),
+        ],
 
       ),
     );

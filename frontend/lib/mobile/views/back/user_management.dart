@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/admin_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/models/user.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserManagement extends StatelessWidget {
   final User user;
@@ -12,15 +13,15 @@ class UserManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Details')),
+      appBar: AppBar(title:  Text(AppLocalizations.of(context)!.userDetail)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Email: ${user.email}', style: const TextStyle(fontSize: 20)),
-            Text('Role: ${user.role}', style: const TextStyle(fontSize: 20)),
-            Text('IsValide: ${user.isVerified.toString()}',
+            Text(AppLocalizations.of(context)!.userEmail(user.email), style: const TextStyle(fontSize: 20)),
+            Text(AppLocalizations.of(context)!.userRole(user.role), style: const TextStyle(fontSize: 20)),
+            Text(AppLocalizations.of(context)!.userIsValide(user.isVerified.toString()),
                 style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -39,7 +40,7 @@ class UserManagement extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text('Delete User'),
+              child:  Text(AppLocalizations.of(context)!.deleteUser),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -58,7 +59,7 @@ class UserManagement extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
               ),
-              child: const Text('Devenir Admin'),
+              child: Text(AppLocalizations.of(context)!.upgradeAdmin),
             ),
           ],
         ),

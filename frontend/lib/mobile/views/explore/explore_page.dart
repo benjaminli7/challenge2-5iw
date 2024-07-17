@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'widgets/hike_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -65,8 +66,8 @@ class _ExplorePageState extends State<ExplorePage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text(
-          'Discover hiking trails \nnear you',
+        title:  Text(
+          AppLocalizations.of(context)!.discoverHike,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w800,
@@ -84,12 +85,12 @@ class _ExplorePageState extends State<ExplorePage> {
       body: Column(
         children: [
           SearchBarApp(
-            hintText: 'Search for a trail',
+            hintText: AppLocalizations.of(context)!.searchTrail,
             onSearchChanged: _filterHikes,
           ),
           Expanded(
             child: approvedHikes.isEmpty
-                ? const Center(child: Text("No hikes found"))
+                ? Center(child: Text(AppLocalizations.of(context)!.noHikesFound))
                 : GridView.builder(
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

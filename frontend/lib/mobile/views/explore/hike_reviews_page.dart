@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/shared/models/review.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HikeReviewsPage extends StatelessWidget {
   final int hikeId;
@@ -13,7 +14,7 @@ class HikeReviewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hike Reviews'),
+        title: Text(AppLocalizations.of(context)!.hikeReviews),
       ),
       body: FutureBuilder<List<Review>>(
         future: Provider.of<HikeProvider>(context, listen: false)
@@ -24,7 +25,7 @@ class HikeReviewsPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No reviews found for this hike'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noReviewsFound));
           } else {
             final reviews = snapshot.data!;
             return ListView.builder(
@@ -32,13 +33,13 @@ class HikeReviewsPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final review = reviews[index];
                 return ListTile(
-                  title: Text('Rating: ${review.rating}'),
+                  title: Text(AppLocalizations.of(context)!.ratingHike(review.rating)),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(review.comment.isNotEmpty
                           ? review.comment
-                          : 'No comment provided'),
+                          : AppLocalizations.of(context)!.noCommentProvided),
                       Text('by ${review.user.email}'),
                       Text('on ${DateFormat('dd/MM/yyyy').format(review.createdAt)}'),
                     ],
