@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,31 +32,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
-    isLogin();
-  }
-
-  void setLoginPrefs() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool('isLogin', true);
-  }
-
-  void isLogin() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    bool? isLogin = sp.getBool('isLogin') ?? false;
-
-    print(isLogin);
-
-    if (isLogin) {
-      Timer(const Duration(seconds: 5), () {
-        GoRouter.of(context).go('/explore');
-      });
-      return;
-    } else {
-      Timer(const Duration(seconds: 5), () {
-        GoRouter.of(context).go('/login');
-      });
-    }
   }
 
   void _login() async {
@@ -172,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      setLoginPrefs();
       GoRouter.of(context).go('/explore');
     } catch (e) {
       Fluttertoast.showToast(

@@ -1,7 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
@@ -9,13 +11,30 @@ class UserProvider with ChangeNotifier {
 
   User? get user => _user;
 
-  void setUser(User user) {
+  UserProvider() {
+    _loadUserFromPrefs();
+  }
+
+  Future<void> _loadUserFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    if (userJson != null) {
+      _user = User.fromJson(jsonDecode(userJson));
+      notifyListeners();
+    }
+  }
+
+  Future<void> setUser(User user) async {
     _user = user;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', jsonEncode(user.toJson()));
     notifyListeners();
   }
 
-  void clearUser() {
+  Future<void> clearUser() async {
     _user = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user');
     notifyListeners();
   }
 
@@ -31,7 +50,8 @@ class UserProvider with ChangeNotifier {
   Future<void> updateUser(User updatedUser) async {
     if (_user != null) {
       try {
-        final response = await _apiService.updateUserProfile(updatedUser, _user!.token);
+        final response =
+            await _apiService.updateUserProfile(updatedUser, _user!.token);
         if (response.statusCode == 200) {
           _user = User.fromJson(jsonDecode(response.body));
           _user!.token = updatedUser.token;
