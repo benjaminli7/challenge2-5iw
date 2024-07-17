@@ -51,10 +51,11 @@ flutter:
     - assets/
     - .env
     - assets/images/google.svg
+    - assets/images/profile_placeholder.png
+
 
 flutter_intl:
   enabled: true
   assets:
     - assets/images/intro-image.jpg
     - assets/images/hike-icon.svg
-    - assets/images/profile_placeholder.png
