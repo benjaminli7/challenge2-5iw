@@ -16,8 +16,9 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  List<Hike> filteredHikes = [];
   bool _isSortedAscending = true;
+  String _searchQuery = '';
+  String _sortCriteria = 'rating';
 
   @override
   void initState() {
@@ -27,34 +28,54 @@ class _ExplorePageState extends State<ExplorePage> {
 
   Future<void> _fetchHikes() async {
     await Provider.of<HikeProvider>(context, listen: false).fetchHikes();
-    setState(() {
-      filteredHikes = Provider.of<HikeProvider>(context, listen: false).hikes;
-    });
   }
 
   void _filterHikes(String query) {
-    final hikes = Provider.of<HikeProvider>(context, listen: false).hikes;
     setState(() {
-      filteredHikes = hikes
-          .where((hike) => hike.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _searchQuery = query.toLowerCase();
     });
   }
 
-  void _sortHikesByRating() {
-    setState(() {
-      if (_isSortedAscending) {
-        filteredHikes.sort((a, b) => b.averageRating.compareTo(a.averageRating));
-      } else {
-        filteredHikes.sort((a, b) => a.averageRating.compareTo(b.averageRating));
+  List<Hike> _getFilteredAndSortedHikes(List<Hike> hikes) {
+    List<Hike> filteredHikes = hikes.where((hike) => hike.name.toLowerCase().contains(_searchQuery)).toList();
+    filteredHikes.sort((a, b) {
+      int comparison;
+      switch (_sortCriteria) {
+        case 'difficulty':
+          comparison = a.difficulty.compareTo(b.difficulty);
+          break;
+        case 'duration':
+          comparison = a.duration.compareTo(b.duration);
+          break;
+        case 'rating':
+        default:
+          comparison = a.averageRating.compareTo(b.averageRating);
+          break;
       }
+      return _isSortedAscending ? comparison : -comparison;
+    });
+    return filteredHikes;
+  }
+
+  void _setSortCriteria(String? criteria) {
+    if (criteria != null) {
+      setState(() {
+        _sortCriteria = criteria;
+        _isSortedAscending = true;
+      });
+    }
+  }
+
+
+  void _toggleSortOrder() {
+    setState(() {
       _isSortedAscending = !_isSortedAscending;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final sortingText = _isSortedAscending ? 'Sort by Best Rating' : 'Sort by Worst Rating';
+    final sortingText = _isSortedAscending ? 'Lower' : 'Hightest';
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -83,22 +104,36 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              icon: Icon(Icons.sort),
-              label: Text(sortingText),
-              onPressed: _sortHikesByRating,
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DropdownButton<String>(
+                  value: _sortCriteria,
+                  onChanged: _setSortCriteria,
+                  items: const [
+                    DropdownMenuItem(value: 'rating', child: Text('Sort by Rating')),
+                    DropdownMenuItem(value: 'difficulty', child: Text('Sort by Difficulty')),
+                    DropdownMenuItem(value: 'duration', child: Text('Sort by Duration')),
+                  ],
                 ),
-              ),
+                ElevatedButton.icon(
+                  icon: Icon(Icons.sort),
+                  label: Text(sortingText),
+                  onPressed: _toggleSortOrder,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
             child: Consumer<HikeProvider>(
               builder: (context, hikeProvider, child) {
-                final approvedHikes = filteredHikes.where((hike) => hike.isApproved).toList();
+                final approvedHikes = _getFilteredAndSortedHikes(hikeProvider.hikes).where((hike) => hike.isApproved).toList();
                 return approvedHikes.isEmpty
                     ? Center(child: Text(AppLocalizations.of(context)!.noHikesFound))
                     : GridView.builder(

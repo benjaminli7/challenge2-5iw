@@ -48,7 +48,6 @@ class _HikeCardState extends State<HikeCard> {
   @override
   Widget build(BuildContext context) {
     String baseUrl = ConfigService.baseUrl;
-    final hikeProvider = Provider.of<HikeProvider>(context);
 
     return GestureDetector(
       onTap: () {
@@ -63,7 +62,7 @@ class _HikeCardState extends State<HikeCard> {
               child: Stack(
                 children: [
                   Image.network(
-                    Uri.parse("${dotenv.env['BASE_URL']}${widget.hike.image}")
+                    Uri.parse("$baseUrl${widget.hike.image}")
                         .toString(),
                     fit: BoxFit.cover,
                   ),
@@ -127,4 +126,3 @@ class _HikeCardState extends State<HikeCard> {
     );
   }
 }
-  

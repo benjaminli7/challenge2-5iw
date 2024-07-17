@@ -157,7 +157,6 @@ class HikeProvider with ChangeNotifier {
     try {
       final response = await ApiService().subscribeToHike(hikeId, userId, token);
       if (response.statusCode == 200) {
-        await fetchHikes();
         print('User subscribed to hike successfully');
       } else {
         print('Failed to subscribe to hike: ${response.statusCode}');
