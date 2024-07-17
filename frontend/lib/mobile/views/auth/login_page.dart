@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +28,31 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final ApiService _apiService = ApiService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  @override
+  void initState() {
+    super.initState();
+
+    isLogin();
+  }
+
+  void isLogin() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool? isLogin = sp.getBool('isLogin') ?? false;
+
+    print(isLogin);
+
+    if (isLogin) {
+      Timer(const Duration(seconds: 5), () {
+        GoRouter.of(context).go('/explore');
+      });
+      return;
+    } else {
+      Timer(const Duration(seconds: 5), () {
+        GoRouter.of(context).go('/login');
+      });
+    }
+  }
 
   void _login() async {
     final String? token = await _apiService.login(
