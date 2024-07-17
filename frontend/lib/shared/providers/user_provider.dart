@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/user.dart';
 import 'package:frontend/shared/services/api_service.dart';
@@ -50,8 +49,7 @@ class UserProvider with ChangeNotifier {
   Future<void> updateUser(User updatedUser) async {
     if (_user != null) {
       try {
-        final response =
-            await _apiService.updateUserProfile(updatedUser, _user!.token);
+        final response = await _apiService.updateUserProfile(updatedUser, _user!.token);
         if (response.statusCode == 200) {
           _user = User.fromJson(jsonDecode(response.body));
           _user!.token = updatedUser.token;
@@ -63,5 +61,22 @@ class UserProvider with ChangeNotifier {
         print('Failed to update profile: $e');
       }
     }
+  }
+
+  Future<bool> changePassword(String token, String oldPassword, String newPassword) async {
+    if (_user != null) {
+      try {
+        final response = await _apiService.changePassword(token, _user!.id, oldPassword, newPassword);
+        if (response.statusCode == 200) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        print('Failed to change password: $e');
+        return false;
+      }
+    }
+    return false;
   }
 }
