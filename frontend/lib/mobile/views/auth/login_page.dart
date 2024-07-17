@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -29,6 +31,31 @@ class _LoginPageState extends State<LoginPage> {
   final ApiService _apiService = ApiService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _isLoading = false; // Loading state
+
+  @override
+  void initState() {
+    super.initState();
+
+    isLogin();
+  }
+
+  void isLogin() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool? isLogin = sp.getBool('isLogin') ?? false;
+
+    print(isLogin);
+
+    if (isLogin) {
+      Timer(const Duration(seconds: 5), () {
+        GoRouter.of(context).go('/explore');
+      });
+      return;
+    } else {
+      Timer(const Duration(seconds: 5), () {
+        GoRouter.of(context).go('/login');
+      });
+    }
+  }
 
   void _login() async {
     setState(() {
