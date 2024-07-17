@@ -1,6 +1,8 @@
 package db
 
-import "backend/models"
+import (
+	"backend/models"
+)
 
 func SyncDatabase() {
 	if err := DB.AutoMigrate(
@@ -22,7 +24,7 @@ func SyncDatabase() {
 	fixtures()
 }
 
-func fixtures() {
+func fixtures()  {
 	initialData := []models.Options{
 		{GoogleAPI: true, WeatherAPI: false},
 	}
@@ -34,4 +36,5 @@ func fixtures() {
 			DB.Create(&data)
 		}
 	}
+
 }

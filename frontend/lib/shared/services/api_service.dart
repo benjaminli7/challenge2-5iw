@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -8,7 +9,6 @@ import '../models/user.dart';
 import 'config_service.dart';
 
 class ApiService {
-
   String baseUrl = ConfigService.baseUrl;
 
   Future<http.Response> signup(String email, String password) {
@@ -62,7 +62,7 @@ class ApiService {
       String description,
       int organizerId,
       String difficulty,
-      String duration,
+      int duration,
       File? image,
       File? gpxFile) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
@@ -73,7 +73,7 @@ class ApiService {
     request.fields['description'] = description;
     request.fields['organizer_id'] = organizerId.toString();
     request.fields['difficulty'] = difficulty;
-    request.fields['duration'] = duration;
+    request.fields['duration'] = duration.toString();
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
 import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/group.dart';
@@ -8,7 +9,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../shared/services/config_service.dart';
 
 class HikeDetailsExplorePage extends StatefulWidget {
@@ -60,7 +61,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
         await _groupService.joinGroup(user.token, group.id, user.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.joinGroupSuccess(group.id)),
+            content:
+                Text(AppLocalizations.of(context)!.joinGroupSuccess(group.id)),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -72,16 +74,17 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.joinGroupFailure(group.id,e.toString())),
+            content: Text(AppLocalizations.of(context)!
+                .joinGroupFailure(group.id, e.toString())),
             duration: const Duration(seconds: 2),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text(AppLocalizations.of(context)!.userNotLogged),
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -124,7 +127,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   Column(
                     children: [
                       Text(AppLocalizations.of(context)!.difficulty,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text(widget.hike.difficulty,
                           style: const TextStyle(fontSize: 16)),
@@ -133,9 +136,9 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   Column(
                     children: [
                       Text(AppLocalizations.of(context)!.durationHour,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(widget.hike.duration,
+                      Text(widget.hike.duration.toString(),
                           style: const TextStyle(fontSize: 16)),
                     ],
                   ),
@@ -155,7 +158,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context)!.groups,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -174,11 +177,13 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 future: _groupsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: const CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return  Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
+                    return Center(
+                        child:
+                            Text(AppLocalizations.of(context)!.noGroupFound));
                   } else {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
@@ -199,7 +204,7 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               const Divider(),
               Text(
                 AppLocalizations.of(context)!.reviews,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -246,8 +251,8 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 'Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
             const SizedBox(height: 8),
             ElevatedButton(
-              onPressed: () => _joinGroup(group),
-              child: Text(AppLocalizations.of(context)!.joinGroup))
+                onPressed: () => _joinGroup(group),
+                child: Text(AppLocalizations.of(context)!.joinGroup))
           ],
         ),
       ),

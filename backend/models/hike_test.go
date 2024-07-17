@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHikeCreation(t *testing.T) {
@@ -11,12 +12,12 @@ func TestHikeCreation(t *testing.T) {
 		Description: "This is a test hike",
 		OrganizerID: 1,
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 
 	assert.Equal(t, "Test Hike", hike.Name)
 	assert.Equal(t, "This is a test hike", hike.Description)
 	assert.Equal(t, uint(1), hike.OrganizerID)
 	assert.Equal(t, "Intermediate", hike.Difficulty)
-	assert.Equal(t, "3 hours", hike.Duration)
+	assert.Equal(t, 3, hike.Duration)
 }

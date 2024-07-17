@@ -5,7 +5,7 @@ class Hike {
   final String name;
   final String description;
   final String difficulty;
-  final String duration;
+  final int duration;
   final bool isApproved;
   final String image;
   final String gpxFile;
