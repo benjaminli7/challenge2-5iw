@@ -21,7 +21,6 @@ import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/intro_screen.dart';
 import 'package:frontend/mobile/views/home_page.dart';
-import 'package:frontend/mobile/views/profile/profile_details_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';

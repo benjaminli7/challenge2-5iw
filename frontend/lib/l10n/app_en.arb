@@ -105,7 +105,21 @@
     "groupDetail":"Group details",
     "startDateArg":"Start date {startDate}",
     "organizerArg":"Organizer {organizer}",
-    "groupChat": "Group chat"
+    "groupChat": "Group chat",
+
+    "signOut" : "Sign Out",
+    "disconnected" : "Disconnected",
+    "no_user_data_available" : "No user data available",
+    "hike_History" : "Hike History",
+    "no_Username" : "No Username",
+    "no_groups_found" : "No groups found",
+    "no_Hikes_history_found" : "No Hikes history found",
+
+    "lower" : "Lower",
+    "hightest" : "Hightest",
+    "sort_by_Rating" : "Sort by Rating",
+    "sort_by_Difficulty" : "Sort by Difficulty",
+    "sort_by_Duration" : "Sort by Duration"
 
 
 

@@ -75,7 +75,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final sortingText = _isSortedAscending ? 'Lower' : 'Hightest';
+    final sortingText = _isSortedAscending ? AppLocalizations.of(context)!.lower : AppLocalizations.of(context)!.hightest ;
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -110,10 +110,10 @@ class _ExplorePageState extends State<ExplorePage> {
                 DropdownButton<String>(
                   value: _sortCriteria,
                   onChanged: _setSortCriteria,
-                  items: const [
-                    DropdownMenuItem(value: 'rating', child: Text('Sort by Rating')),
-                    DropdownMenuItem(value: 'difficulty', child: Text('Sort by Difficulty')),
-                    DropdownMenuItem(value: 'duration', child: Text('Sort by Duration')),
+                  items:  [
+                    DropdownMenuItem(value: 'rating', child: Text(AppLocalizations.of(context)!.sort_by_Rating)),
+                    DropdownMenuItem(value: 'difficulty', child: Text(AppLocalizations.of(context)!.sort_by_Difficulty)),
+                    DropdownMenuItem(value: 'duration', child: Text(AppLocalizations.of(context)!.sort_by_Duration)),
                   ],
                 ),
                 ElevatedButton.icon(

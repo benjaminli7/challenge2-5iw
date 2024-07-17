@@ -4,6 +4,8 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -35,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    user.username ?? 'No Username',
+                    user.username ?? AppLocalizations.of(context)!.no_Username,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -59,7 +61,7 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: Icon(Icons.history, color: Colors.blueAccent),
-                    title: Text('Hike History'),
+                    title: Text(AppLocalizations.of(context)!.hike_History),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       GoRouter.of(context).go('/profile/hike-history');
@@ -68,12 +70,12 @@ class ProfilePage extends StatelessWidget {
                   Divider(),
                   ListTile(
                     leading: Icon(Icons.logout, color: Colors.red),
-                    title: Text('Sign Out'),
+                    title: Text(AppLocalizations.of(context)!.signOut),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       Provider.of<UserProvider>(context, listen: false).clearUser();
                       Fluttertoast.showToast(
-                        msg: "Disconnected",
+                        msg: AppLocalizations.of(context)!.disconnected,
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         backgroundColor: Colors.black,
@@ -88,7 +90,7 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       )
-          : const Center(child: Text('No user data available')),
+          : Center(child: Text(AppLocalizations.of(context)!.no_user_data_available)),
     );
   }
 }

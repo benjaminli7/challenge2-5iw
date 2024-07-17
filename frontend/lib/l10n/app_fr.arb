@@ -103,7 +103,22 @@
      "groupDetail":"Détails du groupe",
      "startDateArg":"Date début {startDate}",
      "organizerArg":"Organisateur {organizer}",
-     "groupChat": "Chat du groupe"
+     "groupChat": "Chat du groupe",
 
+    "signOut" : "Déconnexion",
+    "disconnected" : "Déconnecté",
+    "no_user_data_available" : "Pas de données utilisateur dispo",
+    "hike_History" : "Historique des randonnées",
+    "no_Username" : "Pas de nom d'utilisateur",
+
+    "no_groups_found" : "Pas de groupe trouvé",
+    "no_Hikes_history_found" : "Historique de randonnées vide",
+
+
+    "lower" : "Plus bas",
+    "hightest" : "Plus haut",
+    "sort_by_Rating" : "Trier par note",
+    "sort_by_Difficulty" : "Trier par difficulté",
+    "sort_by_Duration" : "Trier par durée"
 
 }
