@@ -112,6 +112,7 @@ class HikeProvider with ChangeNotifier {
     try {
       final response = await ApiService().updateReview(review);
       if (response.statusCode == 200) {
+        await fetchHikes();
         print('Review updated successfully');
       } else {
         print('Failed to update review_widget.dart: ${response.statusCode}');
@@ -155,8 +156,7 @@ class HikeProvider with ChangeNotifier {
 
   Future<void> userSubscribeToHike(int hikeId, int userId, String token) async {
     try {
-      final response =
-          await ApiService().subscribeToHike(hikeId, userId, token);
+      final response = await ApiService().subscribeToHike(hikeId, userId, token);
       if (response.statusCode == 200) {
         print('User subscribed to hike successfully');
       } else {

@@ -17,8 +17,10 @@ import 'package:frontend/mobile/views/group-chat/group-chat.dart';
 import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
+import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
-import 'package:frontend/mobile/views/profile/profile_details_page.dart';
+import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -95,11 +97,6 @@ final GoRouter _router = GoRouter(
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
           routes: [
-            GoRoute(
-              name: "profileDetails",
-              path: 'details',
-              builder: (context, state) => const ProfileDetailsPage(),
-            ),
             GoRoute(
               name: "hike-history",
               path: 'hike-history',
