@@ -36,7 +36,7 @@ func TestCreateHike(t *testing.T) {
 		Name:        "Test Hike",
 		Description: "This is a test hike",
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 
 	jsonValue, _ := json.Marshal(hike)
@@ -69,7 +69,7 @@ func TestGetAllHikes(t *testing.T) {
 		Name:        "Test Hike",
 		Description: "This is a test hike",
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 	db.DB.Create(&hike)
 
@@ -98,7 +98,7 @@ func TestGetHike(t *testing.T) {
 		Name:        "Test Hike",
 		Description: "This is a test hike",
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 	db.DB.Create(&hike)
 
@@ -130,7 +130,7 @@ func TestUpdateHike(t *testing.T) {
 		Name:        "Test Hike",
 		Description: "This is a test hike",
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 	db.DB.Create(&hike)
 
@@ -138,7 +138,7 @@ func TestUpdateHike(t *testing.T) {
 		Name:        "Updated Hike",
 		Description: "This is an updated test hike",
 		Difficulty:  "Advanced",
-		Duration:    "5 hours",
+		Duration:    5,
 	}
 	jsonValue, _ := json.Marshal(updatedHike)
 	req, _ := http.NewRequest("PUT", "/hikes/"+strconv.Itoa(int(hike.ID)), bytes.NewBuffer(jsonValue))
@@ -170,7 +170,7 @@ func TestDeleteHike(t *testing.T) {
 		Name:        "Test Hike",
 		Description: "This is a test hike",
 		Difficulty:  "Intermediate",
-		Duration:    "3 hours",
+		Duration:    3,
 	}
 	db.DB.Create(&hike)
 

@@ -26,7 +26,7 @@ var validate = validator.New()
 // @Param description formData string true "Hike Description"
 // @Param organizer_id formData uint true "Organizer ID"
 // @Param difficulty formData string true "Difficulty"
-// @Param duration formData string true "Duration"
+// @Param duration formData int true "Duration"
 // @Param is_approved formData bool false "Is Approved"
 // @Param image formData file false "Hike Image"
 // @Success 200 {object} models.Hike
@@ -45,7 +45,7 @@ func CreateHike(c *gin.Context) {
 	}
 	hike.OrganizerID = uint(organizerID)
 	hike.Difficulty = c.PostForm("difficulty")
-	hike.Duration = c.PostForm("duration")
+	hike.Duration, _ = strconv.Atoi(c.PostForm("duration"))
 	isApproved, err := strconv.ParseBool(c.PostForm("is_approved"))
 	if err != nil {
 		hike.IsApproved = false
@@ -197,7 +197,7 @@ func UpdateHike(c *gin.Context) {
 		hike.Difficulty = difficulty
 	}
 	if duration := c.PostForm("duration"); duration != "" {
-		hike.Duration = duration
+		hike.Duration, _ = strconv.Atoi(duration)
 	}
 	if isApproved := c.PostForm("is_approved"); isApproved != "" {
 		approved, err := strconv.ParseBool(isApproved)
