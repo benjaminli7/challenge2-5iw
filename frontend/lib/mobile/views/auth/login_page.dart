@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/user.dart';
@@ -11,11 +13,8 @@ import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,6 +36,11 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     isLogin();
+  }
+
+  void setLoginPrefs() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool('isLogin', true);
   }
 
   void isLogin() async {
@@ -125,9 +129,7 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         Fluttertoast.showToast(
-
             msg: AppLocalizations.of(context)!.logInFailureGoogle2,
-
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -161,9 +163,8 @@ class _LoginPageState extends State<LoginPage> {
             isVerified: parseJwt['verified']),
       );
 
-
       Fluttertoast.showToast(
-         msg: AppLocalizations.of(context)!.connectedGoogle,
+        msg: AppLocalizations.of(context)!.connectedGoogle,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -171,13 +172,11 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
+      setLoginPrefs();
       GoRouter.of(context).go('/explore');
-
     } catch (e) {
-
       Fluttertoast.showToast(
         msg: AppLocalizations.of(context)!.logInFailureGoogle3,
-
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -199,7 +198,6 @@ class _LoginPageState extends State<LoginPage> {
     final isGoogleActivated = settingsProvider.settings.googleAPI;
     return Scaffold(
       appBar: const NavBar(),
-
       body: Stack(
         children: [
           Padding(
@@ -207,8 +205,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                 Text(
-                   AppLocalizations.of(context)!.login,
+                Text(
+                  AppLocalizations.of(context)!.login,
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -243,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: 24,
                             ),
                             const SizedBox(width: 10),
-                             Text(
+                            Text(
                               AppLocalizations.of(context)!.connectedGoogle,
                               style: TextStyle(
                                 fontSize: 16,
