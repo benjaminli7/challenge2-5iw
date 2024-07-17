@@ -17,4 +17,6 @@ type Group struct {
 	OrganizerID uint      `json:"organizer_id"`
 	Organizer   User      `json:"organizer" gorm:"foreignKey:OrganizerID"`
 	Messages    []Message
+	Materials []Material `gorm:"foreignKey:GroupID"`
+
 }
