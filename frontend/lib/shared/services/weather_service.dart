@@ -45,22 +45,17 @@ class WeatherService {
   }
 
   List<Weather> _filterDailyForecasts(List<Weather> forecast) {
-    // Map to store daily forecasts based on date
     Map<DateTime, Weather> dailyForecasts = {};
 
-    // Iterate through all forecasts and keep only the first one for each day
     for (Weather weather in forecast) {
-      // Extract the date without time (since time will vary for different forecasts in the same day)
       DateTime date =
           DateTime(weather.date!.year, weather.date!.month, weather.date!.day);
 
-      // Only add the forecast if it's the first one for that day
       if (!dailyForecasts.containsKey(date)) {
         dailyForecasts[date] = weather;
       }
     }
 
-    // Convert map values (daily forecasts) to a list and return
     return dailyForecasts.values.toList();
   }
 }

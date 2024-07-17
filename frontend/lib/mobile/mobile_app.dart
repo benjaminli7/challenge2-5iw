@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
 import 'package:frontend/mobile/views/back/admin_page.dart';
@@ -15,10 +17,8 @@ import 'package:frontend/mobile/views/group-chat/group-chat.dart';
 import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
-import 'package:frontend/mobile/views/profile/profile_details_page.dart';
-import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
-import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/profile/profile_details_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -31,15 +31,18 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 void main() {
   runApp(const MyMobileApp());
+  final settingsProvider = SettingsProvider();
+  settingsProvider.fetchSettings();
 }
 
 final GoRouter _router = GoRouter(
-  redirect: (context, state) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final isLoggedIn = userProvider.user != null;
+  redirect: (context, state) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    final isLoggedIn = userJson != null;
+
     if (!isLoggedIn &&
         state.uri.path != '/login' &&
         state.uri.path != '/signup') {
@@ -49,7 +52,7 @@ final GoRouter _router = GoRouter(
     if (isLoggedIn &&
         (state.uri.path == '/login' || state.uri.path == '/signup')) {
       //print(2);
-      return '/home';
+      return '/explore';
     }
     return null;
   },
@@ -85,9 +88,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final userProvider = Provider.of<UserProvider>(context);
             if (userProvider.user == null) {
-              return const LoginPage();
+              return const Center(child: CircularProgressIndicator());
             } else {
-              return const HomePage();
+              return const ExplorePage();
             }
           },
         ),
@@ -95,7 +98,6 @@ final GoRouter _router = GoRouter(
           name: "profile",
           path: '/profile',
           builder: (context, state) => const ProfilePage(),
-
           routes: [
             GoRoute(
               name: "profileDetails",
@@ -108,7 +110,6 @@ final GoRouter _router = GoRouter(
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
-
         ),
         GoRoute(
           name: "explore",
@@ -121,9 +122,9 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final hikeId = int.parse(state.pathParameters['id']!);
             final hikeProvider =
-            Provider.of<HikeProvider>(context, listen: false);
-            final hike = hikeProvider.hikes
-                .firstWhere((hike) => hike.id == hikeId);
+                Provider.of<HikeProvider>(context, listen: false);
+            final hike =
+                hikeProvider.hikes.firstWhere((hike) => hike.id == hikeId);
             return HikeDetailsExplorePage(hike: hike);
           },
         ),
@@ -225,7 +226,6 @@ final GoRouter _router = GoRouter(
         ),
       ],
     ),
-
   ],
 );
 
@@ -235,25 +235,28 @@ class MyMobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-
       providers: [
-
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => HikeProvider()),
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, child) {
-          return MaterialApp.router(
-            routerConfig: _router,
-            theme: ThemeData(
-              brightness: Brightness.dark,
-            ),
-          );
-        },
-
+      child: MaterialApp.router(
+        routerConfig: _router,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('fr'),
+        ],
       ),
     );
   }

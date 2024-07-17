@@ -1,0 +1,115 @@
+{
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+
+  "login": "Login",
+  "logInSuccess": "You have successfully logged in!",
+  "logInFailure": "Login failed. Please try again.",
+  "logInFailureGoogle2": "Failed to connect with Google2",
+  "connectedGoogle": "Connected with Google",
+  "logInFailureGoogle3": "Failed to connect with Google3",
+  "password": "Password",
+  "signInGoogle": "Sign in with Google",
+  "notAccount": "No account yet? Sign up",
+
+  "signUpSuccess": "Signup successful",
+  "signUpFailure": "Signup failed",
+  "signUp": "Sign Up",
+  "alreadyRegister":"Already registered? Login here.",
+
+  "menu": "Menu",
+  "profileOf": "Profile of {email}!",
+  "users" : "Users",
+  "hike" : "Hike",
+  "settings":"Settings",
+
+  "hikeDetails": "Hike details",
+  "hikeName": "Name {name}",
+  "hikeDescription": "Description {description}",
+  "hikeDifficulty": "Difficulty {difficulty}",
+  "hikeDuration": "Duration {duration}",
+  "hikeValidation" : "Validation",
+
+  "hikeValidationPannel" : "Hikes validation Panel",
+  "noHikesFound" : "No hikes found",
+  "image" : "Image",
+  "name" : "Name",
+  "description" : "Description",
+
+  "userDetail": "User details",
+  "userEmail": "Email {email}",
+  "userRole": "Role {role}",
+  "userIsValide" : "Is valide {isValide}",
+  "deleteUser" : "Delete user",
+  "upgradeAdmin" : "Upgrade to admin",
+
+  "userList" : "User list",
+  "noUsersFound" : "No users found",
+  "role" : "Role",
+  "isValide" : "Is valide",
+  "email": "Email",
+
+  "createHike" : "Create hike",
+  "enterNameHike": "Please enter the name of the hike",
+  "nameHike50": "Name cannot be longer than 50 characters",
+  "nameHikeAlpha": "Name can only contain alphanumeric characters and spaces",
+  "enterDescriptionHike": "Please enter the description of the hike",
+   "descriptionHike50": "Description cannot be longer than 50 characters",
+   "difficulty": "Difficulty",
+   "easy": "Easy",
+   "moderate": "Moderate",
+    "hard": "Hard",
+    "selectDifficulty": "Please select a difficulty level",
+    "durationHour" : "Duration (hours)",
+    "enterDurationHike": "Please enter the duration of the hike",
+    "durationBetween" : "Duration must be between 0 and 96h (its not Trekking!)",
+    "noImage" : "No image selected",
+    "uploadImage" : "Upload image",
+    "noGpxFile" : "No gpx file selected",
+    "uploadGpx" : "Upload gpx file",
+    "processingData" : "Processing data",
+    "submit" : "Submit",
+
+    "gpxRouteViewer" : "GPX Route Viewer",
+    "noDataAvailable" : "No data available",
+
+    "reviewSubmit" : "Review submitted",
+    "rateHike":"Rate this hike:",
+    "comment" : "Comment (optional)",
+    "commentLonger":"Comment cannot be longer than 280 characters",
+    "invalidComment":"Invalid characters in comment",
+    "submitReview" : "Submit review",
+
+    "discoverHike" : "Discover hiking trails \nnear you",
+    "searchTrail":"Search for a trail",
+
+    "userNotLogged":"User not logged in",
+    "joinGroupSuccess":"Joined group {group} successfully",
+    "joinGroupFailure":"Failed to join group {group}: {e}",
+
+    "groups":"Groups",
+    "noGroupFound" :"No groups found",
+    "reviews":"Reviews",
+    "viewReviews":"View all reviews",
+    "joinGroup":"Join group",
+
+    "hikeReviews":"Hike Reviews",
+    "noReviewsFound":"No reviews found for this hike",
+    "ratingHike":"Rating :{rating}",
+    "noCommentProvided":"No comment provided",
+
+    "enterMessage" : "Enter your message",
+
+    "groupDetail":"Group details",
+    "startDateArg":"Start date {startDate}",
+    "organizerArg":"Organizer {organizer}",
+    "groupChat": "Group chat"
+
+
+
+
+
+
+}

@@ -12,6 +12,7 @@ class Hike {
   final List<Subscriptions> subscriptions;
   final double averageRating;
 
+
   Hike({
     required this.id,
     required this.name,

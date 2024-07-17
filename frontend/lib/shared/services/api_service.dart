@@ -8,6 +8,7 @@ import '../models/user.dart';
 import 'config_service.dart';
 
 class ApiService {
+
   String baseUrl = ConfigService.baseUrl;
 
   Future<http.Response> signup(String email, String username, String password, File? image) async {

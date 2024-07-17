@@ -59,7 +59,7 @@ func CreateGroup(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var group models.Group
-	if err := db.DB.Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
+	if err := db.DB.Preload("Materials.Users").Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}

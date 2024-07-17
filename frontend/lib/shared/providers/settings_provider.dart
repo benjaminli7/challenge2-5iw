@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/settings.dart';
+import 'package:frontend/shared/services/admin_service.dart';
 
 class SettingsProvider with ChangeNotifier {
-  Settings _settings = Settings(weatherAPI: true, googleAuth: true);
+  final AdminService _configService = AdminService();
+
+  Settings _settings = Settings(
+    weatherAPI: false,
+    googleAPI: false,
+  );
 
   Settings get settings => _settings;
 
-  void setSettings(Settings settings) {
-    _settings = settings;
+  SettingsProvider() {
+    fetchSettings();
+  }
+
+  Future<void> fetchSettings() async {
+    final response = await _configService.getSettings();
+    _settings = response;
     notifyListeners();
   }
 
-  void updateWeatherAPI(bool value) {
-    _settings.weatherAPI = value;
-    notifyListeners();
-  }
-
-  void updateGoogleAuth(bool value) {
-    _settings.googleAuth = value;
-    notifyListeners();
-  }
-
-  void clearSettings() {
-    _settings = Settings(weatherAPI: true, googleAuth: true);
+  void updateSettings(String token, Settings settings) {
+    _configService.updateSettings(token, settings);
+    // if done successfully, update local settings
+    _settings.weatherAPI = settings.weatherAPI;
+    _settings.googleAPI = settings.googleAPI;
     notifyListeners();
   }
 }

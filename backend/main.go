@@ -117,8 +117,18 @@ func main() {
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 
+
+	// Material routes
+	r.POST("/groups/:id/materials", controllers.GroupAddMaterials)
+	r.POST("/materials/:materialId/bring/:userId", controllers.MemberAddMaterial)
+	r.DELETE("/materials/:materialId/bring/:userId", controllers.MemberRemoveMaterial)
+	r.GET("/groups/:id/materials", controllers.GetGroupMaterials)
 	// Message routes
 	r.GET("/ws/:groupID", controllers.HandleWebSocket)
+
+	//Options route
+	r.GET("/options", controllers.GetOptions)
+	r.PATCH("/options", middleware.RequireAuth(true), controllers.UpdateOptions)
 
 	err := r.Run()
 	if err != nil {

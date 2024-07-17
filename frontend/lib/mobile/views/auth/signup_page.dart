@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:frontend/shared/widgets/custom_text_field.dart';
 import 'package:frontend/shared/widgets/navbar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -47,7 +48,7 @@ class _SignupPageState extends State<SignupPage> {
 
     if (response.statusCode == 200) {
       Fluttertoast.showToast(
-        msg: 'Signup successful',
+        msg: AppLocalizations.of(context)!.signUpSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -69,7 +70,7 @@ class _SignupPageState extends State<SignupPage> {
       print('Signup failed: Email already in use');
     } else {
       Fluttertoast.showToast(
-        msg: 'Signup failed',
+        msg: AppLocalizations.of(context)!.signUpFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -124,6 +125,7 @@ class _SignupPageState extends State<SignupPage> {
                 onPressed: _signup,
                 child: const Text(
                   'Register',
+
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -131,6 +133,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
               ),
+
               TextButton(
                 onPressed: () {
                   GoRouter.of(context).go('/login');
@@ -146,6 +149,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ],
           ),
+
         ),
       ),
     );
