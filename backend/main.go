@@ -63,6 +63,7 @@ func main() {
 
 	r.Static("/images", "./public/images")
 	r.Static("/gpx", "./public/gpx")
+	r.Static("/avatar", "./public/avatar")
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
