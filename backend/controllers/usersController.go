@@ -5,13 +5,13 @@ import (
 	"backend/models"
 	"backend/services"
 	"fmt"
-	"net/http"
-	"os"
-	"time"
-	"path/filepath"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 )
 
 // Signup godoc
@@ -27,9 +27,9 @@ import (
 func Signup(c *gin.Context) {
 
 	email := c.PostForm("email")
-    username := c.PostForm("username")
-    password := c.PostForm("password")
-	println("email",email)
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	println("email", email)
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
@@ -372,4 +372,54 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
+}
+
+// UpdatePassword godoc
+// @Summary Update user password
+// @Description Update the password of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.PasswordUpdate true "User password update"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/password [patch]
+func UpdatePassword(c *gin.Context) {
+	var body struct {
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	id := c.Param("id")
+	var user models.User
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.OldPassword))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Old password is incorrect"})
+		return
+	}
+
+	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(body.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to hash new password"})
+		return
+	}
+
+	user.Password = string(newPasswordHash)
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update password"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Password updated successfully"})
 }
