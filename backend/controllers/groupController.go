@@ -59,7 +59,7 @@ func CreateGroup(c *gin.Context) {
 func GetGroup(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var group models.Group
-	if err := db.DB.Preload("Materials.Users").Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
+	if err := db.DB.Preload("Materials.Users").Preload("Users").Preload("Hike").Preload("Organizer").First(&group, id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -78,7 +78,7 @@ func GetGroup(c *gin.Context) {
 // @Router /groups [get]
 func GetGroups(c *gin.Context) {
 	var groups []models.Group
-	if err := db.DB.Preload("Hike").Preload("Organizer").Order("id desc").Find(&groups).Error; err != nil {
+	if err := db.DB.Preload("Hike").Preload("Users").Preload("Organizer").Order("id desc").Find(&groups).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -108,7 +108,7 @@ func GetMyGroups(c *gin.Context) {
 	var groups []models.Group
 	today := time.Now().Format("2006-01-02")
 
-	err = db.DB.Preload("Hike").Preload("Organizer").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date >= ?", today).Find(&groups).Error
+	err = db.DB.Preload("Hike").Preload("Users").Preload("Organizer").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date >= ?", today).Find(&groups).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -146,7 +146,7 @@ func GetGroupsByHike(c *gin.Context) {
 		Where("user_id = ?", userId)
 
 	today := time.Now().Format("2006-01-02")
-	err = db.DB.Preload("Hike").Preload("Organizer").
+	err = db.DB.Preload("Hike").Preload("Users").Preload("Organizer").
 		Order("start_date").
 		Where("hike_id = ?", hikeId).
 		Where("start_date >= ?", today).

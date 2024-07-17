@@ -18,4 +18,5 @@ type Group struct {
 	Organizer   User      `json:"organizer" gorm:"foreignKey:OrganizerID"`
 	Materials []Material `gorm:"foreignKey:GroupID"`
 	Messages    []Message `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MaxUsers    int       `json:"max_users"`
 }
