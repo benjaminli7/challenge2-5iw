@@ -27,7 +27,6 @@ class AdminPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-
             buildMenuBlock([
               buildMenuItem(Icons.person, AppLocalizations.of(context)!.users, () {
                 GoRouter.of(context).go('/admin/users');

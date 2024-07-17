@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 // import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/material.dart';
@@ -230,11 +231,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     label: const Text('Group Chat'),
                   ),
                   const SizedBox(height: 16.0),
-                  // Expanded(
-                  //   child: WeatherWidget(
-                  //     group: group,
-                  //   ),
-                  // )
+                  Expanded(
+                    child: WeatherWidget(
+                      group: group,
+                    ),
+                  )
                 ],
               ),
             );

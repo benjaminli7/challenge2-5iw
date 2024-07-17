@@ -62,8 +62,7 @@ class _HikeCardState extends State<HikeCard> {
               child: Stack(
                 children: [
                   Image.network(
-                    Uri.parse("$baseUrl${widget.hike.image}")
-                        .toString(),
+                    Uri.parse("$baseUrl${widget.hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                   Positioned(
@@ -82,8 +81,7 @@ class _HikeCardState extends State<HikeCard> {
                           isFavorite
                               ? Icons.notifications_active
                               : Icons.notifications_off,
-                          color:
-                          isFavorite ? Colors.redAccent : Colors.black26,
+                          color: isFavorite ? Colors.redAccent : Colors.black26,
                           size: 24.0,
                           key: ValueKey<bool>(isFavorite),
                         ),
