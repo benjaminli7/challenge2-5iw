@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"strings"
 )
 
 // Signup godoc
@@ -33,6 +34,10 @@ func Signup(c *gin.Context) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
+		return
+	}
+	if email == "" || username == "" || password == "" {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Please fill in all fields"})
 		return
 	}
 
@@ -117,7 +122,9 @@ func Login(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 				return
 			}
-			user = models.User{Email: body.Email, Password: string(hash), Role: "user", IsVerified: true}
+			
+			username := strings.Split( body.Email, "@")
+			user = models.User{Email: body.Email, Username: username[0],Password: string(hash), Role: "user", IsVerified: true}
 			result := db.DB.Create(&user)
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
