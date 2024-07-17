@@ -88,8 +88,9 @@ func main() {
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.UpdateUser)
 	r.GET("/users/me", controllers.GetUserProfile)
-	r.PATCH("/users/:id/fcmToken", middleware.RequireAuth(false), controllers.UpdateFcmToken)
 
+	r.PATCH("/users/:id/fcmToken", middleware.RequireAuth(false), controllers.UpdateFcmToken)
+	r.PATCH("/users/:id/password", middleware.RequireAuth(false), controllers.UpdatePassword)
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)

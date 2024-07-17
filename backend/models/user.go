@@ -21,4 +21,10 @@ type User struct {
 	Materials    []Material `gorm:"many2many:material_users"`
 	ProfileImage string     `json:"profile_image,omitempty"`
 	FcmToken     string     `json:"fcm_token,omitempty"`
+
+}
+
+type PasswordUpdate struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }

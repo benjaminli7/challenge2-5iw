@@ -1,0 +1,29 @@
+[
+    {
+        "ID":1,
+        "Name": "Randonnée magique",
+        "Description": "Venez découvrir les plus beaux sentiers de la région en notre compagnie.",
+        "Organizer_id": 1,
+        "Hike_id": 2,
+        "start_date": "2024-07-17T16:00:56.5202263+02:00"
+    },
+    {
+        "ID":2,
+        "Name": "Randonnée sportive",
+        "Description": "Venez vous dépenser devant des paysages à couper le souffle.",
+        "Organizer_id": 2,       
+        "Hike_id": 1,
+
+        "start_date": "2024-06-17T16:00:56.5202263+02:00"
+    },
+    {
+        "ID":3,
+        "Name": "Randonnée festive",
+        "Description": "Venez vous amuser et faire la fête en pleine nature.",
+        "Organizer_id": 3,
+        "start_date": "2024-06-17T16:00:56.5202263+02:00",
+       
+        "Hike_id": 7
+    }
+    
+]

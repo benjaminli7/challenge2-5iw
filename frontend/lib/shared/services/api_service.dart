@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-
 import '../models/review.dart';
 import '../models/user.dart';
 import 'config_service.dart';
@@ -215,4 +213,18 @@ class ApiService {
       ),
     );
   }
+  Future<http.Response> changePassword(String token, int userId, String oldPassword, String newPassword) {
+    return http.patch(
+      Uri.parse('$baseUrl/users/$userId/password'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      }),
+    );
+  }
+
 }
