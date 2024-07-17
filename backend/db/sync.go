@@ -13,6 +13,7 @@ func SyncDatabase() {
 		&models.Group{},
 		&models.GroupUser{},
 		&models.Review{},
+		&models.Options{},
 		&models.Subscription{}); err != nil {
 		panic("Failed to migrate database: " + err.Error())
 	}
