@@ -80,7 +80,7 @@ func main() {
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.UpdateUser)
 	r.GET("/users/me", controllers.GetUserProfile)
-
+	r.PATCH("/users/:id/password", middleware.RequireAuth(false), controllers.UpdatePassword)
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
@@ -116,7 +116,6 @@ func main() {
 	r.PUT("/reviews/:id", controllers.UpdateReview)
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
-
 
 	// Material routes
 	r.POST("/groups/:id/materials", controllers.GroupAddMaterials)

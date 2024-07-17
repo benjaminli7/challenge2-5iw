@@ -119,8 +119,15 @@
     "hightest" : "Hightest",
     "sort_by_Rating" : "Sort by Rating",
     "sort_by_Difficulty" : "Sort by Difficulty",
-    "sort_by_Duration" : "Sort by Duration"
+    "sort_by_Duration" : "Sort by Duration",
 
+    "changePassword" : "Change Password",
+    "oldPassword" : "Old password",
+    "enterOldPassword" : "Enter old password",
+    "newPassword" : "New Password",
+    "enterNewPassword" : "Enter new password",
+    "passwordChanged" : "Password changed",
+    "passwordChangeFailed" : "Password change failed"
 
 
 

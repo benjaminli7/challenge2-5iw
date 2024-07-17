@@ -52,8 +52,8 @@ definitions:
         example: Intermediate
         type: string
       duration:
-        example: 3 hours
-        type: string
+        example: 3
+        type: integer
       gpx_file:
         example: hike.gpx
         type: string
@@ -91,6 +91,32 @@ definitions:
     - duration
     - name
     - organizer_id
+    type: object
+  models.Material:
+    properties:
+      createdAt:
+        type: string
+      group:
+        $ref: '#/definitions/models.Group'
+      groupID:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  models.PasswordUpdate:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
     type: object
   models.Review:
     properties:
@@ -161,6 +187,10 @@ definitions:
         type: integer
       is_verified:
         type: boolean
+      materials:
+        items:
+          $ref: '#/definitions/models.Material'
+        type: array
       password:
         type: string
       profile_image:
@@ -583,7 +613,7 @@ paths:
         in: formData
         name: duration
         required: true
-        type: string
+        type: integer
       - description: Is Approved
         in: formData
         name: is_approved
@@ -1057,6 +1087,37 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update user profile
+      tags:
+      - users
+  /users/{id}/password:
+    patch:
+      consumes:
+      - application/json
+      description: Update the password of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User password update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update user password
       tags:
       - users
   /users/{id}/role:

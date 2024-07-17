@@ -119,6 +119,14 @@
     "hightest" : "Plus haut",
     "sort_by_Rating" : "Trier par note",
     "sort_by_Difficulty" : "Trier par difficulté",
-    "sort_by_Duration" : "Trier par durée"
+    "sort_by_Duration" : "Trier par durée",
+
+    "changePassword" : "Changer le mot de passe",
+    "oldPassword" : "Ancien mot de passe",
+    "enterOldPassword" : "Entrez l'ancien mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "enterNewPassword" : "Entrez le nouveau mot de passe",
+    "passwordChanged" : "Mot de passe modifié",
+    "passwordChangeFailed" : "Changement de mot de passe échoué"
 
 }
