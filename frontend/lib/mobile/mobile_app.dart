@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/mobile/views/auth/login_page.dart';
 import 'package:frontend/mobile/views/auth/signup_page.dart';
@@ -31,13 +32,32 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/shared/widgets/notification_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/firebase_options.dart';
+import 'package:frontend/shared/services/firebase_service.dart';
 
-void main() {
+Future<void> main() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseService().initNotifications();
+  final token = await FirebaseMessaging.instance.getToken();
+
+  prefs.setString('fcmToken', token!);
+  if (prefs.containsKey('fcmToken')) {
+    print('FCM Token: ${prefs.getString('fcmToken')}');
+  }
+
+  // setupFirebaseMessagingHandlers();
+
   runApp(const MyMobileApp());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter _router = GoRouter(
-  redirect: (context, state) {
+  navigatorKey: navigatorKey,
+  redirect: (context, state) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final isLoggedIn = userProvider.user != null;
     if (!isLoggedIn &&
@@ -140,6 +160,18 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => const CreateHikePage(),
         ),
         GoRoute(
+          name: "test",
+          path: '/test',
+          builder: (context, state) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Test'),
+            ),
+            body: const Center(
+              child: Text('Test'),
+            ),
+          ),
+        ),
+        GoRoute(
           name: "group-detail",
           path: '/group/:id',
           builder: (context, state) {
@@ -228,7 +260,9 @@ final GoRouter _router = GoRouter(
 );
 
 class MyMobileApp extends StatelessWidget {
-  const MyMobileApp({super.key});
+  final RemoteMessage? initialMessage;
+
+  const MyMobileApp({super.key, this.initialMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +281,17 @@ class MyMobileApp extends StatelessWidget {
             theme: ThemeData(
               brightness: Brightness.dark,
             ),
+            builder: (context, child) {
+              // Navigate based on initial message if exists
+              if (initialMessage != null &&
+                  initialMessage!.data['route'] != null) {
+                Future.microtask(() => Navigator.pushNamed(
+                      context,
+                      initialMessage!.data['route'],
+                    ));
+              }
+              return child!;
+            },
           );
         },
       ),

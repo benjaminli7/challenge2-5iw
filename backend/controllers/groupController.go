@@ -58,6 +58,9 @@ func CreateGroup(c *gin.Context) {
 		users = append(users, user)
 	}
 
+	_hike := models.Hike{}
+	db.DB.Where("id = ?", group.HikeID).First(&_hike)
+
 	for _, user := range users {
 		if user.ID == group.OrganizerID {
 			continue
@@ -65,7 +68,7 @@ func CreateGroup(c *gin.Context) {
 		token = user.FcmToken
 		title = "New group created for " + group.Hike.Name
 		body = "Join the group to meet new people and share your experience"
-		route = "/group/" + strconv.Itoa(int(group.ID))
+		route = "/hike/" + strconv.Itoa(int(_hike.ID))
 		if token != "" {
 			err := services.SendNotification(context.Background(), token, title, body, route)
 			if err != nil {

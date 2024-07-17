@@ -70,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
       // print('fcm token from shared preferences: $_fcmToken');
       // print('fcm token from jwt: ${parseJwt['fcm_token']}');
       String fcmTokenFromJwt = parseJwt['fcm_token'] ?? "";
-      if (fcmTokenFromJwt == "" && _fcmToken != "") {
+      if (fcmTokenFromJwt == "" && _fcmToken != "" ||
+          fcmTokenFromJwt != _fcmToken) {
         final response = await _apiService.setFcmToken(
             Provider.of<UserProvider>(context, listen: false).user!.id,
             _fcmToken,
@@ -79,6 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           // set fcm token on the user object
           Provider.of<UserProvider>(context, listen: false)
               .setFcmToken(_fcmToken);
+          print(_fcmToken);
           print('fcm token set');
         } else {
           print('failed to set fcm token');
