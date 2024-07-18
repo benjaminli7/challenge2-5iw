@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/group_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SelectHikeDateSection extends StatelessWidget {
   const SelectHikeDateSection({super.key});
@@ -16,8 +17,8 @@ class SelectHikeDateSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text(
-            'Select hike date',
+          Text(
+            AppLocalizations.of(context)!.selectHikeDate,
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 10),

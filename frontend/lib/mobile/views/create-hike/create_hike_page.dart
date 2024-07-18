@@ -102,8 +102,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
@@ -115,21 +113,14 @@ class _CreateHikePageState extends State<CreateHikePage> {
         allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result');
 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}');
         });
-      } else {
-        print('No GPX file selected.');
       }
     } catch (e) {
-      print('Error picking GPX file: $e');
-      print('Attempting to use FileType.any as a fallback');
 
-      // Fallback to FileType.any
       try {
         final result = await FilePicker.platform.pickFiles(
           type: FileType.any,
@@ -138,10 +129,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print('GPX file path with fallback: ${_gpxFile!.path}');
+
           });
-        } else {
-          print('No file selected in fallback.');
         }
       } catch (e) {
         print('Error picking file in fallback: $e');
@@ -252,14 +241,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   isLatLngRequired:
                       true,
                   getPlaceDetailWithLatLng: (prediction) {
-                    print("Coordinates: (${prediction.lat},${prediction.lng})");
                     _lat.text = prediction.lat.toString();
                     _lng.text = prediction.lng.toString();
                   },
                   maxLines: 1,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your address',
-                    labelText: 'Address',
+                  decoration:  InputDecoration(
+                    hintText: AppLocalizations.of(context)!.enterAdress,
+                    labelText: AppLocalizations.of(context)!.adress,
                   ),
                   itmClick: (Prediction prediction) {
                     _mapsController.text = prediction.description.toString();

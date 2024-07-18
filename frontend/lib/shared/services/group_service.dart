@@ -14,7 +14,6 @@ import 'config_service.dart';
 class GroupService {
   String baseUrl = ConfigService.baseUrl;
 
-  // get a group by id
   Future<Group> getGroupById(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId');
     final response = await http.get(
@@ -25,7 +24,6 @@ class GroupService {
     );
 
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
       return Group.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load group');
@@ -110,7 +108,6 @@ class GroupService {
     }
   }
 
-  // Add a method to delete a group
   Future<void> deleteGroup(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId');
     final response = await http.delete(
@@ -125,7 +122,6 @@ class GroupService {
     }
   }
 
-  // fetch group messages
   Future<List<Message>> fetchGroupMessages(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId/messages');
     final response = await http.get(
@@ -188,8 +184,6 @@ class GroupService {
 
     var response = await request.send();
     return http.Response.fromStream(response);
-
-
     // if (response.statusCode == 200) {
     //   // Successfully uploaded images
     //   var responseBody = await response.stream.bytesToString();
@@ -211,8 +205,6 @@ class GroupService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete image');
-    } else {
-      print('Image deleted successfully');
     }
   }
 

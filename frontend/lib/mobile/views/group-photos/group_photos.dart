@@ -9,6 +9,7 @@ import 'package:frontend/shared/services/flag_service.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupPhotosPage extends StatefulWidget {
   final int groupId;
@@ -33,7 +34,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
       _imagesFuture =
           _groupService.fetchGroupImages(user.token, widget.groupId);
     } else {
-      _imagesFuture = Future.error('User not logged in');
+      _imagesFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
     _checkFeatureFlag();
   }
@@ -58,7 +59,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   Future<void> _deleteImage(int imageId) async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user == null) {
-      return; // Handle case where user is not logged in
+      return;
     }
     try {
       await _groupService.deleteGroupImage(user.token, imageId);
@@ -67,7 +68,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
             _groupService.fetchGroupImages(user.token, widget.groupId);
       });
       Fluttertoast.showToast(
-        msg: 'Image deleted successfully',
+        msg: AppLocalizations.of(context)!.imageDeletedSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -77,7 +78,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
       );
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Error deleting group image',
+        msg: AppLocalizations.of(context)!.imageDeletedFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -91,7 +92,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   void selectImages() async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user == null) {
-      return; // Handle case where user is not logged in
+      return;
     }
     final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages!.isNotEmpty) {
@@ -114,7 +115,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
         imageFileList.clear();
       });
       Fluttertoast.showToast(
-        msg: "Photos added successfully",
+        msg: AppLocalizations.of(context)!.groupImageSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -128,7 +129,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
       final Map<String, dynamic> responseData = jsonDecode(res.body);
       final String? errMessage = responseData['message'];
       Fluttertoast.showToast(
-        msg: errMessage!,
+        msg: AppLocalizations.of(context)!.groupImageFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -176,7 +177,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Group photos'),
+        title:  Text(AppLocalizations.of(context)!.groupPhoto),
       ),
       body: FutureBuilder<List<GroupImage>>(
         future: _imagesFuture,
@@ -186,7 +187,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No photos found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noPhotos));
           } else {
             final images = snapshot.data!;
             return GridView.builder(
@@ -219,7 +220,6 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
                     child: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
-                        // Show confirmation dialog if needed
                         await _deleteImage(image.id);
                       },
                     ),
@@ -256,7 +256,6 @@ class ImageDetailPage extends StatelessWidget {
         child: Image.network(
           Uri.parse("$baseUrl${image.path}").toString(),
         ),
-        // child: Image.network(Uri.parse("image.path"),
       ),
     );
   }

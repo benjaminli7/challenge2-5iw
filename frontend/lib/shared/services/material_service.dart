@@ -21,11 +21,7 @@ class MaterialService {
       }),
     );
 
-    if (response.statusCode == 200) {
-      print('Materials added successfully to group $groupId');
-    } else {
-      print('Failed to add materials to group $groupId: ${response.body}');
-    }
+
   }
 
   Future<List<Materiel>> getMaterialsByGroupId(

@@ -13,7 +13,6 @@ class AdminService {
   String baseUrl = ConfigService.baseUrl;
 
   Future<List<User>> fetchUsers(String token) async {
-    print('fetchUsers token: $token');
     final response = await http.get(
       Uri.parse('$baseUrl/users'),
       headers: {
@@ -27,8 +26,7 @@ class AdminService {
       List<dynamic> usersJson = data['users'];
       return usersJson.map((json) => User.fromJson(json)).toList();
     } else {
-      print(
-          'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
+
       throw Exception(
           'Failed to load users: ${response.statusCode} - ${response.reasonPhrase}');
     }
@@ -62,7 +60,6 @@ class AdminService {
   }
 
   Future<List<Hike>> fetchHikesNoValidate(String token) async {
-    print('fetchUsers token: $token');
     final response = await http.get(
       Uri.parse('$baseUrl/hikes/notValidated'),
       headers: {
@@ -72,11 +69,9 @@ class AdminService {
 
     if (response.statusCode == 200) {
       List<dynamic> hikesJson = json.decode(response.body);
-      print('data: $hikesJson');
       return hikesJson.map((json) => Hike.fromJson(json)).toList();
     } else {
-      print(
-          'Failed to load hikes: ${response.statusCode} - ${response.reasonPhrase}');
+
       throw Exception(
           'Failed to load hikes: ${response.statusCode} - ${response.reasonPhrase}');
     }
@@ -118,7 +113,6 @@ class AdminService {
     );
 
     if (response.statusCode == 200) {
-      print('Response body: ${response.body}');
       var data = json.decode(response.body);
 
       if (data is List) {
@@ -130,8 +124,6 @@ class AdminService {
         throw Exception('Unexpected JSON structure: $data');
       }
     } else {
-      print(
-          'Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
       throw Exception(
           'Failed to load groups: ${response.statusCode} - ${response.reasonPhrase}');
     }
@@ -159,8 +151,6 @@ class AdminService {
       Map<String, dynamic> data = json.decode(response.body);
       return Settings.fromJson(data);
     } else {
-      print(
-          'Failed to load settings: ${response.statusCode} - ${response.reasonPhrase}');
       throw Exception(
           'Failed to load settings: ${response.statusCode} - ${response.reasonPhrase}');
     }
