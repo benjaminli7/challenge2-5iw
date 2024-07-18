@@ -391,24 +391,23 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const Divider(),
                     const SizedBox(height: 8.0),
                  _isWeatherApiEnabled
-  ? Column(
-      children: [
-        CustomAccordion(
-          title: 'Weather',
-          isExpanded: _isWeatherExpanded,
-          onExpansionChanged: (bool expanded) {
-            setState(() {
-              _isWeatherExpanded = expanded;
-            });
-          },
-          content: WeatherWidget(group: group),
-        ),
-        const SizedBox(height: 8.0),
-        const Divider(),
-      ],
-    )
-
-  : const SizedBox(),
+                  ? Column(
+                      children: [
+                        CustomAccordion(
+                          title: 'Weather',
+                          isExpanded: _isWeatherExpanded,
+                          onExpansionChanged: (bool expanded) {
+                            setState(() {
+                              _isWeatherExpanded = expanded;
+                            });
+                          },
+                          content: WeatherWidget(group: group),
+                        ),
+                        const SizedBox(height: 8.0),
+                        const Divider(),
+                      ],
+                    )
+                    : const SizedBox(),
                     const SizedBox(height: 8.0),
                     ListTile(
                         title: const Text('Photos',
