@@ -292,6 +292,13 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   }
                 },
               ),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton.icon(
+                    onPressed: () {},
+                    label: const Text("Créer un groupe"),
+                    icon: const Icon(Icons.add)),
+              ),
               const Divider(),
               ListTile(
                 title: Text(AppLocalizations.of(context)!.viewReviews),
@@ -308,12 +315,6 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          GoRouter.of(context).go('/groups/create/${widget.hike.id}');
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }
