@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -125,8 +124,7 @@ func Login(c *gin.Context) {
 				return
 			}
 			
-			username := strings.Split( body.Email, "@")
-			user = models.User{Email: body.Email, Username: username[0],Password: string(hash), Role: "user", IsVerified: true}
+			user = models.User{Email: body.Email,Password: string(hash), Role: "user", IsVerified: true}
 			result := db.DB.Create(&user)
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
