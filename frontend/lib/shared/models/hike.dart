@@ -11,6 +11,8 @@ class Hike {
   final String gpxFile;
   final List<Subscriptions> subscriptions;
   final double averageRating;
+  final String lat;
+  final String lng;
 
 
   Hike({
@@ -24,6 +26,8 @@ class Hike {
     required this.gpxFile,
     required this.subscriptions,
     required this.averageRating,
+    required this.lat,
+    required this.lng,
   });
 
   factory Hike.fromJson(Map<String, dynamic> json) {
@@ -42,6 +46,9 @@ class Hike {
             : [],
         averageRating: (json['average_rating'] is int)
             ? (json['average_rating'] as int).toDouble()
-            : (json['average_rating'] ?? 0.0));
+            : (json['average_rating'] ?? 0.0)
+          , lat: json['lat']
+          , lng: json['lng']
+            );
   }
 }

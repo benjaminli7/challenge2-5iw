@@ -43,11 +43,11 @@ class HikeProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> createHike(String name, String description, int organizerId,
-      String difficulty, int duration, File image, File gpxFile) async {
+  Future<void> createHike(String name, String description, int organizerId,  String difficulty, int duration, File image, File gpxFile, String lat, String lng
+      ) async {
     try {
       final response = await ApiService().createHike(
-          name, description, organizerId, difficulty, duration, image, gpxFile);
+          name, description, organizerId, difficulty, duration, image, gpxFile , lat, lng);
       if (response.statusCode == 200) {
         print('Hike created successfully');
       } else {

@@ -127,7 +127,6 @@
     "enterNewPassword" : "Entrez le nouveau mot de passe",
     "passwordChanged" : "Mot de passe modifié",
     "passwordChangeFailed" : "Changement de mot de passe échoué",
-
     "creat_Group" : "Créer un groupe"
 
 }

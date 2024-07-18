@@ -32,11 +32,11 @@ class WeatherCard extends StatelessWidget {
         children: <Widget>[
           Text(
             _getFormattedDate(weather.date),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Lottie.asset(animationAsset, width: 100, height: 100),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -44,7 +44,7 @@ class WeatherCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '${weather.temperature?.celsius?.toStringAsFixed(1) ?? 'N/A'} °C',
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ),
@@ -56,7 +56,7 @@ class WeatherCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '${weather.windSpeed?.toStringAsFixed(1) ?? 'N/A'} m/s',
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ),

@@ -72,7 +72,9 @@ class ApiService {
       String difficulty,
       int duration,
       File? image,
-      File? gpxFile) async {
+      File? gpxFile,
+      String lat,
+      String lng) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
     request.headers['Content-Type'] = 'multipart/form-data';
@@ -82,6 +84,12 @@ class ApiService {
     request.fields['organizer_id'] = organizerId.toString();
     request.fields['difficulty'] = difficulty;
     request.fields['duration'] = duration.toString();
+    request.fields['lat'] = lat;
+    request.fields['lng'] = lng;
+    
+
+    print('Lng: $lng');
+    print('Lat: $lat');
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
