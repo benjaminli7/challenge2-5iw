@@ -97,8 +97,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print(
-                'GPX file path with fallback: ${_gpxFile!.path}');
+            print('GPX file path with fallback: ${_gpxFile!.path}');
           });
         } else {
           print('No file selected in fallback.');
@@ -227,6 +226,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                          duration: const Duration(seconds: 2),
                           content: Text(
                               AppLocalizations.of(context)!.processingData)),
                     );

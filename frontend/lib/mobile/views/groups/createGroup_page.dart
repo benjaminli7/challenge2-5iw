@@ -34,7 +34,9 @@ class CreateGroupPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Group created successfully!')),
         );
-        GoRouter.of(context).push('/groups');
+        GoRouter.of(context).go('/groups');
+        // change  bottom navigation active tem to /groups
+        
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create group: ${response.body}')),
