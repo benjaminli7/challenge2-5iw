@@ -77,9 +77,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           radius: 50,
                           backgroundImage: user.profileImage != null
                               ? NetworkImage('$baseUrl${user.profileImage}')
-                              : const AssetImage(
-                                      'assets/images/profile_placeholder.png')
-                                  as ImageProvider,
+                              : null,
+                          child: Text(
+                            user.username!.substring(0, 1).toUpperCase(),
+                            style: const TextStyle(fontSize: 48.0),
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
