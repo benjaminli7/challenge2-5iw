@@ -29,8 +29,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
     _isGoogleAuthEnabled = _settingsProvider.settings.googleAPI;
 
-    print('isWeatherApiEnabled: $_isWeatherApiEnabled');
-    print('isGoogleAuthEnabled: $_isGoogleAuthEnabled');
   }
 
   @override

@@ -17,9 +17,9 @@ class AdminPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 50),
-            const Center(
+            Center(
               child: Text(
-                "Admin",
+                AppLocalizations.of(context)!.admin,
                 style: TextStyle(fontSize: 24),
               ),
             ),

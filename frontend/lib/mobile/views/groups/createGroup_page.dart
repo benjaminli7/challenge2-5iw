@@ -8,6 +8,7 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateGroupPage extends StatelessWidget {
   final Hike hike;
@@ -23,7 +24,7 @@ class CreateGroupPage extends StatelessWidget {
     try {
       if (groupData['name'] == null || groupData['name'] == '') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Group name is required')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.groupNameRequire)),
         );
         return;
       }
@@ -32,10 +33,10 @@ class CreateGroupPage extends StatelessWidget {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Group created successfully!')),
+           SnackBar(content: Text(AppLocalizations.of(context)!.groupCreated)),
         );
         GoRouter.of(context).go('/groups');
-        // change  bottom navigation active tem to /groups
+
         
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +54,7 @@ class CreateGroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create group'),
+        title: Text(AppLocalizations.of(context)!.createGroup),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -70,8 +71,8 @@ class CreateGroupPage extends StatelessWidget {
               HikeDetailsSection(hike: hike),
               const SizedBox(height: 20),
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Group name',
+                decoration:  InputDecoration(
+                  labelText: AppLocalizations.of(context)!.groupName,
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
@@ -81,8 +82,8 @@ class CreateGroupPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Group description',
+                decoration:  InputDecoration(
+                  labelText: AppLocalizations.of(context)!.groupDescription,
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
@@ -96,8 +97,8 @@ class CreateGroupPage extends StatelessWidget {
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
                 ],
-                decoration: const InputDecoration(
-                  labelText: 'Max number of participants',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.maxParticipants,
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
@@ -116,7 +117,7 @@ class CreateGroupPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 15),
                   ),
-                  child: const Text('Validate'),
+                  child: Text(AppLocalizations.of(context)!.submit),
                 ),
               ),
             ],
