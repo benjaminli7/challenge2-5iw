@@ -46,10 +46,10 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateUser(User updatedUser) async {
+  Future<void> updateUser(User updatedUser, image) async {
     if (_user != null) {
       try {
-        final response = await _apiService.updateUserProfile(updatedUser, _user!.token);
+        final response = await _apiService.updateUserProfile(updatedUser, _user!.token, image);
         if (response.statusCode == 200) {
           _user = User.fromJson(jsonDecode(response.body));
           _user!.token = updatedUser.token;
@@ -67,6 +67,10 @@ class UserProvider with ChangeNotifier {
     user!.fcmToken = fcmToken;
   }
 
+  void setProfileImage(String profileImage) {
+    user!.profileImage = profileImage;
+    notifyListeners();
+  }
   Future<bool> changePassword(String token, String oldPassword, String newPassword) async {
     if (_user != null) {
       try {

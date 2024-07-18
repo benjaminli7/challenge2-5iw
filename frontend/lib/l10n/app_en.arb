@@ -127,5 +127,7 @@
     "enterNewPassword" : "Enter new password",
     "passwordChanged" : "Password changed",
     "passwordChangeFailed" : "Password change failed",
-    "creat_Group" : "Creat Group"
+    "creat_Group" : "Creat Group",
+    "profilePictureUpdated": "Profile picture updated",
+    "profilePictureUpdateFailed": "Profile picture update failed"
 }

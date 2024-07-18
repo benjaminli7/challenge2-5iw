@@ -454,21 +454,35 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var body models.User
-	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
-		return
+	
+
+	if c.PostForm("username") != "" {
+		user.Username = c.PostForm("username")
 	}
 
-	if body.Username != "" {
-		user.Username = body.Username
-	}
 
-	if body.ProfileImage != "" {
-		user.ProfileImage = body.ProfileImage
-	}
+		file, err := c.FormFile("image")
+		if err == nil {
+			println("file", file)
+			filename := filepath.Base(file.Filename)
+			filePath := filepath.Join("public", "avatar", filename)
+			if err := c.SaveUploadedFile(file, filePath); err != nil {
+				println("err", err.Error())
+				c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+				return
+			}
+			user.ProfileImage = "/avatar/" + filename
+		} else if err == http.ErrMissingFile {
+			user.ProfileImage = "";
+		} else {
+			println("err", err.Error())
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+	
 
 	if err := db.DB.Save(&user).Error; err != nil {
+		println("err", err.Error())
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
 		return
 	}

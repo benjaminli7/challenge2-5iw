@@ -187,16 +187,28 @@ class ApiService {
     }
   }
 
-  Future<http.Response> updateUserProfile(User user, String token) {
-    return http.put(
-      Uri.parse('$baseUrl/users/${user.id}'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(user.toJson()),
-    );
+  Future<http.Response> updateUserProfile(User user, String token, File? image) async {
+    var request = http.MultipartRequest('PUT', Uri.parse('$baseUrl/users/${user.id}'));
+    request.fields['email'] = user.email;
+    request.fields['username'] = user.username.toString();
+    request.fields['password'] = user.password;
+    request.headers['Content-Type'] = 'multipart/form-data';
+    if (image != null) {
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var multipartFile = http.MultipartFile('image', stream, length,
+          filename: image.path.split('/').last);
+
+      request.files.add(multipartFile);
+    }
+
+    var streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
   }
+
+
+
 
   Future<http.Response> setFcmToken(int userId, String fcmToken, String token) {
     print("From service: token: $token userId: $userId fcmToken: $fcmToken");
