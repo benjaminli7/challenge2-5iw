@@ -1,0 +1,27 @@
+[
+    {
+        "Hike_id" : 1,
+        "User_id" : 1,
+        "Rating" : 5,
+        "Comment" : "Superbe randonnée, à refaire !"
+    },
+    {
+        "Hike_id" : 2,
+        "User_id" : 2,
+        "Rating" : 4,
+        "Comment" : "La randonnée était bien dommage que le temps n'était pas au rendez-vous."
+    },
+    {
+        "Hike_id" : 3,
+        "User_id" : 3,
+        "Rating" : 3,
+        "Comment" : "Randonnée sympa, mais un peu trop de monde."
+    },
+   
+    {
+        "Hike_id" : 3,
+        "User_id" : 2,
+        "Rating" : 5,
+        "Comment" : "J'ai adoré cette randonnée, je la recommande à tous les amoureux de la nature."
+    }
+]

@@ -1,12 +1,14 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
@@ -34,7 +36,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'name': _nameController.text,
         'description': _descriptionController.text,
         'difficulty': _difficulty,
-        'duration': _durationController.text,
+        'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
       };
@@ -69,15 +71,15 @@ class _CreateHikePageState extends State<CreateHikePage> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['gpx'], // Ensure no dot before the extension
+        allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result'); // Debug print
+      print('File picking result: $result');
 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}'); // Debug print
+          print('GPX file path: ${_gpxFile!.path}');
         });
       } else {
         print('No GPX file selected.');
@@ -96,7 +98,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
           setState(() {
             _gpxFile = File(result.files.single.path!);
             print(
-                'GPX file path with fallback: ${_gpxFile!.path}'); // Debug print
+                'GPX file path with fallback: ${_gpxFile!.path}');
           });
         } else {
           print('No file selected in fallback.');
@@ -129,7 +131,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.name),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.enterNameHike;
@@ -146,7 +149,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.description),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.description),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.enterDescriptionHike;
@@ -159,7 +163,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               DropdownButtonFormField<String>(
                 value: _difficulty,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.difficulty),
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.difficulty),
                 items: ['Easy', 'Medium', 'Hard']
                     .map((difficulty) => DropdownMenuItem<String>(
                           value: difficulty,
@@ -180,15 +185,19 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ),
               TextFormField(
                 controller: _durationController,
-                decoration:
-                     InputDecoration(labelText: AppLocalizations.of(context)!.durationHour),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.durationHour,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.enterDurationHike;
                   }
-                  if (double.tryParse(value) == null ||
-                      double.parse(value) <= 0 ||
-                      double.parse(value) >= 96) {
+                  final number = double.tryParse(value);
+                  if (number == null || number <= 0 || number >= 96) {
                     return AppLocalizations.of(context)!.durationBetween;
                   }
                   return null;
@@ -217,7 +226,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(content: Text(AppLocalizations.of(context)!.processingData)),
+                      SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)!.processingData)),
                     );
                     _createHike();
                   }

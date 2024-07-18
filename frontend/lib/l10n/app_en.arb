@@ -20,7 +20,6 @@
   "alreadyRegister":"Already registered? Login here.",
 
   "menu": "Menu",
-  "profileOf": "Profile of {email}!",
   "users" : "Users",
   "hike" : "Hike",
   "settings":"Settings",
@@ -92,7 +91,7 @@
     "groups":"Groups",
     "noGroupFound" :"No groups found",
     "reviews":"Reviews",
-    "viewReviews":"View all reviews",
+    "viewReviews":"Reviews",
     "joinGroup":"Join group",
 
     "hikeReviews":"Hike Reviews",
@@ -105,8 +104,29 @@
     "groupDetail":"Group details",
     "startDateArg":"Start date {startDate}",
     "organizerArg":"Organizer {organizer}",
-    "groupChat": "Group chat"
+    "groupChat": "Group chat",
 
+    "signOut" : "Sign out",
+    "disconnected" : "Disconnected",
+    "no_user_data_available" : "No user data available",
+    "hike_History" : "Hike history",
+    "no_Username" : "No username",
+    "no_groups_found" : "No groups found",
+    "no_Hikes_history_found" : "No hikes history found",
+
+    "lower" : "Lower",
+    "hightest" : "Hightest",
+    "sort_by_Rating" : "Sort by rating",
+    "sort_by_Difficulty" : "Sort by difficulty",
+    "sort_by_Duration" : "Sort by duration",
+
+    "changePassword" : "Change password",
+    "oldPassword" : "Old password",
+    "enterOldPassword" : "Enter old password",
+    "newPassword" : "New Password",
+    "enterNewPassword" : "Enter new password",
+    "passwordChanged" : "Password changed",
+    "passwordChangeFailed" : "Password change failed"
 
 
 

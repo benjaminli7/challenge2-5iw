@@ -1,0 +1,32 @@
+[
+  {
+    "ID": 1,
+    "email": "admin@admin.com",
+    "username": "admin",
+    "password": "$2a$10$uAIKKzTuXLI2mZ0QQjCPxOl1krxfAOehuTrF6hOQ0Ft2FZ1sLqVUK",
+    "role": "admin",
+    "token": "token1",
+    "is_verified": true,
+    "profile_image": "/avatar/admin.webp"
+  },
+  {
+    "ID": 2,
+    "email": "user@user.com",
+    "username": "CamilleBorra",
+    "password": "$2a$10$KpADwpOJiIybXIL9nXdmHO/M4StfEk1mx8OPiJPfDtVwBIPBKhRhS",
+    "role": "user",
+    "token": "token2",
+    "is_verified": true,
+    "profile_image": "/avatar/camille.jpg"
+  },
+  {
+    "ID": 3,
+    "email": "user2@user.com",
+    "username": "AlexandreSamson",
+    "password": "$2a$10$KpADwpOJiIybXIL9nXdmHO/M4StfEk1mx8OPiJPfDtVwBIPBKhRhS",
+    "role": "user",
+    "token": "token3",
+    "is_verified": true,
+    "profile_image": "/avatar/alexandre.jpg"
+  }
+]

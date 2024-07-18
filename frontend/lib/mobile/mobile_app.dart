@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,8 +18,10 @@ import 'package:frontend/mobile/views/group-chat/group-chat.dart';
 import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
+import 'package:frontend/shared/providers/group_provider.dart';
 import 'package:frontend/mobile/views/home_page.dart';
-import 'package:frontend/mobile/views/profile/profile_details_page.dart';
+import 'package:frontend/mobile/views/intro_screen.dart';
+import 'package:frontend/mobile/views/home_page.dart';
 import 'package:frontend/mobile/views/profile/profile_page.dart';
 import 'package:frontend/mobile/views/profile/user_hikes_history.dart';
 import 'package:frontend/mobile/widgets/footer.dart';
@@ -30,14 +33,19 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/shared/widgets/notification_page.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:frontend/firebase_options.dart';
+// import 'package:frontend/shared/services/firebase_service.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const MyMobileApp());
-  final settingsProvider = SettingsProvider();
-  settingsProvider.fetchSettings();
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter _router = GoRouter(
+  navigatorKey: navigatorKey,
   redirect: (context, state) async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
@@ -63,6 +71,10 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/validate',
       builder: (context, state) => const LoginPage(),
     ),
     ShellRoute(
@@ -96,16 +108,16 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => const ProfilePage(),
           routes: [
             GoRoute(
-              name: "profileDetails",
-              path: 'details',
-              builder: (context, state) => const ProfileDetailsPage(),
-            ),
-            GoRoute(
               name: "hike-history",
               path: 'hike-history',
               builder: (context, state) => const UserHikeHistory(),
             )
           ],
+        ),
+        GoRoute(
+          name: "notifications",
+          path: '/user-notifications',
+          builder: (context, state) => const NotificationPage(),
         ),
         GoRoute(
           name: "explore",
@@ -136,6 +148,18 @@ final GoRouter _router = GoRouter(
           name: "create-hike",
           path: '/create-hike',
           builder: (context, state) => const CreateHikePage(),
+        ),
+        GoRoute(
+          name: "test",
+          path: '/test',
+          builder: (context, state) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Test'),
+            ),
+            body: const Center(
+              child: Text('Test'),
+            ),
+          ),
         ),
         GoRoute(
           name: "group-detail",
@@ -226,7 +250,9 @@ final GoRouter _router = GoRouter(
 );
 
 class MyMobileApp extends StatelessWidget {
-  const MyMobileApp({super.key});
+  final RemoteMessage? initialMessage;
+
+  const MyMobileApp({super.key, this.initialMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -238,21 +264,36 @@ class MyMobileApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: MaterialApp.router(
-        routerConfig: _router,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-        ),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'),
-          Locale('fr'),
-        ],
+      child: Consumer<SettingsProvider>(
+        builder: (context, settingsProvider, child) {
+          return MaterialApp.router(
+            routerConfig: _router,
+            theme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('fr'),
+            ],
+            builder: (context, child) {
+              // Navigate based on initial message if exists
+              if (initialMessage != null &&
+                  initialMessage!.data['route'] != null) {
+                Future.microtask(() => Navigator.pushNamed(
+                      context,
+                      initialMessage!.data['route'],
+                    ));
+              }
+              return child!;
+            },
+          );
+        },
       ),
     );
   }

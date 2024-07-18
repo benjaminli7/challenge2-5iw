@@ -32,11 +32,13 @@ dependencies:
   file_picker: ^8.0.5
   weather: ^3.1.1
   lottie: ^3.1.2
-  carousel_slider: ^4.0.0
+  carousel_slider: ^4.2.1
   flutter_dotenv: ^5.1.0
   get: ^4.6.6
   get_storage: ^2.0.3
   flutter_svg: ^2.0.10+1
+  firebase_core: ^3.2.0
+  firebase_messaging: ^15.0.3
 
 
 dev_dependencies:
@@ -52,10 +54,12 @@ flutter:
     - assets/
     - .env
     - assets/images/google.svg
+    - assets/images/profile_placeholder.png
+
 
 flutter_intl:
   enabled: true
   assets:
     - assets/images/intro-image.jpg
     - assets/images/hike-icon.svg
-    - assets/images/profile_placeholder.png
+

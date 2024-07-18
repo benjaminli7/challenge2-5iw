@@ -2,26 +2,34 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-
 import '../models/review.dart';
 import '../models/user.dart';
 import 'config_service.dart';
 
 class ApiService {
-
   String baseUrl = ConfigService.baseUrl;
 
-  Future<http.Response> signup(String email, String password) {
-    return http.post(
-      Uri.parse('$baseUrl/signup'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-      }),
-    );
+  Future<http.Response> signup(
+      String email, String username, String password, File? image) async {
+    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/signup'));
+
+    request.fields['email'] = email;
+    request.fields['username'] = username;
+    request.fields['password'] = password;
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    if (image != null) {
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var multipartFile = http.MultipartFile('image', stream, length,
+          filename: image.path.split('/').last);
+
+      request.files.add(multipartFile);
+    }
+
+    var streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
   }
 
   Future<String?> login(String email, String password,
@@ -62,7 +70,7 @@ class ApiService {
       String description,
       int organizerId,
       String difficulty,
-      String duration,
+      int duration,
       File? image,
       File? gpxFile) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
@@ -73,7 +81,7 @@ class ApiService {
     request.fields['description'] = description;
     request.fields['organizer_id'] = organizerId.toString();
     request.fields['difficulty'] = difficulty;
-    request.fields['duration'] = duration;
+    request.fields['duration'] = duration.toString();
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
@@ -176,4 +184,47 @@ class ApiService {
       body: jsonEncode(user.toJson()),
     );
   }
+
+  Future<http.Response> setFcmToken(int userId, String fcmToken, String token) {
+    print("From service: token: $token userId: $userId fcmToken: $fcmToken");
+    return http.patch(
+      Uri.parse('$baseUrl/users/$userId/fcmToken'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'fcm_token': fcmToken,
+      }),
+    );
+  }
+
+  Future<http.Response> validateAccount(String token) {
+    print('Validating account with token: $token');
+    return http.patch(
+      Uri.parse('$baseUrl/validate'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'token': token,
+        },
+      ),
+    );
+  }
+  Future<http.Response> changePassword(String token, int userId, String oldPassword, String newPassword) {
+    return http.patch(
+      Uri.parse('$baseUrl/users/$userId/password'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      }),
+    );
+  }
+
 }

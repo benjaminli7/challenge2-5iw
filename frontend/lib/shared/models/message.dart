@@ -3,9 +3,10 @@ class Message {
   // final int groupId;
   final String content;
   final String? username;
+  final DateTime? createdAt;
 
   // Message({required this.userId, required this.groupId, required this.content});
-  Message({required this.userId, required this.content, this.username});
+  Message({required this.userId, required this.content, this.username, this.createdAt});
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
@@ -13,6 +14,7 @@ class Message {
       userId: json['UserID'],
       // groupId: json['groupId'],
       content: json['Content'],
+      createdAt: DateTime.parse(json['CreatedAt']),
     );
   }
 
@@ -21,7 +23,8 @@ class Message {
       'userId': userId,
       // 'groupId': groupId,
       'content': content,
-      'username': username
+      'username': username,
+      'createdAt': createdAt
     };
   }
 }

@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -25,25 +27,46 @@ import (
 // @Failure 400 {object} models.ErrorResponse
 // @Router /signup [post]
 func Signup(c *gin.Context) {
-	var body struct {
-		Email    string
-		Password string
-	}
 
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
-		return
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+	email := c.PostForm("email")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	println("email", email)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 		return
 	}
 
 	emailToken, _ := services.GenerateRandomToken(32)
-	user := models.User{Email: body.Email, Password: string(hash), Token: emailToken}
-
+	user := models.User{Email: email, Username: username, Password: string(hash), Token: emailToken}
+	db.DB.First(&user, "username = ?", username)
+	if user.ID != 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{"Username already in use"})
+		return
+	}
+	db.DB.First(&user, "email = ?", email)
+	if user.ID != 0 {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{"Email already in use"})
+		return
+	}
+	file, err := c.FormFile("image")
+	// println("err",err.Error())
+	if err == nil {
+		println("file", file)
+		filename := filepath.Base(file.Filename)
+		filePath := filepath.Join("public", "avatar", filename)
+		if err := c.SaveUploadedFile(file, filePath); err != nil {
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+		user.ProfileImage = "/avatar/" + filename
+	} else if err == http.ErrMissingFile {
+		user.ProfileImage = "";
+	} else {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 	result := db.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -52,8 +75,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 	fmt.Println("token" + emailToken)
-	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='localhost/validate?token=" + emailToken + "'> cliquer ici</a>"
-	services.SendEmail(body.Email, content, "Validation de compte")
+	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='https://api.autoequip.dev/web/#/validate/" + emailToken + "'> cliquer ici</a>"
+	services.SendEmail(email, content, "Validation de compte")
 	// Respond
 	c.JSON(http.StatusOK, gin.H{})
 
@@ -105,11 +128,14 @@ func Login(c *gin.Context) {
 				return
 			}
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"sub":      user.ID,
-				"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
-				"email":    user.Email,
-				"roles":    user.Role,
-				"verified": user.IsVerified,
+				"sub":       user.ID,
+				"exp":       time.Now().Add(time.Hour * 24 * 30).Unix(),
+				"email":     user.Email,
+				"roles":     user.Role,
+				"verified":  user.IsVerified,
+				"fcm_token": user.FcmToken,
+				"profile_image": user.ProfileImage,
+
 			})
 
 			secret := os.Getenv("SECRET")
@@ -153,6 +179,8 @@ func Login(c *gin.Context) {
 		"roles":    user.Role,
 		"verified": user.IsVerified,
 		"username": user.Username,
+		"profile_image": user.ProfileImage,
+
 	})
 
 	secret := os.Getenv("SECRET")
@@ -351,4 +379,91 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
+}
+
+
+// UpdatePassword godoc
+// @Summary Update user password
+// @Description Update the password of a user
+// @Param body body models.PasswordUpdate true "User password update"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/password [patch]
+func UpdatePassword(c *gin.Context) {
+	var body struct {
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	id := c.Param("id")
+	var user models.User
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.OldPassword))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Old password is incorrect"})
+		return
+	}
+
+	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(body.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to hash new password"})
+		return
+	}
+
+	user.Password = string(newPasswordHash)
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update password"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Password updated successfully"})
+
+}
+
+
+// UpdateFcmToken godoc
+// @Summary Update user FCM token
+// @Description Update the FCM token of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User.fcmToken true "User FCM token"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/fcmToken [patch]
+func UpdateFcmToken(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var user models.User
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	// get fcm token from request body
+	var body struct {
+		FcmToken string `json:"fcm_token"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	// update user's fcm token
+	user.FcmToken = body.FcmToken
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "FCM token updated successfully"})
+
 }

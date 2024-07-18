@@ -7,6 +7,7 @@ class User {
   String token;
   bool isVerified;
   String? profileImage;
+  String? fcmToken;
 
   User(
       {required this.id,
@@ -16,7 +17,8 @@ class User {
       required this.username,
       required this.token,
       this.profileImage,
-      required this.isVerified});
+      required this.isVerified,
+      this.fcmToken});
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -27,6 +29,7 @@ class User {
         'token': token,
         'isVerified': isVerified,
         'profile_image': profileImage,
+        'fcm_token': fcmToken
       };
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -38,6 +41,7 @@ class User {
       token: json['token'] ?? '',
       isVerified: json['verified'] ?? false,
       profileImage: json['profile_image'],
+      fcmToken: json['fcm_token'],
     );
   }
 }

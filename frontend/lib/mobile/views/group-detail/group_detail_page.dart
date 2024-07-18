@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
+import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/material.dart';
 import 'package:frontend/shared/models/user.dart';
@@ -8,6 +8,7 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/services/material_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class GroupDetailPage extends StatefulWidget {
@@ -24,6 +25,10 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   late Future<Group> _groupFuture;
   late Future<List<Materiel>> _materialsFuture;
   final ScrollController _scrollController = ScrollController();
+  bool _isGroupInfoExpanded = true;
+  bool _isMaterialsExpanded = false;
+  bool _isWeatherExpanded = false;
+  bool _isMembersExpanded = false;
 
   @override
   void initState() {
@@ -114,7 +119,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Group Detail'),
+        title: const Text('Group details'),
       ),
       body: FutureBuilder<Group>(
         future: _groupFuture,
@@ -127,120 +132,296 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             return const Center(child: Text('No group found'));
           } else {
             final group = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Name: ${group.name}',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Description: ${group.description}',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Start Date: ${group.startDate}',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Organizer: ${group.organizer.username}',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 16.0),
-                  SizedBox(
-                    height: 200, // Adjust the height as needed
-                    child: FutureBuilder<List<Materiel>>(
-                      future: _materialsFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData) {
-                          return const Center(
-                              child: Text('No materials found'));
-                        } else {
-                          final materials = snapshot.data!;
-                          return ListView.builder(
-                            itemCount: materials.length,
-                            itemBuilder: (context, index) {
-                              final material = materials[index];
-                              bool isBringer =
-                                  material.users.any((u) => u.id == user?.id);
-                              return ListTile(
-                                  visualDensity:
-                                      const VisualDensity(vertical: 2),
-                                  leading: Checkbox(
-                                    value: isBringer,
-                                    onChanged: (bool? value) {
-                                      if (value != null && user != null) {
-                                        _updateBringer(material, user, value);
-                                      }
-                                    },
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomAccordion(
+                      title: 'Group information',
+                      isExpanded: _isGroupInfoExpanded,
+                      onExpansionChanged: (bool expanded) {
+                        setState(() {
+                          _isGroupInfoExpanded = expanded;
+                        });
+                      },
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${group.name} (${group.hike.name})",
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Description: ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  title: Row(
-                                    children: [
-                                      Text(material.name),
-                                      const SizedBox(width: 16),
-                                      for (int i = 0;
-                                          i < material.users.length;
-                                          i++)
-                                        Align(
-                                            widthFactor: 0.75,
-                                            child: CircleAvatar(
-                                                radius: 15,
-                                                child: Text(material
-                                                    .users[i].username!
-                                                    .substring(0, 1)
-                                                    .toUpperCase())))
-                                    ],
-                                  ));
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: group.description,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                          const SizedBox(height: 16.0),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Starting date: ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: DateFormat('dd/MM/yyyy')
+                                          .format(group.startDate),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                          const SizedBox(height: 16.0),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Current group size: ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text:
+                                          '${group.users.length} / ${group.maxUsers}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                          const SizedBox(height: 16.0),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Group created by ${group.organizer.username}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
+                    CustomAccordion(
+                      title: 'Materials',
+                      isExpanded: _isMaterialsExpanded,
+                      onExpansionChanged: (bool expanded) {
+                        setState(() {
+                          _isMaterialsExpanded = expanded;
+                        });
+                      },
+                      content: Column(
+                        children: [
+                          FutureBuilder<List<Materiel>>(
+                            future: _materialsFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('No materials found'));
+                              } else {
+                                final materials = snapshot.data!;
+                                return Column(
+                                  children: [
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: materials.length,
+                                      itemBuilder: (context, index) {
+                                        final material = materials[index];
+                                        bool isBringer = material.users
+                                            .any((u) => u.id == user?.id);
+                                        return ListTile(
+                                            visualDensity: const VisualDensity(
+                                                vertical: 2),
+                                            leading: Checkbox(
+                                              value: isBringer,
+                                              onChanged: (bool? value) {
+                                                if (value != null &&
+                                                    user != null) {
+                                                  _updateBringer(
+                                                      material, user, value);
+                                                }
+                                              },
+                                            ),
+                                            title: Row(
+                                              children: [
+                                                Text(material.name),
+                                                const SizedBox(width: 16),
+                                                for (int i = 0;
+                                                    i < material.users.length;
+                                                    i++)
+                                                  Align(
+                                                      widthFactor: 0.75,
+                                                      child: CircleAvatar(
+                                                          radius: 15,
+                                                          child: Text(material
+                                                              .users[i]
+                                                              .username!
+                                                              .substring(0, 1)
+                                                              .toUpperCase())))
+                                              ],
+                                            ));
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }
                             },
+                          ),
+                          const SizedBox(height: 16.0),
+                          if (user != null && group.organizer.id == user.id)
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.add, size: 16.0),
+                              label: const Text("Add Material"),
+                              onPressed: () {
+                                _showAddMaterialDialog(context);
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
+                    CustomAccordion(
+                      title: "Members",
+                      isExpanded: _isMembersExpanded,
+                      onExpansionChanged: (bool expanded) {
+                        setState(() {
+                          _isMembersExpanded = expanded;
+                        });
+                      },
+                      content: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: group.users.length,
+                        itemBuilder: (context, index) {
+                          final user = group.users[index];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              child: Text(
+                                  user.username!.substring(0, 1).toUpperCase()),
+                            ),
+                            title: Text(
+                                "${user.username!} ${group.organizer.id == user.id ? '(Admin)' : ''}"),
                           );
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  if (user != null && group.organizer.id == user.id)
-                    ElevatedButton(
-                      child: const Text("Add a material"),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
+                    CustomAccordion(
+                      title: 'Weather',
+                      isExpanded: _isWeatherExpanded,
+                      onExpansionChanged: (bool expanded) {
+                        setState(() {
+                          _isWeatherExpanded = expanded;
+                        });
+                      },
+                      content: WeatherWidget(group: group),
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.chat, size: 16.0),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                      ),
                       onPressed: () {
-                        _showAddMaterialDialog(context);
+                        GoRouter.of(context).push('/group-chat/${group.id}');
                       },
+                      label: const Text('Group Chat'),
                     ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.chat, size: 16.0),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                    ),
-                    onPressed: () {
-                      GoRouter.of(context).push('/group-chat/${group.id}');
-                    },
-                    label: const Text('Group Chat'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  // Expanded(
-                  //   child: WeatherWidget(
-                  //     group: group,
-                  //   ),
-                  // )
-                ],
+                  ],
+                ),
               ),
             );
           }
         },
       ),
+    );
+  }
+}
+
+class CustomAccordion extends StatelessWidget {
+  final String title;
+  final Widget content;
+  final bool isExpanded;
+  final Function(bool) onExpansionChanged;
+
+  const CustomAccordion({
+    Key? key,
+    required this.title,
+    required this.content,
+    required this.isExpanded,
+    required this.onExpansionChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionPanelList(
+      elevation: 1,
+      expandedHeaderPadding: EdgeInsets.zero,
+      expansionCallback: (int index, bool isExpanded) {
+        onExpansionChanged(isExpanded);
+      },
+      children: [
+        ExpansionPanel(
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return ListTile(
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          },
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: content,
+          ),
+          isExpanded: isExpanded,
+        ),
+      ],
     );
   }
 }
