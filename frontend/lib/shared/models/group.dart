@@ -1,3 +1,4 @@
+import 'package:frontend/shared/models/group_image.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/models/user.dart';
 
@@ -12,6 +13,7 @@ class Group {
   final String name;
   final int maxUsers;
   final List<User> users;
+  final List<GroupImage> groupImages;
 
   Group({
     required this.id,
@@ -24,6 +26,7 @@ class Group {
     required this.name,
     required this.maxUsers,
     required this.users,
+    required this.groupImages
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
@@ -39,6 +42,9 @@ class Group {
       maxUsers: json['max_users'],
       users:
           (json['Users'] as List).map((user) => User.fromJson(user)).toList(),
+      groupImages: (json['group_images'] as List)
+          .map((e) => GroupImage.fromJson(e))
+          .toList(),
     );
   }
 }

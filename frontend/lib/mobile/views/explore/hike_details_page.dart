@@ -15,8 +15,7 @@ import '../../../shared/services/config_service.dart';
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsExplorePage({Key? key, required this.hike})
-      : super(key: key);
+  const HikeDetailsExplorePage({super.key, required this.hike});
 
   @override
   _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
