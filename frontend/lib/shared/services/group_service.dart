@@ -53,7 +53,7 @@ class GroupService {
     return response;
   }
 
-  Future<List<Group>> fetchMyGroups(String token, int userId) async {
+  Future<List<Group>> fetchMyGroups(String token, int userId, {bool past = false}) async {
     final url = Uri.parse('$baseUrl/groups/user/$userId');
 
     final response = await http.get(
@@ -65,11 +65,15 @@ class GroupService {
 
     if (response.statusCode == 200) {
       final List<dynamic> groupList = json.decode(response.body);
+      if (groupList == null) {
+        return [];
+      }
       return groupList.map((json) => Group.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load groups');
     }
   }
+
 
   Future<List<Group>> fetchHikeGroups(
       String token, int hikeId, int userId) async {
