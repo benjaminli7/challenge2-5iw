@@ -70,6 +70,7 @@ func main() {
 	})
 
 	r.Static("/images", "./public/images")
+	r.Static("/public/groups", "./public/groups")
 	r.Static("/gpx", "./public/gpx")
 	r.Static("/avatar", "./public/avatar")
 
@@ -121,7 +122,8 @@ func main() {
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
 	r.POST("/groups/albums", middleware.RequireAuth(false), controllers.CreateGroupImage)
-	r.DELETE("/albums/:album_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
+	r.DELETE("/albums/:image_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
+	r.GET("/groups/:id/photos", middleware.RequireAuth(false), controllers.GetGroupPhotos)
 	// r.GET("/groups/:id/albums", controllers.GetGroupImages)
 
 	// Review routes

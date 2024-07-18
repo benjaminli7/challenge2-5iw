@@ -40,7 +40,6 @@ dependencies:
   firebase_core: ^3.2.0
   firebase_messaging: ^15.0.3
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -56,10 +55,8 @@ flutter:
     - assets/images/google.svg
     - assets/images/profile_placeholder.png
 
-
 flutter_intl:
   enabled: true
   assets:
     - assets/images/intro-image.jpg
     - assets/images/hike-icon.svg
-

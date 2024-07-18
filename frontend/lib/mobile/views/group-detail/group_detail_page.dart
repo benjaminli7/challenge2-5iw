@@ -24,7 +24,6 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   final _materialService = MaterialService();
   late Future<Group> _groupFuture;
   late Future<List<Materiel>> _materialsFuture;
-  final ScrollController _scrollController = ScrollController();
   bool _isGroupInfoExpanded = true;
   bool _isMaterialsExpanded = false;
   bool _isWeatherExpanded = false;
@@ -359,6 +358,19 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const SizedBox(height: 8.0),
                     const Divider(),
                     const SizedBox(height: 8.0),
+                    ListTile(
+                        title: const Text('Photos',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        trailing:
+                            const Icon(Icons.arrow_forward_ios, size: 16.0),
+                        onTap: () {
+                          GoRouter.of(context)
+                              .push('/group/${group.id}/photos');
+                        }),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.chat, size: 16.0),
                       style: ElevatedButton.styleFrom(
@@ -387,12 +399,12 @@ class CustomAccordion extends StatelessWidget {
   final Function(bool) onExpansionChanged;
 
   const CustomAccordion({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.isExpanded,
     required this.onExpansionChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

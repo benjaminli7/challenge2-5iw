@@ -57,7 +57,6 @@ func GetGroupImage(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/images [post]
 func CreateGroupImage(c *gin.Context) {
-	// Bind the form data to get group_id and user_id
 	groupID, err := strconv.Atoi(c.PostForm("group_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})
@@ -70,7 +69,6 @@ func CreateGroupImage(c *gin.Context) {
 		return
 	}
 
-	// Validate the user exists
 	var user models.User
 	if err := db.DB.First(&user, userID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
@@ -78,14 +76,12 @@ func CreateGroupImage(c *gin.Context) {
 	}
 	fmt.Println("User Found", userID)
 
-	// Validate the group exists and the user is a member
 	if err := db.DB.Where("group_id = ? AND user_id = ?", groupID, userID).First(&models.GroupUser{}).Error; err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Group not found or user not a member"})
 		return
 	}
 	fmt.Println("Group Found", groupID)
 
-	// Handle file uploads
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
@@ -96,14 +92,12 @@ func CreateGroupImage(c *gin.Context) {
 	var groupImages []models.GroupImage
 
 	for _, file := range files {
-		// Check if the file is an image
 		if ext := filepath.Ext(file.Filename); ext != ".jpg" && ext != ".jpeg" && ext != ".png" {
 			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Only images are allowed"})
 			return
 		}
 
-		// Save the file
-		path := filepath.Join("images", file.Filename)
+		path := fmt.Sprintf("public/groups/%d/%s", groupID, file.Filename)
 		if err := c.SaveUploadedFile(file, path); err != nil {
 			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 			return
@@ -117,7 +111,6 @@ func CreateGroupImage(c *gin.Context) {
 		})
 	}
 
-	// Save the image entries to the database
 	if err := db.DB.Create(&groupImages).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -146,10 +139,9 @@ func DeleteGroupImage(c *gin.Context) {
 		return
 	}
 
-	// check that its the owner of the image that is deleting it
 	var groupAlbum models.GroupImage
 	if err := db.DB.Where("id = ? AND user_id = ?", imageID, user.ID).First(&groupAlbum).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Album not found"})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Image not found"})
 		return
 	}
 
@@ -158,7 +150,22 @@ func DeleteGroupImage(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Image deleted from image"})
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Image deleted from the group"})
 }
 
-// Delete
+func GetGroupPhotos(c *gin.Context) {
+	groupIDStr := c.Param("id")
+	groupID, err := strconv.Atoi(groupIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})
+		return
+	}
+
+	var groupImages []models.GroupImage
+	if err := db.DB.Where("group_id = ?", groupID).Find(&groupImages).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Could not retrieve group images"})
+		return
+	}
+
+	c.JSON(http.StatusOK, groupImages)
+}

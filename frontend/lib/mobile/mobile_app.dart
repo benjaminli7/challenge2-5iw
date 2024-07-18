@@ -16,6 +16,7 @@ import 'package:frontend/mobile/views/explore/hike_details_page.dart';
 import 'package:frontend/mobile/views/explore/hike_reviews_page.dart';
 import 'package:frontend/mobile/views/group-chat/group-chat.dart';
 import 'package:frontend/mobile/views/group-detail/group_detail_page.dart';
+import 'package:frontend/mobile/views/group-photos/group_photos.dart';
 import 'package:frontend/mobile/views/groups/createGroup_page.dart';
 import 'package:frontend/mobile/views/groups/groups_page.dart';
 import 'package:frontend/mobile/views/home_page.dart';
@@ -172,6 +173,14 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final groupId = int.parse(state.pathParameters['id']!);
             return GroupChatPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          name: "group-photos",
+          path: '/group/:id/photos',
+          builder: (context, state) {
+            final groupId = int.parse(state.pathParameters['id']!);
+            return GroupPhotosPage(groupId: groupId);
           },
         ),
         GoRoute(
