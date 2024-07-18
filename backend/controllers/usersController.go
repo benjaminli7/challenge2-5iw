@@ -315,16 +315,106 @@ func UpdateRole(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
-	id := c.Param("id")
-	var user models.User
-	db.DB.First(&user, id)
+    userIdParam := c.Param("id")
+	println("userIdParam", userIdParam)
+    userId, err := strconv.Atoi(userIdParam)
+    if err != nil {
+		println("err", err)
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+        return
+    }
+	println("userId", userId)
+    // Début de la transaction
+    tx := db.DB.Begin()
 
-	if user.ID == 0 {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
-		return
-	}
-	db.DB.Delete(&user)
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User deleted successfully"})
+    // Supprimer les messages de l'utilisateur
+    if err := tx.Unscoped().Where("user_id = ?", userId).Delete(&models.Message{}).Error; err != nil {
+		println("err1", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+	if err := tx.Unscoped().Where("user_id = ?", userId).Delete(&models.Review{}).Error; err != nil {
+		println("err1", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+	if err := tx.Unscoped().Where("user_id = ?", userId).Delete(&models.GroupImage{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+    if err := tx.Where("user_id = ?", userId).Delete(&models.MaterialUser{}).Error; err != nil {
+		println("err2", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+
+    if err := tx.Unscoped().Where("user_id = ?", userId).Delete(&models.GroupUser{}).Error; err != nil {
+		println("err3", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+
+    var groups []models.Group
+    if err := tx.Where("organizer_id = ?", userId).Find(&groups).Error; err != nil {
+		println("err4", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+    for _, group := range groups {
+
+        if err := tx.Where("group_id = ?", group.ID).Delete(&models.Material{}).Error; err != nil {
+			println("err5", err.Error())
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+            return
+        }
+		if err := tx.Unscoped().Where("group_id = ?", group.ID).Delete(&models.GroupUser{}).Error; err != nil {
+			println("err3", err.Error())
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+		if err := tx.Unscoped().Where("group_id = ?", group.ID).Delete(&models.Message{}).Error; err != nil {
+			println("err1", err.Error())
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+        if err := tx.Delete(&group).Error; err != nil {
+			println("err6", err.Error())
+            tx.Rollback()
+            c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+            return
+        }
+    }
+
+
+    if err := tx.Delete(&models.User{}, userId).Error; err != nil {
+		println("err7", err.Error())
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+    // Commit de la transaction
+    if err := tx.Commit().Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, models.SuccessResponse{Message: "User and associated data deleted successfully"})
 }
 
 // Get user profile

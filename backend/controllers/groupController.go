@@ -234,20 +234,50 @@ func UpdateGroup(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/{id} [delete]
 func DeleteGroup(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+    id, err := strconv.Atoi(c.Param("id"))
+    if err != nil {
+        c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})
+        return
+    }
 
-	if err := db.DB.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
-	}
+    tx := db.DB.Begin()
 
-	if err := db.DB.Delete(&models.Group{}, id).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Group deleted"})
+    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+	if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.GroupImage{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+
+    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Material{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Message{}).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+    if err := tx.Delete(&models.Group{}, id).Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+    if err := tx.Commit().Error; err != nil {
+        tx.Rollback()
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, models.SuccessResponse{Message: "Group and associated data deleted successfully"})
 }
-
 // JoinGroup godoc
 // @Summary Join a group
 // @Description Join a group
