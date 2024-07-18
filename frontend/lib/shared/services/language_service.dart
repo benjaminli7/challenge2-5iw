@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 class TranslationService extends Translations {
   static final localeStorageKey = 'locale';
 
-  // Définir les traductions pour chaque langue
   static Map<String, Map<String, String>> translations = {
     'en': {
       'title': 'Hello World',

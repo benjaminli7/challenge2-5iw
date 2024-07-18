@@ -3,6 +3,7 @@ package main
 import (
 	"backend/controllers"
 	"backend/db"
+	"context"
 	"fmt"
 	"net/http"
 
@@ -14,6 +15,7 @@ import (
 	"net"
 	"os"
 
+	flagsmith "github.com/Flagsmith/flagsmith-go-client/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
@@ -35,9 +37,9 @@ import (
 // @host localhost:8080
 // @BasePath /
 var logger *logrus.Logger
+var client *flagsmith.Client
 
 func init() {
-	// Set up the logger
 	logger = logrus.New()
 	conn, err := net.Dial("tcp", "localhost:5005")
 	if err != nil {
@@ -58,8 +60,17 @@ func init() {
 }
 
 func main() {
+	FLAGSMITH_KEY := os.Getenv("FLAGSMITH_KEY")
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Initialise the Flagsmith client
+	client := flagsmith.NewClient(FLAGSMITH_KEY, flagsmith.WithContext(ctx))
+	fmt.Println(client.GetEnvironmentFlags())
+
 	r := gin.Default()
 
+	r.Use(middleware.FlagsmithMiddleware(client))
 	r.Use(func(c *gin.Context) {
 		c.Next()
 		logger.WithFields(logrus.Fields{
@@ -77,6 +88,15 @@ func main() {
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	r.GET("/flags", func(c *gin.Context) {
+		flags, err := client.GetEnvironmentFlags()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		allFlags := flags.AllFlags()
+		c.JSON(http.StatusOK, allFlags)
+	})
 	// Auth route
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", middleware.Cors(), controllers.Login)

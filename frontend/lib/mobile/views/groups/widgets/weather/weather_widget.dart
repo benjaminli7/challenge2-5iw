@@ -39,7 +39,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           Provider.of<SettingsProvider>(context, listen: false);
       final useWeatherAPI = settingsProvider.settings.weatherAPI;
 
-      print('Weather API enabled: $useWeatherAPI');
 
       if (useWeatherAPI) {
         final forecast = await ws.getWeather(widget.group);
@@ -107,7 +106,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200, // Set a fixed height or adjust as needed
+      height: 200,
       child: _resultView(),
     );
   }

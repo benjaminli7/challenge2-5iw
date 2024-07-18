@@ -86,14 +86,14 @@ class _HikeReviewsPageState extends State<HikeReviewsPage> {
                               ),
                               SizedBox(height: 8.0),
                               Text(
-                                'by ${review.user.username}',
+                                AppLocalizations.of(context)!.byArg(review.user.username.toString()),
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
                                   color: Colors.grey[600],
                                 ),
                               ),
                               Text(
-                                'on ${DateFormat('dd/MM/yyyy').format(review.createdAt)}',
+                                AppLocalizations.of(context)!.onArg(DateFormat('dd/MM/yyyy').format(review.createdAt)),
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
                                   color: Colors.grey[600],

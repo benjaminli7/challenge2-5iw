@@ -35,16 +35,14 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
       });
       return;
     }
-    print('$baseUrl${widget.hike.gpxFile}');
+
     final response = await http
         .get(Uri.parse('$baseUrl${widget.hike.gpxFile}'));
     if (response.statusCode == 200) {
       final gpxString = response.body;
-      print('GPX String: $gpxString');
-      // print('GPX String length: ${gpxString.length}');
 
       final points = await HikeProvider().parseGPX(gpxString);
-      print('Points: $points');
+;
       setState(() {
         routePoints = points;
         noDataAvailable = points.isEmpty;
@@ -81,7 +79,7 @@ class _GPXMapScreenState extends State<GPXMapScreen> {
                             : const LatLng(0, 0),
                         initialZoom: 10.0,
                         interactionOptions: const InteractionOptions(
-                            // flags: InteractiveFlag.none,
+
                             ),
                       ),
                       children: [

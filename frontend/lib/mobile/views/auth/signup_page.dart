@@ -30,8 +30,6 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
@@ -67,7 +65,6 @@ class _SignupPageState extends State<SignupPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Signup failed: Email already in use');
     } else {
       Fluttertoast.showToast(
         msg: AppLocalizations.of(context)!.signUpFailure,
@@ -78,7 +75,6 @@ class _SignupPageState extends State<SignupPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Signup failed');
     }
   }
 
@@ -92,8 +88,8 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Signup',
+               Text(
+                AppLocalizations.of(context)!.signUp,
                 style: TextStyle(
                   fontSize: 24,
                 ),
@@ -104,27 +100,27 @@ class _SignupPageState extends State<SignupPage> {
               ),
               CustomTextField(
                 controller: _usernameController,
-                labelText: 'Username',
+                labelText: AppLocalizations.of(context)!.username,
               ),
               CustomTextField(
                 controller: _passwordController,
-                labelText: 'Password',
+                labelText: AppLocalizations.of(context)!.password,
                 obscureText: true,
               ),
               const SizedBox(height: 20),
               _image == null
-                  ? const Text('No avatar selected.')
+                  ?  Text(AppLocalizations.of(context)!.noAvatar)
                   : Image.file(_image!, width: 100, height: 100, fit: BoxFit.cover),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _pickImage,
-                child: const Text('Upload Avatar'),
+                child:  Text(AppLocalizations.of(context)!.uploadAvatar),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signup,
-                child: const Text(
-                  'Register',
+                child:  Text(
+                  AppLocalizations.of(context)!.signUp,
 
                   style: TextStyle(
                     fontSize: 16,
@@ -145,7 +141,7 @@ class _SignupPageState extends State<SignupPage> {
                     decoration: TextDecoration.underline,
                   ),
                 ),
-                child: const Text('Already registered? Login here.'),
+                child:  Text(AppLocalizations.of(context)!.alreadyRegister),
               ),
             ],
           ),

@@ -29,7 +29,7 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
     if (user != null) {
       _groupsFuture = _groupService.fetchMyGroupsHistory(user.token, user.id, past: true);
     } else {
-      _groupsFuture = Future.error('User not logged in');
+      _groupsFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
   }
 

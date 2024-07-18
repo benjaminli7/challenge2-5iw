@@ -6,10 +6,11 @@ import (
 	"backend/services"
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // CreateGroup godoc
@@ -64,7 +65,7 @@ func CreateGroup(c *gin.Context) {
 			continue
 		}
 		token = sub.User.FcmToken
-		title = sub.User.Username + " created a new group for the hike " + sub.Hike.Name + "! try to join it"
+		title = group.Organizer.Username + " created a new group for the hike " + sub.Hike.Name + "! try to join it"
 		body = "Join the group to meet new people and share your experience"
 		route = "/hike/" + strconv.Itoa(int(group.HikeID))
 		if token != "" {

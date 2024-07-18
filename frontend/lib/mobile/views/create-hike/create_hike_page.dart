@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +53,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'lng': _lng.text,
       };
 
-      await _apiService.createHike(
+      final res = await _apiService.createHike(
         hike['name'],
         hike['description'],
         user!.id,
@@ -64,6 +66,32 @@ class _CreateHikePageState extends State<CreateHikePage> {
         user.token
       );
 
+      if(res.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Hike created successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
+      if(res.statusCode == 405) {
+        final Map<String, dynamic> responseData = jsonDecode(res.body);
+        final String? errMessage = responseData['message'];
+        Fluttertoast.showToast(
+          msg: errMessage!,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
       GoRouter.of(context).push('/explore');
     }
   }
@@ -74,8 +102,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
@@ -87,21 +113,14 @@ class _CreateHikePageState extends State<CreateHikePage> {
         allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result');
 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}');
         });
-      } else {
-        print('No GPX file selected.');
       }
     } catch (e) {
-      print('Error picking GPX file: $e');
-      print('Attempting to use FileType.any as a fallback');
 
-      // Fallback to FileType.any
       try {
         final result = await FilePicker.platform.pickFiles(
           type: FileType.any,
@@ -110,10 +129,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print('GPX file path with fallback: ${_gpxFile!.path}');
+
           });
-        } else {
-          print('No file selected in fallback.');
         }
       } catch (e) {
         print('Error picking file in fallback: $e');
@@ -224,14 +241,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   isLatLngRequired:
                       true,
                   getPlaceDetailWithLatLng: (prediction) {
-                    print("Coordinates: (${prediction.lat},${prediction.lng})");
                     _lat.text = prediction.lat.toString();
                     _lng.text = prediction.lng.toString();
                   },
                   maxLines: 1,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your address',
-                    labelText: 'Address',
+                  decoration:  InputDecoration(
+                    hintText: AppLocalizations.of(context)!.enterAdress,
+                    labelText: AppLocalizations.of(context)!.adress,
                   ),
                   itmClick: (Prediction prediction) {
                     _mapsController.text = prediction.description.toString();
@@ -260,12 +276,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          duration: const Duration(seconds: 2),
-                          content: Text(
-                              AppLocalizations.of(context)!.processingData)),
-                    );
                     _createHike();
                   }
                 },

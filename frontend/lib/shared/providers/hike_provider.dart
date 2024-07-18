@@ -17,7 +17,6 @@ class HikeProvider with ChangeNotifier {
   Future<void> fetchHikes() async {
     try {
       final response = await ApiService().getHikes();
-      // print('fetchHikes response: ${response.body}');
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         _hikes = data.map((json) => Hike.fromJson(json)).toList();
@@ -28,31 +27,13 @@ class HikeProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> fetchHike(int id) async {
-  //   try {
-  //     final response = await ApiService().getHike(id);
-  //     print('fetchHike response: ${response.body}');
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-  //       final hike = Hike.fromJson(data);
-  //       _hikes.add(hike);
-  //       notifyListeners();
-  //     }
-  //   } catch (e) {
-  //     print('Failed to fetch hike: $e');
-  //   }
-  // }
 
   Future<void> createHike(String name, String description, int organizerId,  String difficulty, int duration, File image, File gpxFile, String lat, String lng, String token
       ) async {
     try {
       final response = await ApiService().createHike(
           name, description, organizerId, difficulty, duration, image, gpxFile , lat, lng, token);
-      if (response.statusCode == 200) {
-        print('Hike created successfully');
-      } else {
-        print('Failed to create hike: ${response.statusCode}');
-      }
+
     } catch (e) {
       print('Failed to create hike: $e');
     }
@@ -73,7 +54,6 @@ class HikeProvider with ChangeNotifier {
         return [];
       }
       if (trkptElements.isNotEmpty) {
-        print('trkptElements: $trkptElements');
         for (var element in trkptElements) {
           final lat = double.parse(element.getAttribute('lat') ?? '0');
           final lon = double.parse(element.getAttribute('lon') ?? '0');
@@ -81,7 +61,6 @@ class HikeProvider with ChangeNotifier {
         }
       }
       if (rtepElements.isNotEmpty) {
-        print('rtepElements: $rtepElements');
         for (var element in rtepElements) {
           final lat = double.parse(element.getAttribute('lat') ?? '0');
           final lon = double.parse(element.getAttribute('lon') ?? '0');
@@ -100,9 +79,7 @@ class HikeProvider with ChangeNotifier {
       final response = await ApiService().createReview(review, token);
       if (response.statusCode == 200) {
         await fetchReviewsByHike(review.hikeId);
-        print('Review created successfully');
-      } else {
-        print('Failed to create review_widget.dart: ${response.statusCode}');
+
       }
     } catch (e) {
       print('Failed to create review_widget.dart: $e');
@@ -115,9 +92,7 @@ class HikeProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         await fetchHikes();
         await fetchReviewsByHike(review.hikeId);
-        print('Review updated successfully');
-      } else {
-        print('Failed to update review_widget.dart: ${response.statusCode}');
+
       }
     } catch (e) {
       print('Failed to update review_widget.dart: $e');
@@ -131,11 +106,9 @@ class HikeProvider with ChangeNotifier {
         List<dynamic> data = json.decode(response.body);
         return data.map((json) => Review.fromJson(json)).toList();
       } else {
-        print('Failed to fetch reviews: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('Failed to fetch reviews: $e');
       return [];
     }
   }
@@ -147,11 +120,9 @@ class HikeProvider with ChangeNotifier {
         final data = json.decode(response.body);
         return Review.fromJson(data);
       } else {
-        print('Failed to fetch review: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Failed to fetch review: $e');
       return null;
     }
   }
@@ -159,11 +130,7 @@ class HikeProvider with ChangeNotifier {
   Future<void> userSubscribeToHike(int hikeId, int userId, String token) async {
     try {
       final response = await ApiService().subscribeToHike(hikeId, userId, token);
-      if (response.statusCode == 200) {
-        print('User subscribed to hike successfully');
-      } else {
-        print('Failed to subscribe to hike: ${response.statusCode}');
-      }
+
     } catch (e) {
       print('Failed to subscribe to hike: $e');
     }

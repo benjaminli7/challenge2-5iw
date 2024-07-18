@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Footer extends StatefulWidget {
   const Footer({super.key});
@@ -43,9 +44,9 @@ class _FooterState extends State<Footer> {
         icon: Icon(Icons.explore, color: Colors.white),
         label: 'Explore',
       ),
-      const BottomNavigationBarItem(
+       BottomNavigationBarItem(
         icon: Icon(Icons.group, color: Colors.white),
-        label: 'Groups',
+        label: AppLocalizations.of(context)!.groups,
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.person, color: Colors.white),
