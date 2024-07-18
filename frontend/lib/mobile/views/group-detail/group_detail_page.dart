@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/mobile/views/groups/widgets/weather/weather_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/material.dart';
 import 'package:frontend/shared/models/user.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:frontend/shared/services/material_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-<<<<<<< HEAD
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-=======
-import 'package:frontend/shared/providers/settings_provider.dart';
->>>>>>> develop
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
@@ -22,7 +19,6 @@ class GroupDetailPage extends StatefulWidget {
 
   @override
   State<GroupDetailPage> createState() => _GroupDetailPageState();
-  
 }
 
 class _GroupDetailPageState extends State<GroupDetailPage> {
@@ -34,21 +30,16 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   bool _isMaterialsExpanded = false;
   bool _isWeatherExpanded = false;
   bool _isMembersExpanded = false;
-  bool _isWeatherApiEnabled =  false;
+  bool _isWeatherApiEnabled = false;
   Group? _group;
   late SettingsProvider _settingsProvider;
-  
-
-
-
 
   @override
-  
   void initState() {
     super.initState();
-      _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
-      _settingsProvider.fetchSettings();
-      _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
+    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    _settingsProvider.fetchSettings();
+    _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
       _groupFuture = _groupService.getGroupById(user.token, widget.groupId);
@@ -79,17 +70,18 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           title: Text(AppLocalizations.of(context)!.addMaterial),
           content: TextField(
             controller: _materialController,
-            decoration:  InputDecoration(hintText: AppLocalizations.of(context)!.enterMaterial),
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.enterMaterial),
           ),
           actions: <Widget>[
             ElevatedButton(
-              child:  Text(AppLocalizations.of(context)!.cancel),
+              child: Text(AppLocalizations.of(context)!.cancel),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child:  Text(AppLocalizations.of(context)!.submit),
+              child: Text(AppLocalizations.of(context)!.submit),
               onPressed: () async {
                 final user =
                     Provider.of<UserProvider>(context, listen: false).user;
@@ -141,7 +133,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text(AppLocalizations.of(context)!.failedRemoveUser)),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.failedRemoveUser)),
         );
       }
     }
@@ -153,7 +146,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.groupDetail),
+        title: Text(AppLocalizations.of(context)!.groupDetail),
       ),
       body: FutureBuilder<Group>(
         future: _groupFuture,
@@ -163,7 +156,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return  Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
+            return Center(
+                child: Text(AppLocalizations.of(context)!.noGroupFound));
           } else {
             _group = snapshot.data!;
             final group = _group!;
@@ -198,7 +192,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: AppLocalizations.of(context)!.description + ': ',
+                                  text: AppLocalizations.of(context)!
+                                          .description +
+                                      ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -216,7 +212,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: AppLocalizations.of(context)!.startDate + ': ',
+                                  text:
+                                      AppLocalizations.of(context)!.startDate +
+                                          ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -235,7 +233,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: AppLocalizations.of(context)!.currentGroupSize + ': ',
+                                  text: AppLocalizations.of(context)!
+                                          .currentGroupSize +
+                                      ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -253,7 +253,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              AppLocalizations.of(context)!.groupCreatedBy(group.organizer.username.toString()),
+                              AppLocalizations.of(context)!.groupCreatedBy(
+                                  group.organizer.username.toString()),
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),
@@ -285,8 +286,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                     child: Text('Error: ${snapshot.error}'));
                               } else if (!snapshot.hasData ||
                                   snapshot.data!.isEmpty) {
-                                return  Center(
-                                    child: Text(AppLocalizations.of(context)!.noMaterial));
+                                return Center(
+                                    child: Text(AppLocalizations.of(context)!
+                                        .noMaterial));
                               } else {
                                 final materials = snapshot.data!;
                                 return Column(
@@ -342,7 +344,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           if (user != null && group.organizer.id == user.id)
                             ElevatedButton.icon(
                               icon: const Icon(Icons.add, size: 16.0),
-                              label:  Text(AppLocalizations.of(context)!.addMaterial),
+                              label: Text(
+                                  AppLocalizations.of(context)!.addMaterial),
                               onPressed: () {
                                 _showAddMaterialDialog(context);
                               },
@@ -394,26 +397,24 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const SizedBox(height: 8.0),
                     const Divider(),
                     const SizedBox(height: 8.0),
-                 _isWeatherApiEnabled
-                  ? Column(
-                      children: [
-                        CustomAccordion(
-                          title: AppLocalizations.of(context)!.weather,
-                          isExpanded: _isWeatherExpanded,
-                          onExpansionChanged: (bool expanded) {
-                            setState(() {
-                              _isWeatherExpanded = expanded;
-                            });
-                          },
-                          content: WeatherWidget(group: group),
-                        ),
-                        const SizedBox(height: 8.0),
-                        const Divider(),
-                      ],
-                    )
-
-                  : const SizedBox(),
-
+                    _isWeatherApiEnabled
+                        ? Column(
+                            children: [
+                              CustomAccordion(
+                                title: AppLocalizations.of(context)!.weather,
+                                isExpanded: _isWeatherExpanded,
+                                onExpansionChanged: (bool expanded) {
+                                  setState(() {
+                                    _isWeatherExpanded = expanded;
+                                  });
+                                },
+                                content: WeatherWidget(group: group),
+                              ),
+                              const SizedBox(height: 8.0),
+                              const Divider(),
+                            ],
+                          )
+                        : const SizedBox(),
                     const SizedBox(height: 8.0),
                     ListTile(
                         title: const Text('Photos',
@@ -436,7 +437,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       onPressed: () {
                         GoRouter.of(context).push('/group-chat/${group.id}');
                       },
-                      label:  Text(AppLocalizations.of(context)!.groupChat),
+                      label: Text(AppLocalizations.of(context)!.groupChat),
                     ),
                   ],
                 ),

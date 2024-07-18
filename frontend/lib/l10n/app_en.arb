@@ -1,8 +1,5 @@
 {
   "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  },
 
   "login": "Login",
   "logInSuccess": "You have successfully logged in!",
@@ -14,6 +11,7 @@
   "signInGoogle": "Sign in with Google",
   "notAccount": "No account yet? Sign up",
 
+  "notVerified": "You are not verified",
   "signUpSuccess": "Signup successful",
   "signUpFailure": "Signup failed",
   "signUp": "Sign up",
@@ -55,6 +53,7 @@
   "isValide" : "Is valide",
   "email": "Email",
 
+  "successCreateHike": "Hike created successfully",
   "createHike" : "Create hike",
   "enterNameHike": "Please enter the name of the hike",
   "nameHike50": "Name cannot be longer than 50 characters",

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
@@ -13,7 +14,6 @@ import 'package:google_places_autocomplete_text_field/google_places_autocomplete
 import 'package:google_places_autocomplete_text_field/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
@@ -34,8 +34,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
   final ApiService _apiService = ApiService();
   File? _image;
   File? _gpxFile;
-  final _lat= TextEditingController();
-  final _lng= TextEditingController();
+  final _lat = TextEditingController();
+  final _lng = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
 
@@ -49,26 +49,25 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
-        'lat':  _lat.text,
+        'lat': _lat.text,
         'lng': _lng.text,
       };
 
       final res = await _apiService.createHike(
-        hike['name'],
-        hike['description'],
-        user!.id,
-        hike['difficulty'],
-        hike['duration'],
-        hike['image'],
-        hike['gpx_file'],
-        hike['lat'],
-        hike['lng'],
-        user.token
-      );
+          hike['name'],
+          hike['description'],
+          user!.id,
+          hike['difficulty'],
+          hike['duration'],
+          hike['image'],
+          hike['gpx_file'],
+          hike['lat'],
+          hike['lng'],
+          user.token);
 
-      if(res.statusCode == 200) {
+      if (res.statusCode == 200) {
         Fluttertoast.showToast(
-          msg: "Hike created successfully",
+          msg: AppLocalizations.of(context)!.successCreateHike,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -78,7 +77,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         );
       }
 
-      if(res.statusCode == 405) {
+      if (res.statusCode == 405) {
         final Map<String, dynamic> responseData = jsonDecode(res.body);
         final String? errMessage = responseData['message'];
         Fluttertoast.showToast(
@@ -113,14 +112,12 @@ class _CreateHikePageState extends State<CreateHikePage> {
         allowedExtensions: ['gpx'],
       );
 
-
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
         });
       }
     } catch (e) {
-
       try {
         final result = await FilePicker.platform.pickFiles(
           type: FileType.any,
@@ -129,7 +126,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-
           });
         }
       } catch (e) {
@@ -238,14 +234,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   textEditingController: _mapsController,
                   googleAPIKey: API_KEY!,
                   debounceTime: 400,
-                  isLatLngRequired:
-                      true,
+                  isLatLngRequired: true,
                   getPlaceDetailWithLatLng: (prediction) {
                     _lat.text = prediction.lat.toString();
                     _lng.text = prediction.lng.toString();
                   },
                   maxLines: 1,
-                  decoration:  InputDecoration(
+                  decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.enterAdress,
                     labelText: AppLocalizations.of(context)!.adress,
                   ),
