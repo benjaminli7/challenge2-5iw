@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/group_image.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
+import 'package:frontend/shared/services/flag_service.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,8 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   late Future<List<GroupImage>> _imagesFuture;
   String baseUrl = ConfigService.baseUrl;
   final _groupService = GroupService();
+  final FlagService _flagService = FlagService();
+  bool? isFeatureEnabled;
 
   @override
   void initState() {
@@ -29,6 +34,21 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
           _groupService.fetchGroupImages(user.token, widget.groupId);
     } else {
       _imagesFuture = Future.error('User not logged in');
+    }
+    _checkFeatureFlag();
+  }
+
+  Future<void> _checkFeatureFlag() async {
+    try {
+      bool isEnabled = await _flagService.isFlagEnabled('enable_new_photos');
+      setState(() {
+        isFeatureEnabled = isEnabled;
+      });
+    } catch (e) {
+      print('Error checking feature flag: $e');
+      setState(() {
+        isFeatureEnabled = false;
+      });
     }
   }
 
@@ -79,20 +99,22 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
     } else {
       return;
     }
-    try {
-      await _groupService.addGroupImages(
-        user.token,
-        widget.groupId,
-        user.id,
-        imageFileList,
-      );
+
+    final res = await _groupService.addGroupImages(
+      user.token,
+      widget.groupId,
+      user.id,
+      imageFileList,
+    );
+
+    if (res.statusCode == 200) {
       setState(() {
         _imagesFuture =
             _groupService.fetchGroupImages(user.token, widget.groupId);
         imageFileList.clear();
       });
       Fluttertoast.showToast(
-        msg: 'Group images added successfully',
+        msg: "Photos added successfully",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -100,9 +122,13 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-    } catch (e) {
+    }
+
+    if (res.statusCode == 405) {
+      final Map<String, dynamic> responseData = jsonDecode(res.body);
+      final String? errMessage = responseData['message'];
       Fluttertoast.showToast(
-        msg: 'Error adding group images',
+        msg: errMessage!,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -110,8 +136,40 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Error adding group images: $e');
     }
+    // try {
+    //   await _groupService.addGroupImages(
+    //     user.token,
+    //     widget.groupId,
+    //     user.id,
+    //     imageFileList,
+    //   );
+    //   setState(() {
+    //     _imagesFuture =
+    //         _groupService.fetchGroupImages(user.token, widget.groupId);
+    //     imageFileList.clear();
+    //   });
+    //   Fluttertoast.showToast(
+    //     msg: 'Group images added successfully',
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // } catch (e) {
+    //   Fluttertoast.showToast(
+    //     msg: 'Error adding group images',
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    //   print('Error adding group images: $e');
+    // }
   }
 
   @override
@@ -167,30 +225,20 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
                     ),
                   ),
                 ]);
-                // return GestureDetector(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => ImageDetailPage(image: image),
-                //       ),
-                //     );
-                //   },
-                //   child: Image.network(
-                //       Uri.parse("$baseUrl${image.path}").toString()),
-                // );
               },
             );
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement the function to add a new photo
-          selectImages();
-        },
-        child: const Icon(Icons.add_a_photo),
-      ),
+      floatingActionButton: isFeatureEnabled == true
+          ? FloatingActionButton(
+              onPressed: () {
+                // Implement the function to add a new photo
+                selectImages();
+              },
+              child: const Icon(Icons.add_a_photo),
+            )
+          : null,
     );
   }
 }

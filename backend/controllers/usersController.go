@@ -26,12 +26,13 @@ import (
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Router /signup [post]
-func Signup(c *gin.Context) {
 
+
+func Signup(c *gin.Context) {
 	email := c.PostForm("email")
 	username := c.PostForm("username")
 	password := c.PostForm("password")
-	println("email", email)
+	fmt.Println("email", email, "username", username, "password", password)
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
@@ -82,8 +83,6 @@ func Signup(c *gin.Context) {
 	content := "<p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte<p><a href='https://api.autoequip.dev/web/#/validate/" + emailToken + "'> cliquer ici</a>"
 	services.SendEmail(email, content, "Validation de compte")
 	// Respond
-	c.JSON(http.StatusOK, gin.H{})
-
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User created successfully"})
 
 }
@@ -123,7 +122,7 @@ func Login(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 				return
 			}
-			
+
 			user = models.User{Email: body.Email,Password: string(hash), Role: "user", IsVerified: true}
 			result := db.DB.Create(&user)
 			if result.Error != nil {

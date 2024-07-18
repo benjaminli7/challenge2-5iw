@@ -12,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	flagsmith "github.com/Flagsmith/flagsmith-go-client/v2"
+
 )
 
 var validate = validator.New()
@@ -34,77 +36,99 @@ var validate = validator.New()
 // @Failure 500 {object} models.ErrorResponse
 // @Router /hikes [post]
 func CreateHike(c *gin.Context) {
-	var hike models.Hike
-
-	hike.Name = c.PostForm("name")
-	hike.Description = c.PostForm("description")
-	organizerID, err := strconv.ParseUint(c.PostForm("organizer_id"), 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid organizer ID"})
+	flagsmithClient, exists := c.MustGet("flagsmithClient").(*flagsmith.Client)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Flagsmith client not found"})
 		return
 	}
-	hike.OrganizerID = uint(organizerID)
-	hike.Difficulty = c.PostForm("difficulty")
-	//
-	hike.Lng = c.PostForm("lng")
-	hike.Lat = c.PostForm("lat")
-	// print the type of hike.Lng and hike.Lat
-	fmt.Println("hike.Lng", hike.Lng, "type", fmt.Sprintf("%T", hike.Lng))
-	fmt.Println("hike.Lat", hike.Lat, "type", fmt.Sprintf("%T", hike.Lat))
 
-	hike.Duration, _ = strconv.Atoi(c.PostForm("duration"))
-	isApproved, err := strconv.ParseBool(c.PostForm("is_approved"))
+	flags, err := flagsmithClient.GetEnvironmentFlags()
 	if err != nil {
-		hike.IsApproved = false
-	} else {
-		hike.IsApproved = isApproved
+		return
+	}
+	isEnabled, err := flags.IsFeatureEnabled("enable_new_hikes")
+	if err != nil {
+		return
 	}
 
-	// Handle image upload or set default image
-	file, err := c.FormFile("image")
-	if err == nil {
-		filename := filepath.Base(file.Filename)
-		filePath := filepath.Join("public", "images", filename)
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
+	if isEnabled {
+		var hike models.Hike
+
+		hike.Name = c.PostForm("name")
+		hike.Description = c.PostForm("description")
+		organizerID, err := strconv.ParseUint(c.PostForm("organizer_id"), 10, 32)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid organizer ID"})
+			return
+		}
+		hike.OrganizerID = uint(organizerID)
+		hike.Difficulty = c.PostForm("difficulty")
+		//
+		hike.Lng = c.PostForm("lng")
+		hike.Lat = c.PostForm("lat")
+		// print the type of hike.Lng and hike.Lat
+		fmt.Println("hike.Lng", hike.Lng, "type", fmt.Sprintf("%T", hike.Lng))
+		fmt.Println("hike.Lat", hike.Lat, "type", fmt.Sprintf("%T", hike.Lat))
+
+		hike.Duration, _ = strconv.Atoi(c.PostForm("duration"))
+		isApproved, err := strconv.ParseBool(c.PostForm("is_approved"))
+		if err != nil {
+			hike.IsApproved = false
+		} else {
+			hike.IsApproved = isApproved
+		}
+
+		// Handle image upload or set default image
+		file, err := c.FormFile("image")
+		if err == nil {
+			filename := filepath.Base(file.Filename)
+			filePath := filepath.Join("public", "images", filename)
+			if err := c.SaveUploadedFile(file, filePath); err != nil {
+				c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+				return
+			}
+			hike.Image = "/images/" + filename
+		} else if err == http.ErrMissingFile {
+			hike.Image = "/images/default_hikePicture.png"
+		} else {
 			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 			return
 		}
-		hike.Image = "/images/" + filename
-	} else if err == http.ErrMissingFile {
-		hike.Image = "/images/default_hikePicture.png"
-	} else {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
-	}
 
-	//Add GPX file upload
-	file, err = c.FormFile("gpx_file")
-	if err == nil {
-		filename := filepath.Base(file.Filename)
-		filePath := filepath.Join("public", "gpx", filename)
-		if err := c.SaveUploadedFile(file, filePath); err != nil {
+		//Add GPX file upload
+		file, err = c.FormFile("gpx_file")
+		if err == nil {
+			filename := filepath.Base(file.Filename)
+			filePath := filepath.Join("public", "gpx", filename)
+			if err := c.SaveUploadedFile(file, filePath); err != nil {
+				c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+				return
+			}
+			hike.GpxFile = "/gpx/" + filename
+		} else if err != http.ErrMissingFile {
 			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 			return
 		}
-		hike.GpxFile = "/gpx/" + filename
-	} else if err != http.ErrMissingFile {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
-	}
 
-	// Validate the hike struct
-	if err := validate.Struct(hike); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
-		fmt.Println(err)
-		return
-	}
+		// Validate the hike struct
+		if err := validate.Struct(hike); err != nil {
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+			fmt.Println(err)
+			return
+		}
 
-	if err := db.DB.Create(&hike).Error; err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-		return
+		if err := db.DB.Create(&hike).Error; err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, hike)
+	} else {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{
+			"code":    http.StatusMethodNotAllowed,
+			"message": "Sorry, please come back later",
+		})
 	}
-	c.JSON(http.StatusOK, hike)
 }
 
 // GetAllHikes godoc

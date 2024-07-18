@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/group_image.dart';
 import 'package:frontend/shared/models/message.dart';
 import 'package:http/http.dart' as http;
@@ -160,7 +161,7 @@ class GroupService {
     }
   }
 
-  Future<void> addGroupImages(
+  Future<http.Response> addGroupImages(
       String token, int groupId, int userId, List<XFile> images) async {
     var uri = Uri.parse('$baseUrl/groups/albums');
 
@@ -186,17 +187,17 @@ class GroupService {
     }
 
     var response = await request.send();
+    return http.Response.fromStream(response);
 
-    if (response.statusCode == 200) {
-      // Successfully uploaded images
-      var responseBody = await response.stream.bytesToString();
-      print('Response: $responseBody');
-    } else {
-      // Handle errors
-      var responseBody = await response.stream.bytesToString();
-      print('Error: ${response.statusCode}, Response: $responseBody');
-      throw Exception('Failed to upload images');
-    }
+
+    // if (response.statusCode == 200) {
+    //   // Successfully uploaded images
+    //   var responseBody = await response.stream.bytesToString();
+    //   print('Response: $responseBody');
+    // } else {
+    //   // Handle errors
+    //   Fluttertoast.showToast(msg: 'Failed to upload images');
+    // }
   }
 
   Future<void> deleteGroupImage(String token, int imageId) async {

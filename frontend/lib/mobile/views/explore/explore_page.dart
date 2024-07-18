@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/mobile/views/explore/widgets/search_bar.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/services/flag_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +20,16 @@ class _ExplorePageState extends State<ExplorePage> {
   bool _isSortedAscending = false;
   String _searchQuery = '';
   String _sortCriteria = 'rating';
+  final FlagService _flagService = FlagService();
+  bool? isFeatureEnabled;
+
 
   @override
   void initState() {
     super.initState();
     _fetchHikes();
+    _checkFeatureFlag();
+
   }
 
   Future<void> _fetchHikes() async {
@@ -34,6 +40,20 @@ class _ExplorePageState extends State<ExplorePage> {
     setState(() {
       _searchQuery = query.toLowerCase();
     });
+  }
+
+  Future<void> _checkFeatureFlag() async {
+    try {
+      bool isEnabled = await _flagService.isFlagEnabled('enable_new_hikes');
+      setState(() {
+        isFeatureEnabled = isEnabled;
+      });
+    } catch (e) {
+      print('Error checking feature flag: $e');
+      setState(() {
+        isFeatureEnabled = false;
+      });
+    }
   }
 
   List<Hike> _getFilteredAndSortedHikes(List<Hike> hikes) {
@@ -87,12 +107,12 @@ class _ExplorePageState extends State<ExplorePage> {
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isFeatureEnabled == true ? FloatingActionButton(
         onPressed: () {
           GoRouter.of(context).push('/create-hike');
         },
         child: const Icon(Icons.add),
-      ),
+      ) : null,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.discoverHike,
@@ -122,7 +142,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     DropdownMenuItem(
                         value: 'rating',
                         child:
-                        Text(AppLocalizations.of(context)!.sort_by_Rating)),
+                            Text(AppLocalizations.of(context)!.sort_by_Rating)),
                     DropdownMenuItem(
                         value: 'difficulty',
                         child: Text(
@@ -152,25 +172,25 @@ class _ExplorePageState extends State<ExplorePage> {
             child: Consumer<HikeProvider>(
               builder: (context, hikeProvider, child) {
                 final approvedHikes =
-                _getFilteredAndSortedHikes(hikeProvider.hikes)
-                    .where((hike) => hike.isApproved)
-                    .toList();
+                    _getFilteredAndSortedHikes(hikeProvider.hikes)
+                        .where((hike) => hike.isApproved)
+                        .toList();
                 return approvedHikes.isEmpty
                     ? Center(
-                    child: Text(AppLocalizations.of(context)!.noHikesFound))
+                        child: Text(AppLocalizations.of(context)!.noHikesFound))
                     : GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 26.0,
-                  ),
-                  itemCount: approvedHikes.length,
-                  itemBuilder: (context, index) {
-                    return HikeCard(hike: approvedHikes[index]);
-                  },
-                );
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 26.0,
+                        ),
+                        itemCount: approvedHikes.length,
+                        itemBuilder: (context, index) {
+                          return HikeCard(hike: approvedHikes[index]);
+                        },
+                      );
               },
             ),
           ),
