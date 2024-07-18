@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +53,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'lng': _lng.text,
       };
 
-      await _apiService.createHike(
+      final res = await _apiService.createHike(
         hike['name'],
         hike['description'],
         user!.id,
@@ -63,6 +65,32 @@ class _CreateHikePageState extends State<CreateHikePage> {
         hike['lng'],
         user.token
       );
+
+      if(res.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Hike created successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
+      if(res.statusCode == 405) {
+        final Map<String, dynamic> responseData = jsonDecode(res.body);
+        final String? errMessage = responseData['message'];
+        Fluttertoast.showToast(
+          msg: errMessage!,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
 
       GoRouter.of(context).push('/explore');
     }
@@ -248,12 +276,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          duration: const Duration(seconds: 2),
-                          content: Text(
-                              AppLocalizations.of(context)!.processingData)),
-                    );
                     _createHike();
                   }
                 },

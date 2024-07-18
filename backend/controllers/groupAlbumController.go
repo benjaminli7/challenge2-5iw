@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strconv"
 
+	flagsmith "github.com/Flagsmith/flagsmith-go-client/v2"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -57,6 +59,30 @@ func GetGroupImage(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/images [post]
 func CreateGroupImage(c *gin.Context) {
+
+	flagsmithClient, exists := c.MustGet("flagsmithClient").(*flagsmith.Client)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Flagsmith client not found"})
+		return
+	}
+
+	flags, err := flagsmithClient.GetEnvironmentFlags()
+	if err != nil {
+		return
+	}
+	isEnabled, err := flags.IsFeatureEnabled("enable_new_photos")
+	if err != nil {
+		return
+	}
+
+	if !isEnabled {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{
+			"code":    http.StatusMethodNotAllowed,
+			"message": "Sorry, please come back later",
+		})
+		return
+	}
+
 	groupID, err := strconv.Atoi(c.PostForm("group_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})

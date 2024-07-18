@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+
 import '../models/review.dart';
 import '../models/user.dart';
 import 'config_service.dart';
@@ -78,7 +81,6 @@ class ApiService {
       String token) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
-
     request.headers['Content-Type'] = 'multipart/form-data';
     request.headers['Authorization'] = 'Bearer $token';
 
@@ -89,9 +91,6 @@ class ApiService {
     request.fields['duration'] = duration.toString();
     request.fields['lat'] = lat;
     request.fields['lng'] = lng;
-
-
-
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
@@ -225,7 +224,9 @@ class ApiService {
       ),
     );
   }
-  Future<http.Response> changePassword(String token, int userId, String oldPassword, String newPassword) {
+
+  Future<http.Response> changePassword(
+      String token, int userId, String oldPassword, String newPassword) {
     return http.patch(
       Uri.parse('$baseUrl/users/$userId/password'),
       headers: <String, String>{
@@ -238,5 +239,4 @@ class ApiService {
       }),
     );
   }
-
 }
