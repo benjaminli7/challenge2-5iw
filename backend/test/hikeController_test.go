@@ -1,58 +1,66 @@
 package test
 
 import (
-	"backend/controllers"
 	"backend/db"
 	"backend/models"
 	"bytes"
 	"encoding/json"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
-
-func setupRouter() *gin.Engine {
-	gin.SetMode(gin.TestMode)
-	router := gin.Default()
-	router.POST("/hikes", controllers.CreateHike)
-	router.GET("/hikes", controllers.GetAllHikes)
-	router.GET("/hikes/:id", controllers.GetHike)
-	router.PUT("/hikes/:id", controllers.UpdateHike)
-	router.DELETE("/hikes/:id", controllers.DeleteHike)
-	return router
-}
 
 func TestCreateHike(t *testing.T) {
 	db.TestDatabaseInit()
 	defer db.TestDatabaseDestroy()
 
-	router := setupRouter()
+	router := SetupRouter()
 
-	hike := models.Hike{
-		Name:        "Test Hike",
-		Description: "This is a test hike",
-		Difficulty:  "Intermediate",
-		Duration:    3,
+	// Create a buffer to write our multipart/form-data request
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	err := writer.WriteField("name", "Test Hike")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("description", "This is a test hike")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("organizer_id", "1")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("difficulty", "Moderate")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("duration", "3")
+	if err != nil {
+		return
+	}
+	err = writer.Close()
+	if err != nil {
+		return
 	}
 
-	jsonValue, _ := json.Marshal(hike)
-	req, _ := http.NewRequest("POST", "/hikes", bytes.NewBuffer(jsonValue))
-	req.Header.Set("Content-Type", "application/json")
+	req, _ := http.NewRequest("POST", "/hikes", body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
 	var createdHike models.Hike
-	err := json.Unmarshal(resp.Body.Bytes(), &createdHike)
+	err = json.Unmarshal(resp.Body.Bytes(), &createdHike)
 	assert.NoError(t, err, "Error unmarshalling response body")
-	assert.Equal(t, hike.Name, createdHike.Name, "Hike names do not match")
-	assert.Equal(t, hike.Description, createdHike.Description, "Hike descriptions do not match")
-	assert.Equal(t, hike.Difficulty, createdHike.Difficulty, "Hike difficulty levels do not match")
-	assert.Equal(t, hike.Duration, createdHike.Duration, "Hike durations do not match")
+	assert.Equal(t, "Test Hike", createdHike.Name, "Hike names do not match")
+	assert.Equal(t, "This is a test hike", createdHike.Description, "Hike descriptions do not match")
+	assert.Equal(t, "Moderate", createdHike.Difficulty, "Hike difficulty levels do not match")
+	assert.Equal(t, 3, createdHike.Duration, "Hike durations do not match")
 
 	if !t.Failed() {
 		t.Log("TestCreateHike: OK")
@@ -63,12 +71,13 @@ func TestGetAllHikes(t *testing.T) {
 	db.TestDatabaseInit()
 	defer db.TestDatabaseDestroy()
 
-	router := setupRouter()
+	router := SetupRouter()
 
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		Difficulty:  "Intermediate",
+		OrganizerID: 1,
+		Difficulty:  "Moderate",
 		Duration:    3,
 	}
 	db.DB.Create(&hike)
@@ -92,12 +101,13 @@ func TestGetHike(t *testing.T) {
 	db.TestDatabaseInit()
 	defer db.TestDatabaseDestroy()
 
-	router := setupRouter()
+	router := SetupRouter()
 
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		Difficulty:  "Intermediate",
+		OrganizerID: 1,
+		Difficulty:  "Moderate",
 		Duration:    3,
 	}
 	db.DB.Create(&hike)
@@ -124,36 +134,54 @@ func TestUpdateHike(t *testing.T) {
 	db.TestDatabaseInit()
 	defer db.TestDatabaseDestroy()
 
-	router := setupRouter()
+	router := SetupRouter()
 
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		Difficulty:  "Intermediate",
+		OrganizerID: 1,
+		Difficulty:  "Moderate",
 		Duration:    3,
 	}
 	db.DB.Create(&hike)
 
-	updatedHike := models.Hike{
-		Name:        "Updated Hike",
-		Description: "This is an updated test hike",
-		Difficulty:  "Advanced",
-		Duration:    5,
+	// Create a buffer to write our multipart/form-data request
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	err := writer.WriteField("name", "Updated Hike")
+	if err != nil {
+		return
 	}
-	jsonValue, _ := json.Marshal(updatedHike)
-	req, _ := http.NewRequest("PUT", "/hikes/"+strconv.Itoa(int(hike.ID)), bytes.NewBuffer(jsonValue))
-	req.Header.Set("Content-Type", "application/json")
+	err = writer.WriteField("description", "This is an updated test hike")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("difficulty", "Hard")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("duration", "5")
+	if err != nil {
+		return
+	}
+	err = writer.Close()
+	if err != nil {
+		return
+	}
+
+	req, _ := http.NewRequest("PUT", "/hikes/"+strconv.Itoa(int(hike.ID)), body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusOK, resp.Code, "Expected status code 200")
 	var retrievedHike models.Hike
-	err := json.Unmarshal(resp.Body.Bytes(), &retrievedHike)
+	err = json.Unmarshal(resp.Body.Bytes(), &retrievedHike)
 	assert.NoError(t, err, "Error unmarshalling response body")
-	assert.Equal(t, updatedHike.Name, retrievedHike.Name, "Hike names do not match")
-	assert.Equal(t, updatedHike.Description, retrievedHike.Description, "Hike descriptions do not match")
-	assert.Equal(t, updatedHike.Difficulty, retrievedHike.Difficulty, "Hike difficulty levels do not match")
-	assert.Equal(t, updatedHike.Duration, retrievedHike.Duration, "Hike durations do not match")
+	assert.Equal(t, "Updated Hike", retrievedHike.Name, "Hike names do not match")
+	assert.Equal(t, "This is an updated test hike", retrievedHike.Description, "Hike descriptions do not match")
+	assert.Equal(t, "Hard", retrievedHike.Difficulty, "Hike difficulty levels do not match")
+	assert.Equal(t, 5, retrievedHike.Duration, "Hike durations do not match")
 
 	if !t.Failed() {
 		t.Log("TestUpdateHike: OK")
@@ -164,12 +192,13 @@ func TestDeleteHike(t *testing.T) {
 	db.TestDatabaseInit()
 	defer db.TestDatabaseDestroy()
 
-	router := setupRouter()
+	router := SetupRouter()
 
 	hike := models.Hike{
 		Name:        "Test Hike",
 		Description: "This is a test hike",
-		Difficulty:  "Intermediate",
+		OrganizerID: 1,
+		Difficulty:  "Moderate",
 		Duration:    3,
 	}
 	db.DB.Create(&hike)
@@ -183,5 +212,50 @@ func TestDeleteHike(t *testing.T) {
 
 	if !t.Failed() {
 		t.Log("TestDeleteHike: OK")
+	}
+}
+
+func TestCreateHikeInvalidData(t *testing.T) {
+	db.TestDatabaseInit()
+	defer db.TestDatabaseDestroy()
+
+	router := SetupRouter()
+
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	err := writer.WriteField("name", "")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("description", "")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("organizer_id", "")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("difficulty", "")
+	if err != nil {
+		return
+	}
+	err = writer.WriteField("duration", "")
+	if err != nil {
+		return
+	}
+	err = writer.Close()
+	if err != nil {
+		return
+	}
+
+	req, _ := http.NewRequest("POST", "/hikes", body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	resp := httptest.NewRecorder()
+	router.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusBadRequest, resp.Code, "Expected status code 400")
+
+	if !t.Failed() {
+		t.Log("TestCreateHikeInvalidData: OK")
 	}
 }

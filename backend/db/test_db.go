@@ -29,7 +29,19 @@ func TestDatabaseInit() {
 	}
 
 	fmt.Println("Migrating test database")
-	err = DB.AutoMigrate(&models.User{}, &models.Hike{})
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Material{},
+		&models.MaterialUser{},
+		&models.Message{},
+		&models.Hike{},
+		&models.Advice{},
+		&models.Group{},
+		&models.GroupUser{},
+		&models.Review{},
+		&models.Options{},
+		&models.Subscription{},
+		&models.GroupImage{})
 	if err != nil {
 		log.Fatalf("Failed to migrate test database: %v", err)
 	} else {
