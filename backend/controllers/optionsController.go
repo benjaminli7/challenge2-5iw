@@ -28,10 +28,30 @@ func UpdateOptions(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result := db.DB.Save(&options)
+
+	fmt.Println(options.WeatherAPI, options.GoogleAPI)
+
+	// get tge first option value in the database
+	var oldOptions models.Options
+	result := db.DB.First(&oldOptions)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
 		return
 	}
+
+	fmt.Println(oldOptions.WeatherAPI, oldOptions.GoogleAPI)
+	// update the option value in the database with the new value
+
+	// set the new value to the oldOptions
+	oldOptions.WeatherAPI = options.WeatherAPI
+	oldOptions.GoogleAPI = options.GoogleAPI
+
+	result = db.DB.Save(&oldOptions)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, options)
 }

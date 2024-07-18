@@ -11,7 +11,7 @@ type Hike struct {
 	Name          string         `gorm:"not null" json:"name" example:"Montagne du destin" validate:"required,max=100"`
 	Description   string         `json:"description" example:"La rando de zinzin" validate:"required,max=500"`
 	OrganizerID   uint           `json:"organizer_id" example:"1" validate:"required" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Difficulty    string         `json:"difficulty" example:"Intermediate" validate:"required,oneof=Easy Moderate Hard"`
+	Difficulty    string         `json:"difficulty" example:"Moderate" validate:"required,oneof=Easy Moderate Hard"`
 	Duration      int            `json:"duration" example:"3" validate:"required"`
 	IsApproved    bool           `json:"is_approved" default:"false" example:"false"`
 	Groups        []Group        `json:"groups"`

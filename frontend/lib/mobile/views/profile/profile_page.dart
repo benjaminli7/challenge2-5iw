@@ -75,7 +75,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _pickImage() async {
 
-
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
@@ -121,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final user = userProvider.user;
-
+    final avatar = userProvider.fetchUserProfile(user!.token);
 
     final String baseUrl = ConfigService.baseUrl;
 

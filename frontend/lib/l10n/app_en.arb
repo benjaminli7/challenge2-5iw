@@ -16,7 +16,7 @@
 
   "signUpSuccess": "Signup successful",
   "signUpFailure": "Signup failed",
-  "signUp": "Sign Up",
+  "signUp": "Sign up",
   "alreadyRegister":"Already registered? Login here.",
 
   "menu": "Menu",
@@ -127,7 +127,8 @@
     "enterNewPassword" : "Enter new password",
     "passwordChanged" : "Password changed",
     "passwordChangeFailed" : "Password change failed",
-    "creat_Group" : "Creat Group",
     "profilePictureUpdated": "Profile picture updated",
-    "profilePictureUpdateFailed": "Profile picture update failed"
+    "profilePictureUpdateFailed": "Profile picture update failed",
+    "creat_Group" : "Create group"
+
 }

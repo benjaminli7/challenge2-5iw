@@ -91,8 +91,6 @@ class ApiService {
     request.fields['lng'] = lng;
 
 
-    print('Lng: $lng');
-    print('Lat: $lat');
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
