@@ -88,8 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
         await _userProvider.updateUser(_userProvider.user!, file);
 
         _userProvider.user!.profileImage = file.path;
-        var userTest = Provider.of<UserProvider>(context).user;
-        print(userTest?.username);
+
         Fluttertoast.showToast(
           msg: AppLocalizations.of(context)!.profilePictureUpdated,
           toastLength: Toast.LENGTH_SHORT,
@@ -120,9 +119,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
-    print(user);
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+
+
     final String baseUrl = ConfigService.baseUrl;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -195,8 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     leading: const Icon(Icons.history,
                         color: Colors.blueAccent),
-                    title: Text(
-                        AppLocalizations.of(context)!.hike_History),
+                    title: Text(AppLocalizations.of(context)!.hike_History),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       GoRouter.of(context).go('/profile/hike-history');
@@ -206,8 +207,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     leading:
                     const Icon(Icons.vpn_key, color: Colors.orange),
-                    title: Text(
-                        AppLocalizations.of(context)!.changePassword),
+                    title: Text(AppLocalizations.of(context)!
+                        .changePassword),
                     trailing: Icon(
                       _isChangingPassword
                           ? Icons.expand_less
@@ -276,8 +277,10 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       )
           : Center(
-        child: Text(AppLocalizations.of(context)!.no_user_data_available),
+        child: Text(
+            AppLocalizations.of(context)!.no_user_data_available),
       ),
     );
   }
+
 }
