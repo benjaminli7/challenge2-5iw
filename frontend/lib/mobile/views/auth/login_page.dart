@@ -67,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
               token: token,
               role: parseJwt['roles'],
               isVerified: parseJwt['verified'],
+              profileImage: parseJwt['profile_image'],
               fcmToken: parseJwt['fcm_token'] ?? ""),
         );
         SharedPreferences prefs = await SharedPreferences.getInstance();

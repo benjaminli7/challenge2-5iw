@@ -5,14 +5,15 @@ import (
 	"backend/models"
 	"backend/services"
 	"fmt"
-	"strconv"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Signup godoc
@@ -61,7 +62,7 @@ func Signup(c *gin.Context) {
 		}
 		user.ProfileImage = "/avatar/" + filename
 	} else if err == http.ErrMissingFile {
-		user.ProfileImage = "/avatar/default_avatar.png"
+		user.ProfileImage = "";
 	} else {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -133,6 +134,8 @@ func Login(c *gin.Context) {
 				"roles":     user.Role,
 				"verified":  user.IsVerified,
 				"fcm_token": user.FcmToken,
+				"profile_image": user.ProfileImage,
+
 			})
 
 			secret := os.Getenv("SECRET")
@@ -176,6 +179,8 @@ func Login(c *gin.Context) {
 		"roles":    user.Role,
 		"verified": user.IsVerified,
 		"username": user.Username,
+		"profile_image": user.ProfileImage,
+
 	})
 
 	secret := os.Getenv("SECRET")

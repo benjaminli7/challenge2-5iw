@@ -43,8 +43,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-/backend/public/images
-
 *.env
 ./firebase.json
 /android/app/google-services.json

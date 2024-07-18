@@ -59,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     final String baseUrl = ConfigService.baseUrl;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -75,13 +74,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: user.profileImage != null
+                          backgroundImage: user.profileImage != null &&
+                                  user.profileImage != ''
                               ? NetworkImage('$baseUrl${user.profileImage}')
                               : null,
-                          child: Text(
-                            user.username!.substring(0, 1).toUpperCase(),
-                            style: const TextStyle(fontSize: 48.0),
-                          ),
+                          child: user.profileImage == null ||
+                                  user.profileImage == ''
+                              ? Text(
+                                  user.username!.substring(0, 1).toUpperCase(),
+                                  style: const TextStyle(fontSize: 48.0),
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         Text(
