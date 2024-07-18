@@ -9,7 +9,7 @@ type GroupUser struct {
  	UserID  uint
     GroupID uint
 	IsValidate 	bool `gorm:"default:false" json:"validate"`    
-	User     	User `gorm:"foreignKey:UserID "` 
-	Group     	Group `gorm:"foreignKey:GroupID"` 
+	User     	User `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` 
+	Group     	Group `gorm:"foreignKey:GroupID; constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` 
 
 }

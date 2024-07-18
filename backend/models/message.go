@@ -7,5 +7,5 @@ type Message struct {
 	UserID  uint
 	GroupID uint
 	Content string
-	User    User
+	User    User "gorm: constraint:OnUpdate:CASCADE,OnDelete:CASCADE"
 }
