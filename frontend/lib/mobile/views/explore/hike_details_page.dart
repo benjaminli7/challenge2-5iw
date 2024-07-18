@@ -295,7 +295,10 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      GoRouter.of(context)
+                          .go('/groups/create/${widget.hike.id}');
+                    },
                     label: const Text("Créer un groupe"),
                     icon: const Icon(Icons.add)),
               ),
