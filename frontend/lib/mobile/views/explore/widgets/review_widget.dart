@@ -90,7 +90,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
         SnackBar(content: Text(AppLocalizations.of(context)!.reviewSubmit)),
       );
 
-      widget.onReviewSubmitted(); // Appel de la fonction de rappel pour notifier HikeReviewsPage
+      widget.onReviewSubmitted();
 
       setState(() {
         _existingReview = review;
