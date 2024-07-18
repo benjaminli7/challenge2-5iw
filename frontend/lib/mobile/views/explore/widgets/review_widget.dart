@@ -80,10 +80,10 @@ class _ReviewWidgetState extends State<ReviewWidget> {
 
       if (_existingReview == null) {
         await Provider.of<HikeProvider>(context, listen: false)
-            .createReview(review);
+            .createReview(review, user.token);
       } else {
         await Provider.of<HikeProvider>(context, listen: false)
-            .updateReview(review);
+            .updateReview(review, user.token);
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

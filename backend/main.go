@@ -70,6 +70,7 @@ func main() {
 	})
 
 	r.Static("/images", "./public/images")
+	r.Static("/public/groups", "./public/groups")
 	r.Static("/gpx", "./public/gpx")
 	r.Static("/avatar", "./public/avatar")
 
@@ -87,12 +88,12 @@ func main() {
 	r.PATCH("/users/:id/role", middleware.RequireAuth(true), controllers.UpdateRole)
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.UpdateUser)
-	r.GET("/users/me", controllers.GetUserProfile)
+	r.GET("/users/me", middleware.RequireAuth(false), controllers.GetUserProfile)
 
 	r.PATCH("/users/:id/fcmToken", middleware.RequireAuth(false), controllers.UpdateFcmToken)
 	r.PATCH("/users/:id/password", middleware.RequireAuth(false), controllers.UpdatePassword)
 	// Hike routes
-	r.POST("/hikes", controllers.CreateHike)
+	r.POST("/hikes", middleware.RequireAuth(false), controllers.CreateHike)
 	r.GET("/hikes", controllers.GetAllHikes)
 	r.GET("/hikes/:id", controllers.GetHike)
 	r.GET("hikes/notValidated", middleware.RequireAuth(true), controllers.GetNoValitedHike)
@@ -123,14 +124,14 @@ func main() {
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
 	r.POST("/groups/albums", middleware.RequireAuth(false), controllers.CreateGroupImage)
-	r.DELETE("/albums/:album_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
-
+	r.DELETE("/albums/:image_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
+	r.GET("/groups/:id/photos", middleware.RequireAuth(false), controllers.GetGroupPhotos)
 	// r.GET("/groups/:id/albums", controllers.GetGroupImages)
 
 
 	// Review routes
-	r.POST("/reviews", controllers.CreateReview)
-	r.PUT("/reviews/:id", controllers.UpdateReview)
+	r.POST("/reviews", middleware.RequireAuth(false), controllers.CreateReview)
+	r.PUT("/reviews/:id", middleware.RequireAuth(false), controllers.UpdateReview)
 	r.GET("/reviews/hike/:hike_id", controllers.GetReviewsByHike)
 	r.GET("/reviews/user/:user_id/hike/:hike_id", controllers.GetReviewByUser)
 

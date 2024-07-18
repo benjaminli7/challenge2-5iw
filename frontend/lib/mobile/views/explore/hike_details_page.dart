@@ -15,8 +15,7 @@ import '../../../shared/services/config_service.dart';
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsExplorePage({Key? key, required this.hike})
-      : super(key: key);
+  const HikeDetailsExplorePage({super.key, required this.hike});
 
   @override
   _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
@@ -304,10 +303,10 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
               ),
               const Divider(),
               ListTile(
-                title: Text(AppLocalizations.of(context)!.viewReviews),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
+                title: Row(
                   children: [
+                    Text(AppLocalizations.of(context)!.viewReviews),
+                    const SizedBox(width: 8),
                     Icon(Icons.star, color: widget.hike.averageRating == 0 ? Colors.grey : Colors.yellow[700]),
                     const SizedBox(width: 4),
                     if (widget.hike.averageRating != 0)
@@ -318,9 +317,9 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    const Icon(Icons.arrow_forward_ios),
                   ],
                 ),
+                trailing:  const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
                 },

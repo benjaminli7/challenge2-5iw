@@ -24,7 +24,6 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   final _materialService = MaterialService();
   late Future<Group> _groupFuture;
   late Future<List<Materiel>> _materialsFuture;
-  final ScrollController _scrollController = ScrollController();
   bool _isGroupInfoExpanded = true;
   bool _isMaterialsExpanded = false;
   bool _isWeatherExpanded = false;
@@ -118,14 +117,15 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   Future<void> _removeUserFromGroup(int userId) async {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (token != null) {
-      final response = await _groupService.deleteUserGroup(token, widget.groupId, userId);
+      final response =
+          await _groupService.deleteUserGroup(token, widget.groupId, userId);
       if (response.statusCode == 200) {
         setState(() {
           _group?.users.removeWhere((user) => user.id == userId);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to remove user from group')),
+          const SnackBar(content: Text('Failed to remove user from group')),
         );
       }
     }
@@ -226,7 +226,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                   children: <TextSpan>[
                                     TextSpan(
                                       text:
-                                      '${group.users.length} / ${group.maxUsers}',
+                                          '${group.users.length} / ${group.maxUsers}',
                                       style: const TextStyle(
                                           fontWeight: FontWeight.normal),
                                     ),
@@ -278,7 +278,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:
-                                      const NeverScrollableScrollPhysics(),
+                                          const NeverScrollableScrollPhysics(),
                                       itemCount: materials.length,
                                       itemBuilder: (context, index) {
                                         final material = materials[index];
@@ -302,8 +302,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                 Text(material.name),
                                                 const SizedBox(width: 16),
                                                 for (int i = 0;
-                                                i < material.users.length;
-                                                i++)
+                                                    i < material.users.length;
+                                                    i++)
                                                   Align(
                                                       widthFactor: 0.75,
                                                       child: CircleAvatar(
@@ -353,18 +353,23 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           final member = group.users[index];
                           return ListTile(
                             leading: CircleAvatar(
-                              child: Text(member.username!.substring(0, 1).toUpperCase()),
+                              child: Text(member.username!
+                                  .substring(0, 1)
+                                  .toUpperCase()),
                             ),
                             title: Text(
                               "${member.username!} ${group.organizer.id == member.id ? '(Admin)' : ''}",
                             ),
-                            trailing: group.organizer.id != member.id && user != null && group.organizer.id == user.id
+                            trailing: group.organizer.id != member.id &&
+                                    user != null &&
+                                    group.organizer.id == user.id
                                 ? IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.red),
-                              onPressed: () async {
-                                await _removeUserFromGroup(member.id);
-                              },
-                            )
+                                    icon: const Icon(Icons.clear,
+                                        color: Colors.red),
+                                    onPressed: () async {
+                                      await _removeUserFromGroup(member.id);
+                                    },
+                                  )
                                 : null,
                           );
                         },
@@ -383,6 +388,19 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       },
                       content: WeatherWidget(group: group),
                     ),
+                    const SizedBox(height: 8.0),
+                    const Divider(),
+                    const SizedBox(height: 8.0),
+                    ListTile(
+                        title: const Text('Photos',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        trailing:
+                            const Icon(Icons.arrow_forward_ios, size: 16.0),
+                        onTap: () {
+                          GoRouter.of(context)
+                              .push('/group/${group.id}/photos');
+                        }),
                     const SizedBox(height: 8.0),
                     const Divider(),
                     const SizedBox(height: 8.0),
@@ -414,12 +432,12 @@ class CustomAccordion extends StatelessWidget {
   final Function(bool) onExpansionChanged;
 
   const CustomAccordion({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.isExpanded,
     required this.onExpansionChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
