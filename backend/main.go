@@ -120,6 +120,9 @@ func main() {
 	r.PATCH("groups/validate/:id", controllers.ValidateUserGroup)
 	r.DELETE("/groups/:id", controllers.DeleteGroup)
 	r.DELETE("/groups/leave", controllers.LeaveGroup)
+	r.POST("/groups/albums", middleware.RequireAuth(false), controllers.CreateGroupImage)
+	r.DELETE("/albums/:album_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
+	// r.GET("/groups/:id/albums", controllers.GetGroupImages)
 
 	// Review routes
 	r.POST("/reviews", controllers.CreateReview)
