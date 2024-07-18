@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-
 import '../../../shared/services/config_service.dart';
 
 class GroupsPage extends StatefulWidget {
@@ -53,6 +52,7 @@ class _GroupsPageState extends State<GroupsPage> {
               itemBuilder: (context, index) {
                 final group = groups[index];
                 return ListTile(
+                  isThreeLine: true,
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
                       Uri.parse("$baseUrl${group.hike.image}").toString(),
@@ -60,10 +60,9 @@ class _GroupsPageState extends State<GroupsPage> {
                     radius: 30,
                   ),
                   title: Text(group.name),
-                  subtitle:
-                      Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
+                  subtitle: Text(
+                      "${group.hike.name} \n${DateFormat('yyyy-MM-dd').format(group.startDate)}"),
                   trailing:
-                      // if group.organizer.id == user.id then show a delete button
                       group.organizer.id ==
                               Provider.of<UserProvider>(context, listen: false)
                                   .user!
@@ -71,7 +70,6 @@ class _GroupsPageState extends State<GroupsPage> {
                           ? IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                // use group service to delete group with token and group id
                                 try {
                                   _groupService
                                       .deleteGroup(
