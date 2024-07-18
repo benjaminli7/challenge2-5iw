@@ -37,6 +37,10 @@ func Signup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 		return
 	}
+	if email == "" || username == "" || password == "" {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Please fill in all fields"})
+		return
+	}
 
 	emailToken, _ := services.GenerateRandomToken(32)
 	user := models.User{Email: email, Username: username, Password: string(hash), Token: emailToken}
@@ -119,7 +123,8 @@ func Login(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to hash password"})
 				return
 			}
-			user = models.User{Email: body.Email, Password: string(hash), Role: "user", IsVerified: true}
+			
+			user = models.User{Email: body.Email,Password: string(hash), Role: "user", IsVerified: true}
 			result := db.DB.Create(&user)
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{

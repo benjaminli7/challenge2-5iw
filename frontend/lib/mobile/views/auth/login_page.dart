@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-
+          print (googleUser);
       // login process
       final String? token = await _apiService.login(
         googleUser.email,
