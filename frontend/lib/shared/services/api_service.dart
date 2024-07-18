@@ -72,16 +72,27 @@ class ApiService {
       String difficulty,
       int duration,
       File? image,
-      File? gpxFile) async {
+      File? gpxFile,
+      String lat,
+      String lng,
+      String token) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/hikes'));
 
+
     request.headers['Content-Type'] = 'multipart/form-data';
+    request.headers['Authorization'] = 'Bearer $token';
 
     request.fields['name'] = name;
     request.fields['description'] = description;
     request.fields['organizer_id'] = organizerId.toString();
     request.fields['difficulty'] = difficulty;
     request.fields['duration'] = duration.toString();
+    request.fields['lat'] = lat;
+    request.fields['lng'] = lng;
+
+
+    print('Lng: $lng');
+    print('Lat: $lat');
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
@@ -113,20 +124,22 @@ class ApiService {
     return http.Response.fromStream(streamedResponse);
   }
 
-  Future<http.Response> createReview(Review review) {
+  Future<http.Response> createReview(Review review, String token) {
     return http.post(
       Uri.parse('$baseUrl/reviews'),
       headers: <String, String>{
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(review.toJson()),
     );
   }
 
-  Future<http.Response> updateReview(Review review) {
+  Future<http.Response> updateReview(Review review, String token) {
     return http.put(
       Uri.parse('$baseUrl/reviews/${review.id}'),
       headers: <String, String>{
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(review.toJson()),

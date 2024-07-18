@@ -6,6 +6,7 @@ import 'package:frontend/shared/models/message.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:frontend/shared/models/user.dart';
 
 import '../models/group.dart';
 import 'config_service.dart';
@@ -24,14 +25,15 @@ class GroupService {
     );
 
     if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
       return Group.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load group');
     }
   }
 
-  Future<http.Response> createGroup(
-      Map<String, dynamic> groupData, hikeId, userId, token) async {
+  Future<http.Response> createGroup(Map<String, dynamic> groupData, hikeId,
+      userId, token) async {
     final url = Uri.parse('$baseUrl/groups');
     final response = await http.post(
       url,
@@ -70,8 +72,8 @@ class GroupService {
     }
   }
 
-  Future<List<Group>> fetchHikeGroups(
-      String token, int hikeId, int userId) async {
+  Future<List<Group>> fetchHikeGroups(String token, int hikeId,
+      int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
 
     final response = await http.get(
@@ -212,7 +214,5 @@ class GroupService {
     } else {
       print('Image deleted successfully');
     }
-
   }
-
 }

@@ -1,30 +1,36 @@
 [
     {
+        "ID": 1,
         "UserId": 1,
         "GroupId": 1,
         "validate": true
     },
     {
+        "ID": 2,
         "GroupId": 1,
         "UserId": 2,
         "validate": true
     },
     {
+        "ID": 3,
         "UserId": 2,
         "GroupId": 2,
         "validate": true
     },
     {
+        "ID": 4,
         "UserId": 3,
         "GroupId": 2,
         "validate": true
     },
     {
+        "ID": 5,
         "UserId": 3,
         "GroupId": 3,
         "validate": true
     },
     {
+        "ID": 6,
         "UserId": 2,
         "GroupId": 3,
         "validate": true

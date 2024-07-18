@@ -17,7 +17,7 @@ class HikeProvider with ChangeNotifier {
   Future<void> fetchHikes() async {
     try {
       final response = await ApiService().getHikes();
-      print('fetchHikes response: ${response.body}');
+      // print('fetchHikes response: ${response.body}');
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         _hikes = data.map((json) => Hike.fromJson(json)).toList();
@@ -43,11 +43,11 @@ class HikeProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> createHike(String name, String description, int organizerId,
-      String difficulty, int duration, File image, File gpxFile) async {
+  Future<void> createHike(String name, String description, int organizerId,  String difficulty, int duration, File image, File gpxFile, String lat, String lng, String token
+      ) async {
     try {
       final response = await ApiService().createHike(
-          name, description, organizerId, difficulty, duration, image, gpxFile);
+          name, description, organizerId, difficulty, duration, image, gpxFile , lat, lng, token);
       if (response.statusCode == 200) {
         print('Hike created successfully');
       } else {
@@ -95,9 +95,9 @@ class HikeProvider with ChangeNotifier {
     }
   }
 
-  Future<void> createReview(Review review) async {
+  Future<void> createReview(Review review, String token) async {
     try {
-      final response = await ApiService().createReview(review);
+      final response = await ApiService().createReview(review, token);
       if (response.statusCode == 200) {
         await fetchReviewsByHike(review.hikeId);
         print('Review created successfully');
@@ -109,9 +109,9 @@ class HikeProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateReview(Review review) async {
+  Future<void> updateReview(Review review, String token) async {
     try {
-      final response = await ApiService().updateReview(review);
+      final response = await ApiService().updateReview(review, token);
       if (response.statusCode == 200) {
         await fetchHikes();
         await fetchReviewsByHike(review.hikeId);
