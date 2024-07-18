@@ -15,11 +15,10 @@ import (
 func RequireAuth(adminOnly bool) gin.HandlerFunc {
     return func(c *gin.Context) {
         // Get the cookie off the request
-        println("RequireAuth middleware")
+
         authHeader := c.GetHeader("Authorization")
-        println(authHeader)
         if authHeader == "" {
-            println("No Authorization header found")
+
             c.AbortWithStatus(http.StatusUnauthorized)
             return
         }
@@ -65,10 +64,6 @@ func RequireAuth(adminOnly bool) gin.HandlerFunc {
 		var user models.User
 		db.DB.First(&user,claims["sub"])
 
-        fmt.Println("User found")
-		fmt.Println(user.ID)
-		fmt.Println(user.Email)
-		fmt.Println(token)
 
         if user.ID == 0 {
             c.AbortWithStatus(http.StatusUnauthorized)
@@ -78,8 +73,6 @@ func RequireAuth(adminOnly bool) gin.HandlerFunc {
 
         // If adminOnly is true, check if the user is an admin
         if adminOnly && user.Role != "admin" {
-            fmt.Println(adminOnly)
-            fmt.Println(user.Role)
             c.AbortWithStatus(http.StatusUnauthorized)
             return
         }

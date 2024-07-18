@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:frontend/shared/models/message.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:frontend/shared/models/user.dart';
 import '../models/group.dart';
 import 'config_service.dart';
 
@@ -20,14 +20,15 @@ class GroupService {
     );
 
     if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
       return Group.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load group');
     }
   }
 
-  Future<http.Response> createGroup(
-      Map<String, dynamic> groupData, hikeId, userId, token) async {
+  Future<http.Response> createGroup(Map<String, dynamic> groupData, hikeId,
+      userId, token) async {
     final url = Uri.parse('$baseUrl/groups');
     print(groupData['hikeDate']);
     final response = await http.post(
@@ -68,8 +69,8 @@ class GroupService {
     }
   }
 
-  Future<List<Group>> fetchHikeGroups(
-      String token, int hikeId, int userId) async {
+  Future<List<Group>> fetchHikeGroups(String token, int hikeId,
+      int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
 
     final response = await http.get(
@@ -140,4 +141,36 @@ class GroupService {
       throw Exception('Failed to load messages');
     }
   }
+
+  Future<Group> fetchParticipants(String token, int groupId) async {
+    print('fetching participants');
+    final url = Uri.parse('$baseUrl/groups/participants/$groupId');
+    final response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+      return Group.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load participants');
+    }
+  }
+
+
+  Future<http.Response> deleteUserGroup(String token, int groupId, int userId) async {
+    final url = Uri.parse('$baseUrl/groups/user/$userId/$groupId');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return response;
+  }
+
 }

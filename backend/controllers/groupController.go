@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -355,4 +354,67 @@ func GetGroupMessages(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, messages)
+}
+
+func GetParticipants(c *gin.Context) {
+	groupIdParam := c.Param("id")
+
+	groupId, err := strconv.Atoi(groupIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid group ID"})
+		return
+	}
+
+	var group models.Group
+
+
+
+	err = db.DB.Preload("Users").Where("id = ?", groupId).First(&group).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch participants"})
+		return
+	}
+
+	c.JSON(http.StatusOK, group)
+}
+
+func DeleteUserGroup (c *gin.Context){
+	groupIdParam := c.Param("groupId")
+	userIdParam := c.Param("userId")
+
+	groupId, err := strconv.Atoi(groupIdParam)
+	if err != nil {
+		println("Failed to convert group ID")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid group ID"})
+		return
+	}
+
+	
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		println("Failed to convert user ID")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+
+	}
+
+	if err := db.DB.Unscoped().Where("group_id = ?", groupId).Where("user_id = ?", userId).Delete(&models.GroupUser{}).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+        return
+    }
+	var material models.Material
+	if err := db.DB.Preload("Users").Where("group_id = ?", groupId).First(&material).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Material not found"})
+		return
+	}
+	var user models.User
+	if err := db.DB.First(&user, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	db.DB.Model(&material).Association("Users").Delete(&user)
+	c.JSON(http.StatusOK, gin.H{"message": "User removed as bringer"})
+
+
 }

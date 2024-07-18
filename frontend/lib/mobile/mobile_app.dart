@@ -166,6 +166,7 @@ final GoRouter _router = GoRouter(
             return GroupDetailPage(groupId: groupId);
           },
         ),
+
         GoRoute(
           name: "group-chat",
           path: '/group-chat/:id',
