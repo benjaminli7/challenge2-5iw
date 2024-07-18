@@ -75,17 +75,14 @@ class _LoginPageState extends State<LoginPage> {
         if ((parseJwt['fcm_token'] == null || parseJwt['fcm_token'] == "") &&
                 _fcmToken != "" ||
             parseJwt['fcm_token'] != _fcmToken) {
-
           final response = await _apiService.setFcmToken(
               Provider.of<UserProvider>(context, listen: false).user!.id,
               _fcmToken,
               Provider.of<UserProvider>(context, listen: false).user!.token);
 
           if (response.statusCode == 200) {
-
             Provider.of<UserProvider>(context, listen: false)
                 .setFcmToken(_fcmToken);
-
           }
         }
         Fluttertoast.showToast(
@@ -128,15 +125,13 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       print(googleUser);
 
-      if  (googleUser == null) {
-        setState(() { 
+      if (googleUser == null) {
+        setState(() {
           _isLoading = false;
-        }); 
-
+        });
 
         Fluttertoast.showToast(
             msg: AppLocalizations.of(context)!.logInFailureGoogle2,
@@ -182,14 +177,13 @@ class _LoginPageState extends State<LoginPage> {
               _fcmToken,
               Provider.of<UserProvider>(context, listen: false).user!.token);
           if (response.statusCode == 200) {
-
             Provider.of<UserProvider>(context, listen: false)
                 .setFcmToken(_fcmToken);
           }
         }
 
         Fluttertoast.showToast(
-          msg: 'Connected with Google',
+          msg: AppLocalizations.of(context)!.connectedGoogle,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -200,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
         GoRouter.of(context).go('/explore');
       } else {
         Fluttertoast.showToast(
-          msg: 'You are not verified',
+          msg: AppLocalizations.of(context)!.notVerified,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -243,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.login,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                   ),
                 ),
@@ -259,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _login,
                   child: Text(AppLocalizations.of(context)!.login,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -279,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.connectedGoogle,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
