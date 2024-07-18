@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -107,23 +107,27 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading:
-                              Icon(Icons.history, color: Colors.blueAccent),
+                          leading: const Icon(Icons.history,
+                              color: Colors.blueAccent),
                           title:
                               Text(AppLocalizations.of(context)!.hike_History),
-                          trailing: Icon(Icons.arrow_forward_ios),
+                          trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {
                             GoRouter.of(context).go('/profile/hike-history');
                           },
                         ),
-                        Divider(),
+                        const Divider(),
                         ListTile(
-                          leading: Icon(Icons.vpn_key, color: Colors.orange),
+                          leading:
+                              const Icon(Icons.vpn_key, color: Colors.orange),
                           title: Text(
                               AppLocalizations.of(context)!.changePassword),
-                          trailing: Icon(_isChangingPassword
-                              ? Icons.expand_less
-                              : Icons.expand_more),
+                          trailing: Icon(
+                            _isChangingPassword
+                                ? Icons.expand_less
+                                : Icons.expand_more,
+                            size: 38,
+                          ),
                           onTap: () {
                             setState(() {
                               _isChangingPassword = !_isChangingPassword;
@@ -161,11 +165,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
-                        Divider(),
+                        const Divider(),
                         ListTile(
-                          leading: Icon(Icons.logout, color: Colors.red),
+                          leading: const Icon(Icons.logout, color: Colors.red),
                           title: Text(AppLocalizations.of(context)!.signOut),
-                          trailing: Icon(Icons.arrow_forward_ios),
+                          trailing: const Icon(Icons.arrow_forward_ios),
                           onTap: () {
                             Provider.of<UserProvider>(context, listen: false)
                                 .clearUser();
