@@ -17,7 +17,7 @@ class WeatherForecast extends StatelessWidget {
           return WeatherCard(weather: data[index]);
         },
         options: CarouselOptions(
-          height: MediaQuery.of(context).size.height * 0.4,
+          height: MediaQuery.of(context).size.height * 0.4  ,
           enableInfiniteScroll: false,
           initialPage: 1,
           viewportFraction: 0.35,

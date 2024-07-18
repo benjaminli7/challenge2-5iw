@@ -1,5 +1,5 @@
 import 'dart:io';
-
+ 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,28 +7,36 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
+import 'package:google_places_autocomplete_text_field/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+ 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
-
+ 
   @override
   State<CreateHikePage> createState() => _CreateHikePageState();
 }
-
+ 
 class _CreateHikePageState extends State<CreateHikePage> {
+  final API_KEY = dotenv.env['LOC_API_URL'];
+
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _mapsController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _difficulty = 'Easy';
   final _durationController = TextEditingController();
   final ApiService _apiService = ApiService();
   File? _image;
   File? _gpxFile;
-
+  final _lat= TextEditingController();
+  final _lng= TextEditingController();
+ 
   final ImagePicker _picker = ImagePicker();
-
+ 
   void _createHike() async {
     if (_formKey.currentState!.validate()) {
       final user = Provider.of<UserProvider>(context, listen: false).user;
@@ -39,8 +47,10 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
+        'lat':  _lat.text,
+        'lng': _lng.text,
       };
-
+ 
       await _apiService.createHike(
         hike['name'],
         hike['description'],
@@ -49,15 +59,17 @@ class _CreateHikePageState extends State<CreateHikePage> {
         hike['duration'],
         hike['image'],
         hike['gpx_file'],
+        hike['lat'],
+        hike['lng'],
       );
-
+ 
       GoRouter.of(context).push('/explore');
     }
   }
-
+ 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
+ 
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
@@ -66,16 +78,16 @@ class _CreateHikePageState extends State<CreateHikePage> {
       }
     });
   }
-
+ 
   Future<void> _pickGPXFile() async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['gpx'],
       );
-
+ 
       print('File picking result: $result');
-
+ 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
@@ -87,13 +99,13 @@ class _CreateHikePageState extends State<CreateHikePage> {
     } catch (e) {
       print('Error picking GPX file: $e');
       print('Attempting to use FileType.any as a fallback');
-
+ 
       // Fallback to FileType.any
       try {
         final result = await FilePicker.platform.pickFiles(
           type: FileType.any,
         );
-
+ 
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
@@ -107,15 +119,17 @@ class _CreateHikePageState extends State<CreateHikePage> {
       }
     }
   }
-
+ 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
     _durationController.dispose();
+    _lat.dispose();
+    _lng.dispose();
     super.dispose();
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,6 +216,27 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   return null;
                 },
               ),
+              GooglePlacesAutoCompleteTextFormField(
+                  textEditingController: _mapsController,
+                  googleAPIKey: API_KEY!,
+                  debounceTime: 400, 
+                  isLatLngRequired:
+                      true,  
+                  getPlaceDetailWithLatLng: (prediction) {
+                    print("Coordinates: (${prediction.lat},${prediction.lng})");
+                    _lat.text = prediction.lat.toString();
+                    _lng.text = prediction.lng.toString();
+                  },  
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your address',
+                    labelText: 'Address',
+                  ),
+                  itmClick: (Prediction prediction) {
+                    _mapsController.text = prediction.description.toString();
+                    _mapsController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: prediction.description!.length));
+                  }),
               const SizedBox(height: 20),
               _image == null
                   ? Text(AppLocalizations.of(context)!.noImage)
