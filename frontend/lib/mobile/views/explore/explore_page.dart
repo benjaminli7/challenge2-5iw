@@ -40,11 +40,12 @@ class _ExplorePageState extends State<ExplorePage> {
     List<Hike> filteredHikes = hikes
         .where((hike) => hike.name.toLowerCase().contains(_searchQuery))
         .toList();
+
     filteredHikes.sort((a, b) {
       int comparison;
       switch (_sortCriteria) {
         case 'difficulty':
-          comparison = a.difficulty.compareTo(b.difficulty);
+          comparison = _compareDifficulty(a.difficulty, b.difficulty);
           break;
         case 'duration':
           comparison = a.duration.compareTo(b.duration);
@@ -57,6 +58,11 @@ class _ExplorePageState extends State<ExplorePage> {
       return _isSortedAscending ? comparison : -comparison;
     });
     return filteredHikes;
+  }
+
+  int _compareDifficulty(String a, String b) {
+    const difficultyOrder = {'Easy': 1, 'Moderate': 2, 'Hard': 3};
+    return difficultyOrder[a]!.compareTo(difficultyOrder[b]!);
   }
 
   void _setSortCriteria(String? criteria) {
@@ -116,7 +122,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     DropdownMenuItem(
                         value: 'rating',
                         child:
-                            Text(AppLocalizations.of(context)!.sort_by_Rating)),
+                        Text(AppLocalizations.of(context)!.sort_by_Rating)),
                     DropdownMenuItem(
                         value: 'difficulty',
                         child: Text(
@@ -146,25 +152,25 @@ class _ExplorePageState extends State<ExplorePage> {
             child: Consumer<HikeProvider>(
               builder: (context, hikeProvider, child) {
                 final approvedHikes =
-                    _getFilteredAndSortedHikes(hikeProvider.hikes)
-                        .where((hike) => hike.isApproved)
-                        .toList();
+                _getFilteredAndSortedHikes(hikeProvider.hikes)
+                    .where((hike) => hike.isApproved)
+                    .toList();
                 return approvedHikes.isEmpty
                     ? Center(
-                        child: Text(AppLocalizations.of(context)!.noHikesFound))
+                    child: Text(AppLocalizations.of(context)!.noHikesFound))
                     : GridView.builder(
-                        padding: const EdgeInsets.all(10),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 26.0,
-                        ),
-                        itemCount: approvedHikes.length,
-                        itemBuilder: (context, index) {
-                          return HikeCard(hike: approvedHikes[index]);
-                        },
-                      );
+                  padding: const EdgeInsets.all(10),
+                  gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 26.0,
+                  ),
+                  itemCount: approvedHikes.length,
+                  itemBuilder: (context, index) {
+                    return HikeCard(hike: approvedHikes[index]);
+                  },
+                );
               },
             ),
           ),
