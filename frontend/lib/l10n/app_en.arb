@@ -17,8 +17,12 @@
   "signUpSuccess": "Signup successful",
   "signUpFailure": "Signup failed",
   "signUp": "Sign up",
+  "username": "Username",
   "alreadyRegister":"Already registered? Login here.",
+  "noAvatar":"No avatar selected.",
+   "uploadAvatar":"Upload avatar",
 
+  "admin": "Admin",
   "menu": "Menu",
   "users" : "Users",
   "hike" : "Hike",
@@ -30,13 +34,14 @@
   "hikeDifficulty": "Difficulty {difficulty}",
   "hikeDuration": "Duration {duration}",
   "hikeValidation" : "Validation",
-
+   "enterAdress" : "Enter an address",
+    "adress" : "Address",
   "hikeValidationPannel" : "Hikes validation Panel",
   "noHikesFound" : "No hikes found",
   "image" : "Image",
   "name" : "Name",
   "description" : "Description",
-
+  "search" : "Search",
   "userDetail": "User details",
   "userEmail": "Email {email}",
   "userRole": "Role {role}",
@@ -127,5 +132,48 @@
     "enterNewPassword" : "Enter new password",
     "passwordChanged" : "Password changed",
     "passwordChangeFailed" : "Password change failed",
-    "creat_Group" : "Create group"
+    "creat_Group" : "Create group",
+
+    "errorArg" : "Error: {error}",
+    "byArg" : "By {by}",
+    "onArg" : "On {on}",
+
+    "addMaterial":"Add material",
+    "enterMaterial":"Enter material name",
+    "cancel":"Cancel",
+    "materialAdd":"Material added successfully",
+    "failedRemoveUser":"Failed to remove user from group",
+    "groupInformation" : "Group information",
+    "startDate" : "Start date",
+    "currentGroupSize" : "Current group size",
+    "groupCreatedBy" : "Group created by {createdBy}",
+    "material" : "Material",
+    "noMaterial" : "No material found",
+    "members" : "Members",
+    "weather" : "Weather",
+    "groupChat" : "Group chat",
+
+    "imageDeletedSuccess":"Image deleted successfully",
+    "imageDeletedFailure":"Failed to delete image",
+    "groupImageSuccess":"Group images added successfully",
+    "groupImageFailure":"Error adding group images",
+    "groupPhoto":"Group photos",
+    "noPhotos":"No photos found",
+
+    "selectHikeDate":"Select hike date",
+    "groupNameRequire":"Group name is required",
+    "groupCreated":"Group created successfully!",
+    "createGroup":"Create group",
+    "groupName" : "Group name",
+    "groupDescription" : "Group description",
+    "maxParticipants" : "Max number of participants",
+    "groupDeleted" : "Group deleted",
+    "groupDeletedFailed" : "Failed to delete group",
+    "discover":"Discover new trails and adventures.",
+    "groupJoin":"Join hiking groups and plan adventures"
+
+
+
+
+
 }

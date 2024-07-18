@@ -36,7 +36,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
     );
     _channel.stream.listen(
       (message) {
-        print(message);
+
         setState(() {
           _messages.add(Message.fromJson(jsonDecode(message)));
         });
@@ -69,9 +69,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       });
-    } else {
-      // Handle error
-      print("error");
     }
   }
 
@@ -134,7 +131,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                         ),
                         child: Text(message.content),
                       ),
-                      // display timestamp of message
+
                       Text(
                         DateFormat("HH:mm").format(
                             DateTime.parse(message.createdAt.toString())),

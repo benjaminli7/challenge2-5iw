@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SearchBarApp extends StatefulWidget {
   final String hintText;
   final ValueChanged<String> onSearchChanged;
@@ -14,7 +14,7 @@ class SearchBarApp extends StatefulWidget {
 class _SearchBarAppState extends State<SearchBarApp> {
   @override
   Widget build(BuildContext context) {
-    print('Building SearchBarApp');
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       padding: const EdgeInsets.all(10),
@@ -26,8 +26,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          suffixIcon: const Icon(Icons.search),
-          hintText: widget.hintText.isNotEmpty ? widget.hintText : 'Search',
+          suffixIcon:  Icon(Icons.search),
+          hintText: widget.hintText.isNotEmpty ? widget.hintText : AppLocalizations.of(context)!.search,
         ),
       ),
     );

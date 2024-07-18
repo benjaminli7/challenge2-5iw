@@ -11,7 +11,7 @@ class HikeDetailsSection extends StatelessWidget {
       children: <Widget>[
         const CircleAvatar(
           backgroundImage: NetworkImage(
-              "https://tse2.mm.bing.net/th?id=OIP.avb9nDfw3kq7NOoP0grM4wHaEK&pid=Api&P=0&w=300&h=300"), // Use your image asset or URL
+              "https://tse2.mm.bing.net/th?id=OIP.avb9nDfw3kq7NOoP0grM4wHaEK&pid=Api&P=0&w=300&h=300"),
         ),
         const SizedBox(width: 10),
         Expanded(

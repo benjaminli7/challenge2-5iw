@@ -68,7 +68,7 @@ class AdminProvider with ChangeNotifier {
 
     try {
       _groups = await _adminService.fetchGroups(token);
-      print('Fetched groups: $_groups'); // Debugging
+
     } catch (e) {
       print('Error fetching groups: $e');
 

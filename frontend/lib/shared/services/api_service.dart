@@ -52,11 +52,11 @@ class ApiService {
         final String? token = responseData['message'];
         return token;
       } else {
-        print('Failed to login. Status code: ${response.statusCode}');
+
         return null;
       }
     } catch (e) {
-      print('Error occurred: $e');
+
       return null;
     }
   }
@@ -91,8 +91,7 @@ class ApiService {
     request.fields['lng'] = lng;
 
 
-    print('Lng: $lng');
-    print('Lat: $lat');
+
 
     if (image != null) {
       var fileStream = http.ByteStream(image.openRead());
@@ -199,7 +198,7 @@ class ApiService {
   }
 
   Future<http.Response> setFcmToken(int userId, String fcmToken, String token) {
-    print("From service: token: $token userId: $userId fcmToken: $fcmToken");
+
     return http.patch(
       Uri.parse('$baseUrl/users/$userId/fcmToken'),
       headers: <String, String>{
@@ -213,7 +212,7 @@ class ApiService {
   }
 
   Future<http.Response> validateAccount(String token) {
-    print('Validating account with token: $token');
+
     return http.patch(
       Uri.parse('$baseUrl/validate'),
       headers: <String, String>{

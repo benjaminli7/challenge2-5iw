@@ -6,7 +6,7 @@ import 'package:frontend/shared/services/group_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../shared/services/config_service.dart';
 
 class GroupsPage extends StatefulWidget {
@@ -28,14 +28,14 @@ class _GroupsPageState extends State<GroupsPage> {
     if (user != null) {
       _groupsFuture = _groupService.fetchMyGroups(user.token, user.id);
     } else {
-      _groupsFuture = Future.error('User not logged in');
+      _groupsFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Groups')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.groups)),
       body: FutureBuilder<List<Group>>(
         future: _groupsFuture,
         builder: (context, snapshot) {
@@ -44,7 +44,7 @@ class _GroupsPageState extends State<GroupsPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No groups found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
           } else {
             final groups = snapshot.data!;
             return ListView.builder(
@@ -93,7 +93,7 @@ class _GroupsPageState extends State<GroupsPage> {
                                     });
                                   });
                                   Fluttertoast.showToast(
-                                    msg: 'Group deleted',
+                                    msg: AppLocalizations.of(context)!.groupDeleted,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -103,7 +103,7 @@ class _GroupsPageState extends State<GroupsPage> {
                                   );
                                 } catch (error) {
                                   Fluttertoast.showToast(
-                                    msg: 'Failed to delete group',
+                                    msg: AppLocalizations.of(context)!.groupDeleted,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,

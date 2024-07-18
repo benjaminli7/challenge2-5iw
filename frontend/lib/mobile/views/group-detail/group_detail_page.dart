@@ -10,6 +10,7 @@ import 'package:frontend/shared/services/material_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
@@ -39,7 +40,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       _materialsFuture =
           _materialService.getMaterialsByGroupId(user.token, widget.groupId);
     } else {
-      _groupFuture = Future.error('User not logged in');
+      _groupFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
   }
 
@@ -60,20 +61,20 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Material'),
+          title: Text(AppLocalizations.of(context)!.addMaterial),
           content: TextField(
             controller: _materialController,
-            decoration: const InputDecoration(hintText: "Enter material name"),
+            decoration:  InputDecoration(hintText: AppLocalizations.of(context)!.enterMaterial),
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('Cancel'),
+              child:  Text(AppLocalizations.of(context)!.cancel),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: const Text('Submit'),
+              child:  Text(AppLocalizations.of(context)!.submit),
               onPressed: () async {
                 final user =
                     Provider.of<UserProvider>(context, listen: false).user;
@@ -85,7 +86,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   );
                   _refreshMaterials();
                   Fluttertoast.showToast(
-                      msg: "Material added successfully",
+                      msg: AppLocalizations.of(context)!.materialAdd,
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIosWeb: 1,
@@ -125,7 +126,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to remove user from group')),
+           SnackBar(content: Text(AppLocalizations.of(context)!.failedRemoveUser)),
         );
       }
     }
@@ -137,7 +138,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Group details'),
+        title:  Text(AppLocalizations.of(context)!.groupDetail),
       ),
       body: FutureBuilder<Group>(
         future: _groupFuture,
@@ -147,7 +148,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return const Center(child: Text('No group found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noGroupFound));
           } else {
             _group = snapshot.data!;
             final group = _group!;
@@ -182,7 +183,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: 'Description: ',
+                                  text: AppLocalizations.of(context)!.description + ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -200,7 +201,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: 'Starting date: ',
+                                  text: AppLocalizations.of(context)!.startDate + ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -219,7 +220,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  text: 'Current group size: ',
+                                  text: AppLocalizations.of(context)!.currentGroupSize + ': ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -237,7 +238,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Group created by ${group.organizer.username}',
+                              AppLocalizations.of(context)!.groupCreatedBy(group.organizer.username.toString()),
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),
@@ -248,7 +249,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const Divider(),
                     const SizedBox(height: 8.0),
                     CustomAccordion(
-                      title: 'Materials',
+                      title: AppLocalizations.of(context)!.material,
                       isExpanded: _isMaterialsExpanded,
                       onExpansionChanged: (bool expanded) {
                         setState(() {
@@ -269,8 +270,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                     child: Text('Error: ${snapshot.error}'));
                               } else if (!snapshot.hasData ||
                                   snapshot.data!.isEmpty) {
-                                return const Center(
-                                    child: Text('No materials found'));
+                                return  Center(
+                                    child: Text(AppLocalizations.of(context)!.noMaterial));
                               } else {
                                 final materials = snapshot.data!;
                                 return Column(
@@ -326,7 +327,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           if (user != null && group.organizer.id == user.id)
                             ElevatedButton.icon(
                               icon: const Icon(Icons.add, size: 16.0),
-                              label: const Text("Add Material"),
+                              label:  Text(AppLocalizations.of(context)!.addMaterial),
                               onPressed: () {
                                 _showAddMaterialDialog(context);
                               },
@@ -338,7 +339,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const Divider(),
                     const SizedBox(height: 8.0),
                     CustomAccordion(
-                      title: "Members",
+                      title: AppLocalizations.of(context)!.members,
                       isExpanded: _isMembersExpanded,
                       onExpansionChanged: (bool expanded) {
                         setState(() {
@@ -379,7 +380,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const Divider(),
                     const SizedBox(height: 8.0),
                     CustomAccordion(
-                      title: 'Weather',
+                      title: AppLocalizations.of(context)!.weather,
                       isExpanded: _isWeatherExpanded,
                       onExpansionChanged: (bool expanded) {
                         setState(() {
@@ -412,7 +413,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       onPressed: () {
                         GoRouter.of(context).push('/group-chat/${group.id}');
                       },
-                      label: const Text('Group Chat'),
+                      label:  Text(AppLocalizations.of(context)!.groupChat),
                     ),
                   ],
                 ),

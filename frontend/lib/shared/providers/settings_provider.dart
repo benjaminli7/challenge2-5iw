@@ -24,7 +24,6 @@ class SettingsProvider with ChangeNotifier {
 
   void updateSettings(String token, Settings settings) {
     _configService.updateSettings(token, settings);
-    // if done successfully, update local settings
     _settings.weatherAPI = settings.weatherAPI;
     _settings.googleAPI = settings.googleAPI;
     notifyListeners();

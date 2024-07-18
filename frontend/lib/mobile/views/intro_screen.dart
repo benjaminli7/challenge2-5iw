@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class IntroPage extends StatelessWidget {
   @override
@@ -29,10 +30,10 @@ class IntroPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(
+                  text:  TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Discover new trails and adventures.\n',
+                        text: AppLocalizations.of(context)!.discover,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -40,7 +41,7 @@ class IntroPage extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: 'Join hiking groups and plan adventures',
+                        text: AppLocalizations.of(context)!.groupJoin,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -64,8 +65,8 @@ class IntroPage extends StatelessWidget {
                       ),
                       backgroundColor: Color(0xFF0000FF),
                     ),
-                    child: const Text(
-                      'Login',
+                    child:  Text(
+                      AppLocalizations.of(context)!.login,
                       style: TextStyle(color: Colors.white),
                     )),
               ],
