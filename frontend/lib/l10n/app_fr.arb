@@ -11,6 +11,7 @@
     "signInGoogle": "Connexion avec Google",
     "notAccount": "Pas de compte ? Inscription",
 
+    "notVerified": "Vous n'êtes pas vérifié",
     "signUpSuccess": "Inscription réussie",
     "signUpFailure": "Erreur d'inscription",
     "username": "Nom d'utilisateur",
@@ -53,7 +54,7 @@
      "isValide" : "Valide",
      "email": "Email",
 
-
+    "successCreateHike": "Randonnée créée avec succès",
   "createHike" : "Créer une randonnée",
   "enterNameHike": "S'il vous plaît entrer le nom de la randonnée",
   "nameHike50": "Le nom ne peut pas dépasser 50 caractères",
