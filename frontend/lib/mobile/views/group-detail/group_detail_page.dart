@@ -10,7 +10,11 @@ import 'package:frontend/shared/services/material_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+<<<<<<< HEAD
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+=======
+import 'package:frontend/shared/providers/settings_provider.dart';
+>>>>>>> develop
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
@@ -18,6 +22,7 @@ class GroupDetailPage extends StatefulWidget {
 
   @override
   State<GroupDetailPage> createState() => _GroupDetailPageState();
+  
 }
 
 class _GroupDetailPageState extends State<GroupDetailPage> {
@@ -29,11 +34,21 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   bool _isMaterialsExpanded = false;
   bool _isWeatherExpanded = false;
   bool _isMembersExpanded = false;
+  bool _isWeatherApiEnabled =  false;
   Group? _group;
+  late SettingsProvider _settingsProvider;
+  
+
+
+
 
   @override
+  
   void initState() {
     super.initState();
+      _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+      _settingsProvider.fetchSettings();
+      _isWeatherApiEnabled = _settingsProvider.settings.weatherAPI;
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
       _groupFuture = _groupService.getGroupById(user.token, widget.groupId);
@@ -379,18 +394,26 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     const SizedBox(height: 8.0),
                     const Divider(),
                     const SizedBox(height: 8.0),
-                    CustomAccordion(
-                      title: AppLocalizations.of(context)!.weather,
-                      isExpanded: _isWeatherExpanded,
-                      onExpansionChanged: (bool expanded) {
-                        setState(() {
-                          _isWeatherExpanded = expanded;
-                        });
-                      },
-                      content: WeatherWidget(group: group),
-                    ),
-                    const SizedBox(height: 8.0),
-                    const Divider(),
+                 _isWeatherApiEnabled
+                  ? Column(
+                      children: [
+                        CustomAccordion(
+                          title: AppLocalizations.of(context)!.weather,
+                          isExpanded: _isWeatherExpanded,
+                          onExpansionChanged: (bool expanded) {
+                            setState(() {
+                              _isWeatherExpanded = expanded;
+                            });
+                          },
+                          content: WeatherWidget(group: group),
+                        ),
+                        const SizedBox(height: 8.0),
+                        const Divider(),
+                      ],
+                    )
+
+                  : const SizedBox(),
+
                     const SizedBox(height: 8.0),
                     ListTile(
                         title: const Text('Photos',

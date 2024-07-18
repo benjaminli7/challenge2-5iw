@@ -35,7 +35,10 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.groups)),
+
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.groups)
+      ,centerTitle: true,
+      ),
       body: FutureBuilder<List<Group>>(
         future: _groupsFuture,
         builder: (context, snapshot) {

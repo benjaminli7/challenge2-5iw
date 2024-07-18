@@ -128,11 +128,16 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        setState(() {
+      print(googleUser);
+
+      if  (googleUser == null) {
+        setState(() { 
           _isLoading = false;
-        });
+        }); 
+
+
         Fluttertoast.showToast(
             msg: AppLocalizations.of(context)!.logInFailureGoogle2,
             toastLength: Toast.LENGTH_SHORT,

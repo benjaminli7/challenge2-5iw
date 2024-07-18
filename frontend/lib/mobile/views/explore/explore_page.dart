@@ -103,6 +103,7 @@ class _ExplorePageState extends State<ExplorePage> {
             letterSpacing: 0.55,
           ),
         ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
