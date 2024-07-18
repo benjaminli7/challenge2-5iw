@@ -12,6 +12,8 @@ import 'package:frontend/shared/services/material_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/shared/providers/settings_provider.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final int groupId;
