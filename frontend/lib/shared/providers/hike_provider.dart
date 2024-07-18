@@ -17,7 +17,7 @@ class HikeProvider with ChangeNotifier {
   Future<void> fetchHikes() async {
     try {
       final response = await ApiService().getHikes();
-      print('fetchHikes response: ${response.body}');
+      // print('fetchHikes response: ${response.body}');
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         _hikes = data.map((json) => Hike.fromJson(json)).toList();

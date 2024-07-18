@@ -218,6 +218,14 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                         _showAddMaterialDialog(context);
                       },
                     ),
+                  const SizedBox(height: 5.0),
+                  if (user != null && group.organizer.id == user.id)
+                    ElevatedButton(
+                      child: const Text("Edit Group"),
+                      onPressed: () {
+                        GoRouter.of(context).push('/group-users/${group.id}');
+                      },
+                    ),
                   const SizedBox(height: 16.0),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.chat, size: 16.0),

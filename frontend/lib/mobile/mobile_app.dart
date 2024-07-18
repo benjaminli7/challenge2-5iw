@@ -32,6 +32,7 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/mobile/views/group-detail/group_gestion_page.dart';
 
 void main() {
   runApp(const MyMobileApp());
@@ -144,6 +145,14 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             final groupId = int.parse(state.pathParameters['id']!);
             return GroupDetailPage(groupId: groupId);
+          },
+        ),
+        GoRoute(
+          name: "group-manager",
+          path: '/group-users/:id',
+          builder: (context, state) {
+            final groupId = int.parse(state.pathParameters['id']!);
+            return GroupGestionPage(groupId: groupId);
           },
         ),
         GoRoute(

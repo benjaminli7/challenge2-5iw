@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -323,4 +322,26 @@ func GetGroupMessages(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, messages)
+}
+
+func GetParticipants(c *gin.Context) {
+	groupIdParam := c.Param("id")
+
+	groupId, err := strconv.Atoi(groupIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid group ID"})
+		return
+	}
+
+	var group models.Group
+
+
+
+	err = db.DB.Preload("Users").Where("id = ?", groupId).First(&group).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch participants"})
+		return
+	}
+
+	c.JSON(http.StatusOK, group)
 }
