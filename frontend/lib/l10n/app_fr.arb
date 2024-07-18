@@ -17,7 +17,6 @@
     "alreadyRegister":"Déjà inscrit ? Connexion",
 
     "menu": "Menu",
-    "profileOf": "Profil de {email}!",
     "users" : "Utilisateurs",
     "hike" : "Randonnées",
     "settings":"Paramètres",
@@ -90,7 +89,7 @@
      "groups":"Groupes",
      "noGroupFound" :"Aucun groupe trouvé",
      "reviews":"Avis",
-     "viewReviews":"Voir les avis",
+     "viewReviews":"Avis",
      "joinGroup":"Rejoindre le groupe",
 
      "hikeReviews":"Avis sur la randonnée",

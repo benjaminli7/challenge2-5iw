@@ -71,15 +71,15 @@ class _CreateHikePageState extends State<CreateHikePage> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['gpx'], // Ensure no dot before the extension
+        allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result'); // Debug print
+      print('File picking result: $result');
 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}'); // Debug print
+          print('GPX file path: ${_gpxFile!.path}');
         });
       } else {
         print('No GPX file selected.');
@@ -98,7 +98,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
           setState(() {
             _gpxFile = File(result.files.single.path!);
             print(
-                'GPX file path with fallback: ${_gpxFile!.path}'); // Debug print
+                'GPX file path with fallback: ${_gpxFile!.path}');
           });
         } else {
           print('No file selected in fallback.');

@@ -1,13 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/shared/models/message.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class GroupChatPage extends StatefulWidget {
   final int groupId;
 
@@ -132,6 +134,15 @@ class _GroupChatPageState extends State<GroupChatPage> {
                         ),
                         child: Text(message.content),
                       ),
+                      // display timestamp of message
+                      Text(
+                        DateFormat("HH:mm").format(
+                            DateTime.parse(message.createdAt.toString())),
+                        style: const TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -145,8 +156,8 @@ class _GroupChatPageState extends State<GroupChatPage> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration:
-                         InputDecoration(hintText: AppLocalizations.of(context)!.enterMessage),
+                    decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.enterMessage),
                   ),
                 ),
                 IconButton(

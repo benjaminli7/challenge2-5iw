@@ -21,7 +21,8 @@ func SyncDatabase() {
 		&models.GroupUser{},
 		&models.Review{},
 		&models.Options{},
-		&models.Subscription{}); err != nil {
+		&models.Subscription{},
+		&models.GroupImage{}); err != nil {
 		panic("Failed to migrate database: " + err.Error())
 	}
 	DB.Model(&models.Hike{}).Association("Groups").Clear()
@@ -29,7 +30,7 @@ func SyncDatabase() {
 	fixtures()
 }
 
-func fixtures()  {
+func fixtures() {
 	initialData := []models.Options{
 		{GoogleAPI: true, WeatherAPI: false},
 	}
@@ -60,7 +61,7 @@ func importDataFromJSON[T any](filePath string, model *[]T) {
 	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
 		log.Printf("Failed to read JSON file %s: %v\n", filePath, err)
-		return 
+		return
 	}
 
 	err = json.Unmarshal(byteValue, model)
@@ -70,7 +71,7 @@ func importDataFromJSON[T any](filePath string, model *[]T) {
 	}
 
 	for _, data := range *model {
-		DB.Create(&data) 
+		DB.Create(&data)
 	}
 
 	fmt.Printf("Imported data from %s successfully\n", filePath)

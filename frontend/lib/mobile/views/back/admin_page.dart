@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -11,31 +11,30 @@ class AdminPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
-      appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.menu),
-        centerTitle: true,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            const SizedBox(height: 50),
+            const Center(
               child: Text(
-                AppLocalizations.of(context)!.profileOf(user?.email?? ''),
-                style: const TextStyle(fontSize: 24),
+                "Admin",
+                style: TextStyle(fontSize: 24),
               ),
             ),
             const SizedBox(height: 32),
-
             buildMenuBlock([
-              buildMenuItem(Icons.person, AppLocalizations.of(context)!.users, () {
+              buildMenuItem(Icons.person, AppLocalizations.of(context)!.users,
+                  () {
                 GoRouter.of(context).go('/admin/users');
               }),
-              buildMenuItem(Icons.hiking, AppLocalizations.of(context)!.hike, () {
+              buildMenuItem(Icons.hiking, AppLocalizations.of(context)!.hike,
+                  () {
                 GoRouter.of(context).go('/admin/hikes');
               }),
-              buildMenuItem(Icons.settings, AppLocalizations.of(context)!.settings, () {
+              buildMenuItem(
+                  Icons.settings, AppLocalizations.of(context)!.settings, () {
                 GoRouter.of(context).go('/admin/settings');
               }),
             ]),

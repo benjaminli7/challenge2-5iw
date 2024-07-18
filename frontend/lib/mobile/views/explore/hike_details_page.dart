@@ -1,7 +1,7 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/mobile/views/explore/widgets/open_runner.dart';
-import 'package:frontend/mobile/views/explore/widgets/review_widget.dart';
 import 'package:frontend/shared/models/group.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
@@ -67,7 +67,6 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
           ),
         );
         setState(() {
-          // Re-fetch groups to update the list after joining a group
           _groupsFuture = _groupService.fetchHikeGroups(
               user.token, widget.hike.id, user.id);
         });
@@ -145,6 +144,33 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                 ],
               ),
               const SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 16),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.description,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.hike.description,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               if (widget.hike.gpxFile.isNotEmpty)
                 Card(
                   elevation: 4,
@@ -156,20 +182,14 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   ),
                 ),
               const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.groups,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () => _selectDate(context),
+              Align(
+                alignment: Alignment.center,
                 child: Text(
-                  _selectedDate == null
-                      ? 'Select Date'
-                      : 'Selected Date: ${DateFormat('dd/MM/yyyy').format(_selectedDate!)}',
+                  AppLocalizations.of(context)!.groups,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -181,9 +201,16 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                        child:
-                            Text(AppLocalizations.of(context)!.noGroupFound));
+                    return CarouselSlider(
+                        items: [
+                          Center(
+                              child: Text(
+                                  AppLocalizations.of(context)!.noGroupFound))
+                        ],
+                        options: CarouselOptions(
+                          height: 200,
+                          enableInfiniteScroll: false,
+                        ));
                   } else {
                     List<Group> groups = snapshot.data!;
                     if (_selectedDate != null) {
@@ -193,67 +220,103 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                             group.startDate.isAfter(_selectedDate!);
                       }).toList();
                     }
-                    return Column(
-                      children: groups
-                          .map((group) => _buildGroupCard(group))
-                          .toList(),
+                    return CarouselSlider(
+                      options: CarouselOptions(
+                        height: 200,
+                        enableInfiniteScroll: false,
+                      ),
+                      items: groups.map((group) {
+                        int currentParticipants = group.users.length;
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              elevation: 5,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 10.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      group.name,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      DateFormat('dd/MM/yyyy')
+                                          .format(group.startDate),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      group.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            disabledBackgroundColor:
+                                                Colors.grey,
+                                            backgroundColor: Colors.green),
+                                        onPressed: currentParticipants ==
+                                                group.maxUsers
+                                            ? null
+                                            : () => _joinGroup(group),
+                                        child: Text(
+                                            '${AppLocalizations.of(context)!.joinGroup} ($currentParticipants/${group.maxUsers})',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
                     );
                   }
                 },
               ),
-              const Divider(),
-              Text(
-                AppLocalizations.of(context)!.reviews,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton.icon(
+                    onPressed: () {
+                      GoRouter.of(context)
+                          .go('/groups/create/${widget.hike.id}');
+                    },
+                    label: const Text("Créer un groupe"),
+                    icon: const Icon(Icons.add)),
               ),
-              const SizedBox(height: 16),
-              ReviewWidget(hikeId: widget.hike.id),
-              const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    GoRouter.of(context)
-                        .push('/hike/${widget.hike.id}/reviews');
-                  },
-                  child: Text(AppLocalizations.of(context)!.viewReviews),
+              const Divider(),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.viewReviews),
+                trailing: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.arrow_forward_ios),
+                  ],
                 ),
+                onTap: () {
+                  GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
+                },
               ),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          GoRouter.of(context).go('/groups/create/${widget.hike.id}');
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildGroupCard(Group group) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              group.organizer.email,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-                'Start Date: ${DateFormat('dd/MM/yyyy').format(group.startDate)}'),
-            const SizedBox(height: 8),
-            ElevatedButton(
-                onPressed: () => _joinGroup(group),
-                child: Text(AppLocalizations.of(context)!.joinGroup))
-          ],
         ),
       ),
     );

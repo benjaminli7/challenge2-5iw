@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -28,7 +28,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _changePassword() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final token = userProvider.user!.token;
-    final success = await userProvider.changePassword(token,
+    final success = await userProvider.changePassword(
+      token,
       _oldPasswordController.text,
       _newPasswordController.text,
     );
@@ -58,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     final String baseUrl = ConfigService.baseUrl;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -66,112 +66,137 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: user != null
           ? SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: user.profileImage != null
-                        ? NetworkImage('$baseUrl${user.profileImage}')
-                        : const AssetImage('assets/images/profile_placeholder.png')
-                    as ImageProvider,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    user.username ?? AppLocalizations.of(context)!.no_Username,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    user.email,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.history, color: Colors.blueAccent),
-                    title: Text(AppLocalizations.of(context)!.hike_History),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      GoRouter.of(context).go('/profile/hike-history');
-                    },
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.vpn_key, color: Colors.orange),
-                    title: Text(AppLocalizations.of(context)!.changePassword),
-                    trailing: Icon(_isChangingPassword ? Icons.expand_less : Icons.expand_more),
-                    onTap: () {
-                      setState(() {
-                        _isChangingPassword = !_isChangingPassword;
-                      });
-                    },
-                  ),
-                  if (_isChangingPassword) Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  Container(
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        TextField(
-                          controller: _oldPasswordController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.oldPassword,
-                          ),
-                          obscureText: true,
-                        ),
-                        TextField(
-                          controller: _newPasswordController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.newPassword,
-                          ),
-                          obscureText: true,
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: user.profileImage != null &&
+                                  user.profileImage != ''
+                              ? NetworkImage('$baseUrl${user.profileImage}')
+                              : null,
+                          child: user.profileImage == null ||
+                                  user.profileImage == ''
+                              ? Text(
+                                  user.username!.substring(0, 1).toUpperCase(),
+                                  style: const TextStyle(fontSize: 48.0),
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _changePassword,
-                          child: Text(AppLocalizations.of(context)!.changePassword),
+                        Text(
+                          user.username ??
+                              AppLocalizations.of(context)!.no_Username,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          user.email,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.logout, color: Colors.red),
-                    title: Text(AppLocalizations.of(context)!.signOut),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      Provider.of<UserProvider>(context, listen: false).clearUser();
-                      Fluttertoast.showToast(
-                        msg: AppLocalizations.of(context)!.disconnected,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                      );
-                      GoRouter.of(context).go('/login');
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.history,
+                              color: Colors.blueAccent),
+                          title:
+                              Text(AppLocalizations.of(context)!.hike_History),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () {
+                            GoRouter.of(context).go('/profile/hike-history');
+                          },
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading:
+                              const Icon(Icons.vpn_key, color: Colors.orange),
+                          title: Text(
+                              AppLocalizations.of(context)!.changePassword),
+                          trailing: Icon(
+                            _isChangingPassword
+                                ? Icons.expand_less
+                                : Icons.expand_more,
+                            size: 38,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              _isChangingPassword = !_isChangingPassword;
+                            });
+                          },
+                        ),
+                        if (_isChangingPassword)
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              children: [
+                                TextField(
+                                  controller: _oldPasswordController,
+                                  decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(context)!
+                                        .oldPassword,
+                                  ),
+                                  obscureText: true,
+                                ),
+                                TextField(
+                                  controller: _newPasswordController,
+                                  decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(context)!
+                                        .newPassword,
+                                  ),
+                                  obscureText: true,
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: _changePassword,
+                                  child: Text(AppLocalizations.of(context)!
+                                      .changePassword),
+                                ),
+                              ],
+                            ),
+                          ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.logout, color: Colors.red),
+                          title: Text(AppLocalizations.of(context)!.signOut),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () {
+                            Provider.of<UserProvider>(context, listen: false)
+                                .clearUser();
+                            Fluttertoast.showToast(
+                              msg: AppLocalizations.of(context)!.disconnected,
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.black,
+                              textColor: Colors.white,
+                            );
+                            GoRouter.of(context).go('/login');
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      )
-          : Center(child: Text(AppLocalizations.of(context)!.no_user_data_available)),
+            )
+          : Center(
+              child:
+                  Text(AppLocalizations.of(context)!.no_user_data_available)),
     );
   }
 }

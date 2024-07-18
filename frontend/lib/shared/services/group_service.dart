@@ -30,7 +30,7 @@ class GroupService {
   Future<http.Response> createGroup(
       Map<String, dynamic> groupData, hikeId, userId, token) async {
     final url = Uri.parse('$baseUrl/groups');
-
+    print(groupData['hikeDate']);
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -43,6 +43,7 @@ class GroupService {
         'name': groupData['name'],
         'description': groupData['description'],
         'organizer_id': userId,
+        'max_users': groupData['maxUsers'],
       }),
     );
 
