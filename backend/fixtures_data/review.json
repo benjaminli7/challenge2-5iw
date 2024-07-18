@@ -1,17 +1,20 @@
 [
     {
+        "ID" : 1,
         "Hike_id" : 1,
         "User_id" : 1,
         "Rating" : 5,
         "Comment" : "Superbe randonnée, à refaire !"
     },
     {
+        "ID" : 2,
         "Hike_id" : 2,
         "User_id" : 2,
         "Rating" : 4,
         "Comment" : "La randonnée était bien dommage que le temps n'était pas au rendez-vous."
     },
     {
+        "ID" : 3,
         "Hike_id" : 3,
         "User_id" : 3,
         "Rating" : 3,
@@ -19,6 +22,7 @@
     },
    
     {
+        "ID" : 4,
         "Hike_id" : 3,
         "User_id" : 2,
         "Rating" : 5,
