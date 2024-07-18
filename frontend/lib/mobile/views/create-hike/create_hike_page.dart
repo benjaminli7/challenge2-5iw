@@ -71,15 +71,15 @@ class _CreateHikePageState extends State<CreateHikePage> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['gpx'], // Ensure no dot before the extension
+        allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result'); // Debug print
+      print('File picking result: $result');
 
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}'); // Debug print
+          print('GPX file path: ${_gpxFile!.path}');
         });
       } else {
         print('No GPX file selected.');
@@ -97,8 +97,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print(
-                'GPX file path with fallback: ${_gpxFile!.path}'); // Debug print
+            print('GPX file path with fallback: ${_gpxFile!.path}');
           });
         } else {
           print('No file selected in fallback.');
@@ -227,6 +226,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                          duration: const Duration(seconds: 2),
                           content: Text(
                               AppLocalizations.of(context)!.processingData)),
                     );

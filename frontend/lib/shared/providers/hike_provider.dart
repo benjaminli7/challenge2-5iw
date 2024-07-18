@@ -17,7 +17,7 @@ class HikeProvider with ChangeNotifier {
   Future<void> fetchHikes() async {
     try {
       final response = await ApiService().getHikes();
-      print('fetchHikes response: ${response.body}');
+      // print('fetchHikes response: ${response.body}');
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         _hikes = data.map((json) => Hike.fromJson(json)).toList();
@@ -99,6 +99,7 @@ class HikeProvider with ChangeNotifier {
     try {
       final response = await ApiService().createReview(review);
       if (response.statusCode == 200) {
+        await fetchReviewsByHike(review.hikeId);
         print('Review created successfully');
       } else {
         print('Failed to create review_widget.dart: ${response.statusCode}');
@@ -113,6 +114,7 @@ class HikeProvider with ChangeNotifier {
       final response = await ApiService().updateReview(review);
       if (response.statusCode == 200) {
         await fetchHikes();
+        await fetchReviewsByHike(review.hikeId);
         print('Review updated successfully');
       } else {
         print('Failed to update review_widget.dart: ${response.statusCode}');

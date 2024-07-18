@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/models/hike.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
-import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
 import '../../../../shared/services/config_service.dart';
 
 class HikeCard extends StatefulWidget {
@@ -62,8 +62,7 @@ class _HikeCardState extends State<HikeCard> {
               child: Stack(
                 children: [
                   Image.network(
-                    Uri.parse("$baseUrl${widget.hike.image}")
-                        .toString(),
+                    Uri.parse("$baseUrl${widget.hike.image}").toString(),
                     fit: BoxFit.cover,
                   ),
                   Positioned(
@@ -82,8 +81,7 @@ class _HikeCardState extends State<HikeCard> {
                           isFavorite
                               ? Icons.notifications_active
                               : Icons.notifications_off,
-                          color:
-                          isFavorite ? Colors.redAccent : Colors.black26,
+                          color: isFavorite ? Colors.redAccent : Colors.black26,
                           size: 24.0,
                           key: ValueKey<bool>(isFavorite),
                         ),
@@ -105,16 +103,41 @@ class _HikeCardState extends State<HikeCard> {
                         fontSize: 13.0, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
+                  RichText(
+                    text: TextSpan(
+                      text: widget.hike.difficulty,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0,
+                      ),
+                      children: <TextSpan>[
+                        const TextSpan(text: ' - '),
+                        TextSpan(
+                          text: "${widget.hike.duration} hrs",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.hike.averageRating.toStringAsFixed(1),
-                        style: const TextStyle(
-                            fontSize: 13.0, fontWeight: FontWeight.bold),
+                      Icon(
+                        Icons.star,
+                        color: widget.hike.averageRating == 0
+                            ? Colors.grey
+                            : Colors.yellow[700],
+                        size: 16,
                       ),
+                      const SizedBox(width: 4),
+                      if (widget.hike.averageRating != 0)
+                        Text(
+                          widget.hike.averageRating.toStringAsFixed(1),
+                          style: const TextStyle(
+                              fontSize: 13.0, fontWeight: FontWeight.bold),
+                        ),
                     ],
                   ),
                 ],

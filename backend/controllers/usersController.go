@@ -5,14 +5,16 @@ import (
 	"backend/models"
 	"backend/services"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Signup godoc
@@ -65,7 +67,7 @@ func Signup(c *gin.Context) {
 		}
 		user.ProfileImage = "/avatar/" + filename
 	} else if err == http.ErrMissingFile {
-		user.ProfileImage = "/avatar/default_avatar.png"
+		user.ProfileImage = "";
 	} else {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
@@ -133,11 +135,14 @@ func Login(c *gin.Context) {
 				return
 			}
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"sub":      user.ID,
-				"exp":      time.Now().Add(time.Hour * 24 * 30).Unix(),
-				"email":    user.Email,
-				"roles":    user.Role,
-				"verified": user.IsVerified,
+				"sub":       user.ID,
+				"exp":       time.Now().Add(time.Hour * 24 * 30).Unix(),
+				"email":     user.Email,
+				"roles":     user.Role,
+				"verified":  user.IsVerified,
+				"fcm_token": user.FcmToken,
+				"profile_image": user.ProfileImage,
+
 			})
 
 			secret := os.Getenv("SECRET")
@@ -181,6 +186,8 @@ func Login(c *gin.Context) {
 		"roles":    user.Role,
 		"verified": user.IsVerified,
 		"username": user.Username,
+		"profile_image": user.ProfileImage,
+
 	})
 
 	secret := os.Getenv("SECRET")
@@ -381,13 +388,10 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "User updated successfully"})
 }
 
+
 // UpdatePassword godoc
 // @Summary Update user password
 // @Description Update the password of a user
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
 // @Param body body models.PasswordUpdate true "User password update"
 // @Success 200 {object} models.SuccessResponse
 // @Failure 400 {object} models.ErrorResponse
@@ -409,7 +413,6 @@ func UpdatePassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
 		return
 	}
-
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.OldPassword))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Old password is incorrect"})
@@ -429,4 +432,45 @@ func UpdatePassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Password updated successfully"})
+
+}
+
+
+// UpdateFcmToken godoc
+// @Summary Update user FCM token
+// @Description Update the FCM token of a user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param body body models.User.fcmToken true "User FCM token"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /users/{id}/fcmToken [patch]
+func UpdateFcmToken(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var user models.User
+	if err := db.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "User not found"})
+		return
+	}
+
+	// get fcm token from request body
+	var body struct {
+		FcmToken string `json:"fcm_token"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to read body"})
+		return
+	}
+
+	// update user's fcm token
+	user.FcmToken = body.FcmToken
+	if err := db.DB.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to update user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "FCM token updated successfully"})
+
 }

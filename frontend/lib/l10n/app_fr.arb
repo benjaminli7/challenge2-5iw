@@ -17,7 +17,6 @@
     "alreadyRegister":"Déjà inscrit ? Connexion",
 
     "menu": "Menu",
-    "profileOf": "Profil de {email}!",
     "users" : "Utilisateurs",
     "hike" : "Randonnées",
     "settings":"Paramètres",
@@ -90,7 +89,7 @@
      "groups":"Groupes",
      "noGroupFound" :"Aucun groupe trouvé",
      "reviews":"Avis",
-     "viewReviews":"Voir les avis",
+     "viewReviews":"Avis",
      "joinGroup":"Rejoindre le groupe",
 
      "hikeReviews":"Avis sur la randonnée",
@@ -127,6 +126,8 @@
     "newPassword": "Nouveau mot de passe",
     "enterNewPassword" : "Entrez le nouveau mot de passe",
     "passwordChanged" : "Mot de passe modifié",
-    "passwordChangeFailed" : "Changement de mot de passe échoué"
+    "passwordChangeFailed" : "Changement de mot de passe échoué",
+
+    "creat_Group" : "Créer un groupe"
 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/mobile/views/groups/widgets/hike_details_section.dart';
 import 'package:frontend/mobile/views/groups/widgets/select_hike_date_section.dart';
 import 'package:frontend/shared/models/hike.dart';
@@ -20,7 +21,6 @@ class CreateGroupPage extends StatelessWidget {
     final groupService = GroupService();
 
     try {
-      print(groupData["name"]);
       if (groupData['name'] == null || groupData['name'] == '') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Group name is required')),
@@ -34,7 +34,9 @@ class CreateGroupPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Group created successfully!')),
         );
-        GoRouter.of(context).push('/groups');
+        GoRouter.of(context).go('/groups');
+        // change  bottom navigation active tem to /groups
+        
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create group: ${response.body}')),
@@ -86,6 +88,21 @@ class CreateGroupPage extends StatelessWidget {
                 onChanged: (value) {
                   Provider.of<GroupProvider>(context, listen: false)
                       .setGroupDescription(value);
+                },
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Max number of participants',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  Provider.of<GroupProvider>(context, listen: false)
+                      .setMaxUsers(int.parse(value));
                 },
               ),
               const SizedBox(height: 20),
