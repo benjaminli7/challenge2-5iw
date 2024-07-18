@@ -63,6 +63,10 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  void setFcmToken(String fcmToken) {
+    user!.fcmToken = fcmToken;
+  }
+
   Future<bool> changePassword(String token, String oldPassword, String newPassword) async {
     if (_user != null) {
       try {

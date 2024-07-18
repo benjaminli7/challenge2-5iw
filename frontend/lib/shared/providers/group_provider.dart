@@ -5,6 +5,7 @@ class GroupProvider with ChangeNotifier {
   DateTime? hikeDate;
   String groupName = '';
   String groupDescription = '';
+  int maxUsers = 0;
 
   Map<String, dynamic> collectGroupData() {
     final DateFormat formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -13,6 +14,7 @@ class GroupProvider with ChangeNotifier {
       'name': groupName,
       'description': groupDescription,
       'hikeDate': hikeDate != null ? formatter.format(hikeDate!) : null,
+      'maxUsers': maxUsers
     };
   }
 
@@ -23,6 +25,11 @@ class GroupProvider with ChangeNotifier {
 
   void setGroupName(String name) {
     groupName = name;
+    notifyListeners();
+  }
+
+  void setMaxUsers(int maxParticipants) {
+    maxUsers = maxParticipants;
     notifyListeners();
   }
 

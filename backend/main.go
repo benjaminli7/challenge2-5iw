@@ -3,8 +3,13 @@ package main
 import (
 	"backend/controllers"
 	"backend/db"
+	"fmt"
+	"net/http"
+
+	// import the firebase service
 	_ "backend/docs"
 	middleware "backend/middleware"
+	"backend/services"
 	"log"
 	"net"
 	"os"
@@ -47,6 +52,9 @@ func init() {
 
 	db.ConnectToDb()
 	db.SyncDatabase()
+
+	services.InitFirebase()
+
 }
 
 func main() {
@@ -80,6 +88,8 @@ func main() {
 	r.DELETE("/users/:id", middleware.RequireAuth(true), controllers.DeleteUser)
 	r.PUT("/users/:id", controllers.UpdateUser)
 	r.GET("/users/me", controllers.GetUserProfile)
+
+	r.PATCH("/users/:id/fcmToken", middleware.RequireAuth(false), controllers.UpdateFcmToken)
 	r.PATCH("/users/:id/password", middleware.RequireAuth(false), controllers.UpdatePassword)
 	// Hike routes
 	r.POST("/hikes", controllers.CreateHike)
@@ -129,8 +139,34 @@ func main() {
 	r.GET("/options", controllers.GetOptions)
 	r.PATCH("/options", middleware.RequireAuth(true), controllers.UpdateOptions)
 
+	// Test notification
+	r.POST("/test-notif", func(c *gin.Context) {
+		var body map[string]string
+		if err := c.BindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		fcmToken := body["fcmToken"]
+		title := body["title"]
+		bodyMessage := body["body"]
+		route := body["route"]
+		fmt.Println(fcmToken, title, bodyMessage, route)
+		// Send notification and handle errors
+		err := services.SendNotification(c, fcmToken, title, bodyMessage, route)
+		if err != nil {
+			log.Printf("Error sending notification: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send notification"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Notification sent"})
+	})
+
 	err := r.Run()
 	if err != nil {
 		logger.Fatal(err)
 	}
+	// send test notification
+	// services.SendNotification(context.Background(), "fcmToken", "title", "body", "route")
 }
