@@ -33,7 +33,6 @@ import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/mobile/views/group-detail/group_gestion_page.dart';
 import 'package:frontend/shared/widgets/notification_page.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:frontend/firebase_options.dart';
@@ -170,14 +169,7 @@ final GoRouter _router = GoRouter(
             return GroupDetailPage(groupId: groupId);
           },
         ),
-        GoRoute(
-          name: "group-manager",
-          path: '/group-users/:id',
-          builder: (context, state) {
-            final groupId = int.parse(state.pathParameters['id']!);
-            return GroupGestionPage(groupId: groupId);
-          },
-        ),
+
         GoRoute(
           name: "group-chat",
           path: '/group-chat/:id',
