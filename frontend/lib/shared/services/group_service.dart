@@ -42,6 +42,7 @@ class GroupService {
         'name': groupData['name'],
         'description': groupData['description'],
         'organizer_id': userId,
+        'max_users': groupData['maxUsers'],
       }),
     );
 
