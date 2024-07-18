@@ -24,26 +24,32 @@ Future<void> main() async {
     print("Error loading .env file: $e");
     // Handle error loading dotenv file (optional)
   }
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseService().initNotifications();
 
-  final token = await FirebaseMessaging.instance.getToken();
-  print('FCM Token: $token');
-  if (prefs.containsKey('fcmToken') && prefs.getString('fcmToken') != token) {
-    prefs.setString('fcmToken', token!);
-    print('FCM Token updated : $prefs.getString("fcmToken")');
-  } else if (!prefs.containsKey('fcmToken')) {
-    print('FCM Token added : $token');
-    prefs.setString('fcmToken', token!);
-  } else {
-    var fcmToken = prefs.getString('fcmToken');
-    print('FCM Token already exists : $fcmToken');
+  // check the current device 
+  RemoteMessage? initialMessage;
+  if (!kIsWeb) {
+    
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+      await FirebaseService().initNotifications();
+
+      final token = await FirebaseMessaging.instance.getToken();
+      print('FCM Token: $token');
+      if (prefs.containsKey('fcmToken') && prefs.getString('fcmToken') != token) {
+        prefs.setString('fcmToken', token!);
+        print('FCM Token updated : $prefs.getString("fcmToken")');
+      } else if (!prefs.containsKey('fcmToken')) {
+        print('FCM Token added : $token');
+        prefs.setString('fcmToken', token!);
+      } else {
+        var fcmToken = prefs.getString('fcmToken');
+        print('FCM Token already exists : $fcmToken');
+      }
+
+      setupFirebaseMessagingHandlers();
+
+      initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
   }
-
-  setupFirebaseMessagingHandlers();
-
-  RemoteMessage? initialMessage =
-      await FirebaseMessaging.instance.getInitialMessage();
 
   runApp(
     MultiProvider(

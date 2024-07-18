@@ -45,6 +45,13 @@ func CreateHike(c *gin.Context) {
 	}
 	hike.OrganizerID = uint(organizerID)
 	hike.Difficulty = c.PostForm("difficulty")
+	//
+	hike.Lng = c.PostForm("lng")
+	hike.Lat = c.PostForm("lat")
+	// print the type of hike.Lng and hike.Lat
+	fmt.Println("hike.Lng", hike.Lng, "type", fmt.Sprintf("%T", hike.Lng))
+	fmt.Println("hike.Lat", hike.Lat, "type", fmt.Sprintf("%T", hike.Lat))
+
 	hike.Duration, _ = strconv.Atoi(c.PostForm("duration"))
 	isApproved, err := strconv.ParseBool(c.PostForm("is_approved"))
 	if err != nil {
@@ -88,10 +95,12 @@ func CreateHike(c *gin.Context) {
 	// Validate the hike struct
 	if err := validate.Struct(hike); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		fmt.Println(err)
 		return
 	}
 
 	if err := db.DB.Create(&hike).Error; err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}

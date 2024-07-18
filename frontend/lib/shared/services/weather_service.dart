@@ -18,17 +18,15 @@ class WeatherService {
 
   Future<List<Weather>> getWeather(Group group) async {
     try {
-      // Fetch GPX data from the provided URL
-      final response =
-          await http.get(Uri.parse('$baseUrl${group.hike.gpxFile}'));
-      final points = await HikeProvider().parseGPX(response.body);
-
-      // Extract coordinates from the first point
-      final point = points.first;
+   
+      double latitude = double.parse(group.hike.lat);
+      double longitude = double.parse(group.hike.lng);
+    
 
       // Fetch 5-day forecast data
       List<Weather> forecast = await _weatherFactory.fiveDayForecastByLocation(
-          point.latitude, point.longitude);
+          latitude, longitude
+      );
 
       // Filter to keep only the first forecast of each day
       forecast = _filterDailyForecasts(forecast);

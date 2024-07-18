@@ -41,7 +41,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
       print('Weather API enabled: $useWeatherAPI');
 
-      // Check if weatherAPI setting is enabled before fetching weather data
       if (useWeatherAPI) {
         final forecast = await ws.getWeather(widget.group);
         setState(() {
@@ -49,7 +48,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           _state = AppState.FINISHED_DOWNLOADING;
         });
       } else {
-        // Weather API is disabled in settings
         setState(() {
           _state = AppState.NOT_DOWNLOADED;
         });
@@ -62,7 +60,9 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   }
 
   Widget contentFinishedDownload() {
-    return WeatherForecast(data: _data);
+    return 
+    
+    WeatherForecast(data: _data);
   }
 
   Widget contentDownloading() {

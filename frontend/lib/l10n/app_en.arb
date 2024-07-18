@@ -115,7 +115,7 @@
     "no_Hikes_history_found" : "No hikes history found",
 
     "lower" : "Lower",
-    "hightest" : "Hightest",
+    "hightest" : "Highest",
     "sort_by_Rating" : "Sort by rating",
     "sort_by_Difficulty" : "Sort by difficulty",
     "sort_by_Duration" : "Sort by duration",
@@ -126,10 +126,6 @@
     "newPassword" : "New Password",
     "enterNewPassword" : "Enter new password",
     "passwordChanged" : "Password changed",
-    "passwordChangeFailed" : "Password change failed"
-
-
-
-
-
+    "passwordChangeFailed" : "Password change failed",
+    "creat_Group" : "Creat Group"
 }

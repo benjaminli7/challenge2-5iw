@@ -12,6 +12,8 @@ class HikesPage extends StatefulWidget {
 }
 
 class _HikesPageState extends State<HikesPage> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -35,36 +37,43 @@ class _HikesPageState extends State<HikesPage> {
             child: Container(
               padding: const EdgeInsets.all(16.0),
               constraints: BoxConstraints(maxWidth: 800),
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Duration')),
-                  DataColumn(label: Text('Difficulty')),
-                  DataColumn(label: Text('IsApproved')),
-                ],
-                rows: hikeProvider.hikes.map((hike) {
-                  return DataRow(cells: [
-                    DataCell(
-                      GestureDetector(
-                        onTap: () {
-                          context.go('/hike/${hike.id}');
-                        },
-                        child: Text(
-                          hike.name,
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+              child: Scrollbar(
+                controller: _scrollController,
+                trackVisibility: true,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text('Name')),
+                      DataColumn(label: Text('Description')),
+                      DataColumn(label: Text('Duration')),
+                      DataColumn(label: Text('Difficulty')),
+                      DataColumn(label: Text('IsApproved')),
+                    ],
+                    rows: hikeProvider.hikes.map((hike) {
+                      return DataRow(cells: [
+                        DataCell(
+                          GestureDetector(
+                            onTap: () {
+                              context.go('/hike/${hike.id}');
+                            },
+                            child: Text(
+                              hike.name,
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    DataCell(Text(hike.description)),
-                    DataCell(Text(hike.duration.toString())),
-                    DataCell(Text(hike.difficulty)),
-                    DataCell(Text(hike.isApproved.toString())),
-                  ]);
-                }).toList(),
+                        DataCell(Text(hike.description)),
+                        DataCell(Text(hike.duration.toString())),
+                        DataCell(Text(hike.difficulty)),
+                        DataCell(Text(hike.isApproved.toString())),
+                      ]);
+                    }).toList(),
+                  ),
+                ),
               ),
             ),
           );

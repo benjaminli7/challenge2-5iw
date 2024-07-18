@@ -15,8 +15,7 @@ import '../../../shared/services/config_service.dart';
 class HikeDetailsExplorePage extends StatefulWidget {
   final Hike hike;
 
-  const HikeDetailsExplorePage({Key? key, required this.hike})
-      : super(key: key);
+  const HikeDetailsExplorePage({super.key, required this.hike});
 
   @override
   _HikeDetailsExplorePageState createState() => _HikeDetailsExplorePageState();
@@ -299,18 +298,28 @@ class _HikeDetailsExplorePageState extends State<HikeDetailsExplorePage> {
                       GoRouter.of(context)
                           .go('/groups/create/${widget.hike.id}');
                     },
-                    label: const Text("Créer un groupe"),
+                    label: Text(AppLocalizations.of(context)!.creat_Group),
                     icon: const Icon(Icons.add)),
               ),
               const Divider(),
               ListTile(
-                title: Text(AppLocalizations.of(context)!.viewReviews),
-                trailing: const Row(
-                  mainAxisSize: MainAxisSize.min,
+                title: Row(
                   children: [
-                    Icon(Icons.arrow_forward_ios),
+                    Text(AppLocalizations.of(context)!.viewReviews),
+                    const SizedBox(width: 8),
+                    Icon(Icons.star, color: widget.hike.averageRating == 0 ? Colors.grey : Colors.yellow[700]),
+                    const SizedBox(width: 4),
+                    if (widget.hike.averageRating != 0)
+                      Text(
+                        widget.hike.averageRating.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                   ],
                 ),
+                trailing:  const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   GoRouter.of(context).push('/hike/${widget.hike.id}/reviews');
                 },

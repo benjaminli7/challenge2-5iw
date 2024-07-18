@@ -7,8 +7,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
+import 'package:google_places_autocomplete_text_field/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
@@ -18,14 +21,19 @@ class CreateHikePage extends StatefulWidget {
 }
 
 class _CreateHikePageState extends State<CreateHikePage> {
+  final API_KEY = dotenv.env['LOC_API_URL'];
+
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _mapsController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _difficulty = 'Easy';
   final _durationController = TextEditingController();
   final ApiService _apiService = ApiService();
   File? _image;
   File? _gpxFile;
+  final _lat= TextEditingController();
+  final _lng= TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
 
@@ -39,6 +47,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
+        'lat':  _lat.text,
+        'lng': _lng.text,
       };
 
       await _apiService.createHike(
@@ -49,6 +59,9 @@ class _CreateHikePageState extends State<CreateHikePage> {
         hike['duration'],
         hike['image'],
         hike['gpx_file'],
+        hike['lat'],
+        hike['lng'],
+        user.token
       );
 
       GoRouter.of(context).push('/explore');
@@ -97,8 +110,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print(
-                'GPX file path with fallback: ${_gpxFile!.path}');
+            print('GPX file path with fallback: ${_gpxFile!.path}');
           });
         } else {
           print('No file selected in fallback.');
@@ -114,6 +126,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
     _nameController.dispose();
     _descriptionController.dispose();
     _durationController.dispose();
+    _lat.dispose();
+    _lng.dispose();
     super.dispose();
   }
 
@@ -203,6 +217,27 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   return null;
                 },
               ),
+              GooglePlacesAutoCompleteTextFormField(
+                  textEditingController: _mapsController,
+                  googleAPIKey: API_KEY!,
+                  debounceTime: 400,
+                  isLatLngRequired:
+                      true,
+                  getPlaceDetailWithLatLng: (prediction) {
+                    print("Coordinates: (${prediction.lat},${prediction.lng})");
+                    _lat.text = prediction.lat.toString();
+                    _lng.text = prediction.lng.toString();
+                  },
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your address',
+                    labelText: 'Address',
+                  ),
+                  itmClick: (Prediction prediction) {
+                    _mapsController.text = prediction.description.toString();
+                    _mapsController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: prediction.description!.length));
+                  }),
               const SizedBox(height: 20),
               _image == null
                   ? Text(AppLocalizations.of(context)!.noImage)
@@ -227,6 +262,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                          duration: const Duration(seconds: 2),
                           content: Text(
                               AppLocalizations.of(context)!.processingData)),
                     );
