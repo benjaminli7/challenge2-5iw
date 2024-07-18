@@ -141,7 +141,35 @@ func GetMyGroups(c *gin.Context) {
 	var groups []models.Group
 	today := time.Now().Format("2006-01-02")
 
-	fmt.Printf(today)
+	err = db.DB.Preload("Hike").Preload("Users").Preload("Organizer").Preload("GroupImages").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date >= ?", today).Find(&groups).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, groups)
+}
+
+// GetMyGroupsHistory godoc
+// @Summary Get groups by user ID
+// @Description Get groups by user ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/user/{id} [get]
+func GetMyGroupsHistory(c *gin.Context) {
+	userIdParam := c.Param("id")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var groups []models.Group
+	today := time.Now().Format("2006-01-02")
 
 	err = db.DB.Preload("Hike").Preload("Users").Preload("Organizer").Preload("GroupImages").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date < ?", today).Find(&groups).Error
 	if err != nil {

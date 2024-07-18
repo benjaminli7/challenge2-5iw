@@ -113,6 +113,7 @@ func main() {
 	r.POST("/groups", middleware.RequireAuth(false), controllers.CreateGroup)
 	r.POST("/groups/join", middleware.RequireAuth(false), controllers.JoinGroup)
 	r.GET("/groups/user/:id", middleware.RequireAuth(false), controllers.GetMyGroups)
+	r.GET("/groups/user/:id/history", middleware.RequireAuth(false), controllers.GetMyGroupsHistory)
 	r.GET("/groups/:id", middleware.RequireAuth(false), controllers.GetGroup)
 	r.GET("/groups", middleware.RequireAuth(true), controllers.GetGroups)
 	r.GET("/groups/hike/:id/:userId", middleware.RequireAuth(false), controllers.GetGroupsByHike)
@@ -127,7 +128,6 @@ func main() {
 	r.DELETE("/albums/:image_id", middleware.RequireAuth(false), controllers.DeleteGroupImage)
 	r.GET("/groups/:id/photos", middleware.RequireAuth(false), controllers.GetGroupPhotos)
 	// r.GET("/groups/:id/albums", controllers.GetGroupImages)
-
 
 	// Review routes
 	r.POST("/reviews", middleware.RequireAuth(false), controllers.CreateReview)

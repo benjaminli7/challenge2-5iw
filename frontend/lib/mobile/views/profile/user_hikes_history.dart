@@ -27,7 +27,7 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      _groupsFuture = _groupService.fetchMyGroups(user.token, user.id, past: true);
+      _groupsFuture = _groupService.fetchMyGroupsHistory(user.token, user.id, past: true);
     } else {
       _groupsFuture = Future.error('User not logged in');
     }
