@@ -70,6 +70,27 @@ class GroupService {
     }
   }
 
+  Future<List<Group>> fetchMyGroupsHistory(String token, int userId, {bool past = false}) async {
+    final url = Uri.parse('$baseUrl/groups/user/$userId/history');
+
+    final response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> groupList = json.decode(response.body);
+      if (groupList == null) {
+        return [];
+      }
+      return groupList.map((json) => Group.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load groups');
+    }
+  }
+
   Future<List<Group>> fetchHikeGroups(
       String token, int hikeId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
