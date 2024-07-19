@@ -5,10 +5,12 @@ import (
 	"backend/models"
 	"backend/services"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -123,7 +125,14 @@ func Login(c *gin.Context) {
 				return
 			}
 
-			user = models.User{Email: body.Email,Password: string(hash), Role: "user", IsVerified: true}
+			atIndex := strings.Index(body.Email, "@")
+			localPart := body.Email[:atIndex]
+			rand.Seed(time.Now().UnixNano())
+			randomNumber := rand.Intn(9000) + 1000 // Generate a random number between 1000 and 9999
+
+			username := fmt.Sprintf("%s%d", localPart, randomNumber)
+
+			user = models.User{Email: body.Email,Password: string(hash), Username: username, Role: "user", IsVerified: true}
 			result := db.DB.Create(&user)
 			if result.Error != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
@@ -139,7 +148,7 @@ func Login(c *gin.Context) {
 				"verified":  user.IsVerified,
 				"fcm_token": user.FcmToken,
 				"profile_image": user.ProfileImage,
-
+				"username": user.Username,
 			})
 
 			secret := os.Getenv("SECRET")
