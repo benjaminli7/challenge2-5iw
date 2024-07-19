@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user != null) {
-      _groupsFuture = _groupService.fetchMyGroups(user.token, user.id);
+      _groupsFuture = _groupService.fetchMyGroupsHistory(user.token, user.id, past: true);
     } else {
       _groupsFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
     }
@@ -44,36 +45,28 @@ class _UserHikeHistoryState extends State<UserHikeHistory> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return  Center(child: Text(AppLocalizations.of(context)!.no_groups_found));
+            return Center(child: Text(AppLocalizations.of(context)!.no_groups_found));
           } else {
-            final currentDate = DateTime.now();
-            final groups = snapshot.data!
-                .where((group) => group.startDate.isBefore(currentDate))
-                .toList();
-            if (groups.isEmpty) {
-              return Center(child: Text(AppLocalizations.of(context)!.no_Hikes_history_found));
-            } else {
-              return ListView.builder(
-                itemCount: groups.length,
-                itemBuilder: (context, index) {
-                  final group = groups[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        Uri.parse(
-                                "${dotenv.env['BASE_URL']}${group.hike.image}")
-                            .toString(),
-                      ),
-                      radius: 30,
+            final groups = snapshot.data!;
+            return ListView.builder(
+              itemCount: groups.length,
+              itemBuilder: (context, index) {
+                final group = groups[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                      Uri.parse("${dotenv.env['BASE_URL']}${group.hike.image}").toString(),
                     ),
-                    title: Text(group.hike.name),
-                    subtitle:
-                        Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
-                    onTap: () {},
-                  );
-                },
-              );
-            }
+                    radius: 30,
+                  ),
+                  title: Text(group.hike.name),
+                  subtitle: Text(DateFormat('dd/MM/yyyy').format(group.startDate)),
+                  onTap: () {
+                    GoRouter.of(context).push('/group/${group.id}/photos');
+                  },
+                );
+              },
+            );
           }
         },
       ),
