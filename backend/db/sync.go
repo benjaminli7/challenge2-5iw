@@ -42,11 +42,11 @@ func fixtures() {
 			DB.Create(&data)
 		}
 	}
-	importDataFromJSON("fixtures_data/users.json", &[]models.User{})
-	importDataFromJSON("fixtures_data/hikes.json", &[]models.Hike{})
-	importDataFromJSON("fixtures_data/group.json", &[]models.Group{})
-	importDataFromJSON("fixtures_data/groupUser.json", &[]models.GroupUser{})
-	importDataFromJSON("fixtures_data/review.json", &[]models.Review{})
+	//importDataFromJSON("fixtures_data/users.json", &[]models.User{})
+	//importDataFromJSON("fixtures_data/hikes.json", &[]models.Hike{})
+	//importDataFromJSON("fixtures_data/group.json", &[]models.Group{})
+	//importDataFromJSON("fixtures_data/groupUser.json", &[]models.GroupUser{})
+	//importDataFromJSON("fixtures_data/review.json", &[]models.Review{})
 
 }
 
