@@ -67,7 +67,6 @@ class WeatherCard extends StatelessWidget {
 
   String _getFormattedDate(DateTime? date) {
     if (date == null) return 'Date N/A';
-    // Format the date to be more readable Monday, 1 January 2021
     return DateFormat.yMMMMd('en_US').format(date);
   }
 }

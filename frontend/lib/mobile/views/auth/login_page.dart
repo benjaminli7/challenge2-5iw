@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final ApiService _apiService = ApiService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  bool _isLoading = false; // Loading state
+  bool _isLoading = false;
   String _fcmToken = "";
 
   @override
@@ -53,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
 
     if (token != null) {
-      print(token);
       Map<String, dynamic> parseJwt = jsonDecode(
         ascii.decode(base64.decode(base64.normalize(token.split('.')[1]))),
       );
@@ -73,28 +72,21 @@ class _LoginPageState extends State<LoginPage> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         _fcmToken = prefs.getString('fcmToken')!;
 
-        //if fcm token is not set, set it
         if ((parseJwt['fcm_token'] == null || parseJwt['fcm_token'] == "") &&
                 _fcmToken != "" ||
             parseJwt['fcm_token'] != _fcmToken) {
-          print("Depuis le loging de base : $_fcmToken ");
           final response = await _apiService.setFcmToken(
               Provider.of<UserProvider>(context, listen: false).user!.id,
               _fcmToken,
               Provider.of<UserProvider>(context, listen: false).user!.token);
 
           if (response.statusCode == 200) {
-            // set fcm token on the user object
             Provider.of<UserProvider>(context, listen: false)
                 .setFcmToken(_fcmToken);
-            print(_fcmToken);
-            print('fcm token set');
-          } else {
-            print('failed to set fcm token');
           }
         }
         Fluttertoast.showToast(
-          msg: 'Login successful',
+          msg: AppLocalizations.of(context)!.logInSuccess,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -105,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
         GoRouter.of(context).go('/explore');
       } else {
         Fluttertoast.showToast(
-          msg: 'You are not verified',
+          msg: AppLocalizations.of(context)!.logInFailure,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -113,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
-        print('You are not verified');
       }
     } else {
       Fluttertoast.showToast(
@@ -125,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Login failed');
     }
   }
 
@@ -136,10 +126,13 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      print(googleUser);
+
       if (googleUser == null) {
         setState(() {
           _isLoading = false;
         });
+
         Fluttertoast.showToast(
             msg: AppLocalizations.of(context)!.logInFailureGoogle2,
             toastLength: Toast.LENGTH_SHORT,
@@ -153,8 +146,6 @@ class _LoginPageState extends State<LoginPage> {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-          print (googleUser);
-      // login process
       final String? token = await _apiService.login(
         googleUser.email,
         "",
@@ -178,28 +169,21 @@ class _LoginPageState extends State<LoginPage> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         _fcmToken = prefs.getString('fcmToken')!;
 
-        //if fcm token is not set, set it
         if ((parseJwt['fcm_token'] == null || parseJwt['fcm_token'] == "") &&
                 _fcmToken != "" ||
             parseJwt['fcm_token'] != _fcmToken) {
-          print("Depuis le loging google : $_fcmToken ");
           final response = await _apiService.setFcmToken(
               Provider.of<UserProvider>(context, listen: false).user!.id,
               _fcmToken,
               Provider.of<UserProvider>(context, listen: false).user!.token);
           if (response.statusCode == 200) {
-            // set fcm token on the user object
             Provider.of<UserProvider>(context, listen: false)
                 .setFcmToken(_fcmToken);
-            print(_fcmToken);
-            print('fcm token set');
-          } else {
-            print('failed to set fcm token');
           }
         }
 
         Fluttertoast.showToast(
-          msg: 'Connected with Google',
+          msg: AppLocalizations.of(context)!.connectedGoogle,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -210,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
         GoRouter.of(context).go('/explore');
       } else {
         Fluttertoast.showToast(
-          msg: 'You are not verified',
+          msg: AppLocalizations.of(context)!.notVerified,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -253,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.login,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                   ),
                 ),
@@ -269,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _login,
                   child: Text(AppLocalizations.of(context)!.login,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -289,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.connectedGoogle,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,

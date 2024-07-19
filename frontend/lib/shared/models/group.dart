@@ -40,11 +40,8 @@ class Group {
       organizer: User.fromJson(json['organizer']),
       name: json['name'],
       maxUsers: json['max_users'],
-      users:
-          (json['Users'] as List).map((user) => User.fromJson(user)).toList(),
-      groupImages: (json['group_images'] as List)
-          .map((e) => GroupImage.fromJson(e))
-          .toList(),
+      users: (json['Users'] as List<dynamic>?)?.map((user) => User.fromJson(user)).toList() ?? [],
+      groupImages: (json['group_images'] as List<dynamic>?)?.map((e) => GroupImage.fromJson(e)).toList() ?? [],
     );
   }
 }

@@ -11,11 +11,16 @@
     "signInGoogle": "Connexion avec Google",
     "notAccount": "Pas de compte ? Inscription",
 
+    "notVerified": "Vous n'êtes pas vérifié",
     "signUpSuccess": "Inscription réussie",
     "signUpFailure": "Erreur d'inscription",
+    "username": "Nom d'utilisateur",
     "signUp": "Inscription",
     "alreadyRegister":"Déjà inscrit ? Connexion",
+    "noAvatar":"Pas d'avatar",
+    "uploadAvatar":"Télécharger un avatar",
 
+    "admin": "Administrateur",
     "menu": "Menu",
     "users" : "Utilisateurs",
     "hike" : "Randonnées",
@@ -27,7 +32,9 @@
      "hikeDifficulty": "Difficulté {difficulty}",
      "hikeDuration": "Durée {duration}",
      "hikeValidation" : "Validée",
-
+        "enterAdress" : "S'il vous plaît entrer l'adresse",
+    "adress" : "Adresse",
+    "search" : "Rechercher",
      "hikeValidationPannel" : "Validation des randonnées",
      "noHikesFound" : "Aucune randonnée trouvée",
      "image" : "Image",
@@ -47,7 +54,7 @@
      "isValide" : "Valide",
      "email": "Email",
 
-
+    "successCreateHike": "Randonnée créée avec succès",
   "createHike" : "Créer une randonnée",
   "enterNameHike": "S'il vous plaît entrer le nom de la randonnée",
   "nameHike50": "Le nom ne peut pas dépasser 50 caractères",
@@ -127,6 +134,45 @@
     "enterNewPassword" : "Entrez le nouveau mot de passe",
     "passwordChanged" : "Mot de passe modifié",
     "passwordChangeFailed" : "Changement de mot de passe échoué",
-    "creat_Group" : "Créer un groupe"
+    "creat_Group" : "Créer un groupe",
+    "errorArg" : "Erreur: {error}",
+        "byArg" : "Par {by}",
+        "onArg" : "le {on}",
+
+    "addMaterial":"Ajouter un matériel",
+        "enterMaterial":"Entrez le matériel",
+        "cancel":"Annuler",
+        "materialAdd":"Matériel ajouté avec succès",
+        "failedRemoveUser":"Échec de la suppression de l'utilisateur",
+        "groupInformation" : "Informations sur le groupe",
+        "startDate" : "Date de début",
+        "currentGroupSize" : "Taille actuelle du groupe",
+        "groupCreatedBy" : "Groupe créé par {createdBy}",
+        "material" : "Matériel",
+        "noMaterial" : "Aucun matériel trouvé",
+        "members" : "Membres",
+        "weather" : "Météo",
+        "groupChat" : "Chat du groupe",
+
+        "imageDeletedSuccess":"Image supprimée avec succès",
+        "imageDeletedFailure":"Erreur lors de la suppression de l'image",
+        "groupImageSuccess":"Images de groupe ajoutées avec succès",
+        "groupImageFailure":"Erreur lors de l'ajout d'images de groupe",
+        "groupPhoto":"Photos de groupe",
+        "noPhotos":"Aucune photo trouvée",
+        "selectHikeDate":"Sélectionnez la date de la randonnée",
+
+         "selectHikeDate":"Sélectionnez la date de la randonnée",
+            "groupNameRequire":"Le nom du groupe est requis",
+            "groupCreated":"Groupe créé avec succès",
+            "createGroup":"Créer un groupe",
+            "groupName" : "Nom du groupe",
+            "groupDescription" : "Description du groupe",
+            "maxParticipants" : "Nombre maximum de participants",
+
+                "groupDeleted" : "Groupe supprimé avec succès",
+                "groupDeletedFailed" : "Échec de la suppression du groupe",
+             "discover":"Decouvrez les randonnées près de chez vous",
+             "groupJoin":"Rejoignez des groupes de randonnée"
 
 }

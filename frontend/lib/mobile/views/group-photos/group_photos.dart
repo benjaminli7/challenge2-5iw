@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/group_image.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/config_service.dart';
+import 'package:frontend/shared/services/flag_service.dart';
 import 'package:frontend/shared/services/group_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupPhotosPage extends StatefulWidget {
   final int groupId;
@@ -19,6 +23,8 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   late Future<List<GroupImage>> _imagesFuture;
   String baseUrl = ConfigService.baseUrl;
   final _groupService = GroupService();
+  final FlagService _flagService = FlagService();
+  bool? isFeatureEnabled;
 
   @override
   void initState() {
@@ -28,7 +34,22 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
       _imagesFuture =
           _groupService.fetchGroupImages(user.token, widget.groupId);
     } else {
-      _imagesFuture = Future.error('User not logged in');
+      _imagesFuture = Future.error(AppLocalizations.of(context)!.userNotLogged);
+    }
+    _checkFeatureFlag();
+  }
+
+  Future<void> _checkFeatureFlag() async {
+    try {
+      bool isEnabled = await _flagService.isFlagEnabled('enable_new_photos');
+      setState(() {
+        isFeatureEnabled = isEnabled;
+      });
+    } catch (e) {
+      print('Error checking feature flag: $e');
+      setState(() {
+        isFeatureEnabled = false;
+      });
     }
   }
 
@@ -38,7 +59,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   Future<void> _deleteImage(int imageId) async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user == null) {
-      return; // Handle case where user is not logged in
+      return;
     }
     try {
       await _groupService.deleteGroupImage(user.token, imageId);
@@ -47,7 +68,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
             _groupService.fetchGroupImages(user.token, widget.groupId);
       });
       Fluttertoast.showToast(
-        msg: 'Image deleted successfully',
+        msg: AppLocalizations.of(context)!.imageDeletedSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -57,7 +78,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
       );
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Error deleting group image',
+        msg: AppLocalizations.of(context)!.imageDeletedFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -71,7 +92,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
   void selectImages() async {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user == null) {
-      return; // Handle case where user is not logged in
+      return;
     }
     final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages!.isNotEmpty) {
@@ -79,20 +100,22 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
     } else {
       return;
     }
-    try {
-      await _groupService.addGroupImages(
-        user.token,
-        widget.groupId,
-        user.id,
-        imageFileList,
-      );
+
+    final res = await _groupService.addGroupImages(
+      user.token,
+      widget.groupId,
+      user.id,
+      imageFileList,
+    );
+
+    if (res.statusCode == 200) {
       setState(() {
         _imagesFuture =
             _groupService.fetchGroupImages(user.token, widget.groupId);
         imageFileList.clear();
       });
       Fluttertoast.showToast(
-        msg: 'Group images added successfully',
+        msg: AppLocalizations.of(context)!.groupImageSuccess,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -100,9 +123,13 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-    } catch (e) {
+    }
+
+    if (res.statusCode == 405) {
+      final Map<String, dynamic> responseData = jsonDecode(res.body);
+      final String? errMessage = responseData['message'];
       Fluttertoast.showToast(
-        msg: 'Error adding group images',
+        msg: AppLocalizations.of(context)!.groupImageFailure,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -110,15 +137,47 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      print('Error adding group images: $e');
     }
+    // try {
+    //   await _groupService.addGroupImages(
+    //     user.token,
+    //     widget.groupId,
+    //     user.id,
+    //     imageFileList,
+    //   );
+    //   setState(() {
+    //     _imagesFuture =
+    //         _groupService.fetchGroupImages(user.token, widget.groupId);
+    //     imageFileList.clear();
+    //   });
+    //   Fluttertoast.showToast(
+    //     msg: 'Group images added successfully',
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    // } catch (e) {
+    //   Fluttertoast.showToast(
+    //     msg: 'Error adding group images',
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0,
+    //   );
+    //   print('Error adding group images: $e');
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Group photos'),
+        title:  Text(AppLocalizations.of(context)!.groupPhoto),
       ),
       body: FutureBuilder<List<GroupImage>>(
         future: _imagesFuture,
@@ -128,7 +187,7 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No photos found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.noPhotos));
           } else {
             final images = snapshot.data!;
             return GridView.builder(
@@ -161,36 +220,25 @@ class _GroupPhotosPageState extends State<GroupPhotosPage> {
                     child: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
-                        // Show confirmation dialog if needed
                         await _deleteImage(image.id);
                       },
                     ),
                   ),
                 ]);
-                // return GestureDetector(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => ImageDetailPage(image: image),
-                //       ),
-                //     );
-                //   },
-                //   child: Image.network(
-                //       Uri.parse("$baseUrl${image.path}").toString()),
-                // );
               },
             );
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement the function to add a new photo
-          selectImages();
-        },
-        child: const Icon(Icons.add_a_photo),
-      ),
+      floatingActionButton: isFeatureEnabled == true
+          ? FloatingActionButton(
+              onPressed: () {
+                // Implement the function to add a new photo
+                selectImages();
+              },
+              child: const Icon(Icons.add_a_photo),
+            )
+          : null,
     );
   }
 }
@@ -208,7 +256,6 @@ class ImageDetailPage extends StatelessWidget {
         child: Image.network(
           Uri.parse("$baseUrl${image.path}").toString(),
         ),
-        // child: Image.network(Uri.parse("image.path"),
       ),
     );
   }

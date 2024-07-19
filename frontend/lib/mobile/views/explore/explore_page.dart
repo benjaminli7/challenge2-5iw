@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/mobile/views/explore/widgets/search_bar.dart';
 import 'package:frontend/shared/models/hike.dart';
 import 'package:frontend/shared/providers/hike_provider.dart';
+import 'package:frontend/shared/services/flag_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +20,16 @@ class _ExplorePageState extends State<ExplorePage> {
   bool _isSortedAscending = false;
   String _searchQuery = '';
   String _sortCriteria = 'rating';
+  final FlagService _flagService = FlagService();
+  bool? isFeatureEnabled;
+
 
   @override
   void initState() {
     super.initState();
     _fetchHikes();
+    _checkFeatureFlag();
+
   }
 
   Future<void> _fetchHikes() async {
@@ -36,15 +42,30 @@ class _ExplorePageState extends State<ExplorePage> {
     });
   }
 
+  Future<void> _checkFeatureFlag() async {
+    try {
+      bool isEnabled = await _flagService.isFlagEnabled('enable_new_hikes');
+      setState(() {
+        isFeatureEnabled = isEnabled;
+      });
+    } catch (e) {
+      print('Error checking feature flag: $e');
+      setState(() {
+        isFeatureEnabled = false;
+      });
+    }
+  }
+
   List<Hike> _getFilteredAndSortedHikes(List<Hike> hikes) {
     List<Hike> filteredHikes = hikes
         .where((hike) => hike.name.toLowerCase().contains(_searchQuery))
         .toList();
+
     filteredHikes.sort((a, b) {
       int comparison;
       switch (_sortCriteria) {
         case 'difficulty':
-          comparison = a.difficulty.compareTo(b.difficulty);
+          comparison = _compareDifficulty(a.difficulty, b.difficulty);
           break;
         case 'duration':
           comparison = a.duration.compareTo(b.duration);
@@ -57,6 +78,11 @@ class _ExplorePageState extends State<ExplorePage> {
       return _isSortedAscending ? comparison : -comparison;
     });
     return filteredHikes;
+  }
+
+  int _compareDifficulty(String a, String b) {
+    const difficultyOrder = {'Easy': 1, 'Moderate': 2, 'Hard': 3};
+    return difficultyOrder[a]!.compareTo(difficultyOrder[b]!);
   }
 
   void _setSortCriteria(String? criteria) {
@@ -81,12 +107,12 @@ class _ExplorePageState extends State<ExplorePage> {
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isFeatureEnabled == true ? FloatingActionButton(
         onPressed: () {
           GoRouter.of(context).push('/create-hike');
         },
         child: const Icon(Icons.add),
-      ),
+      ) : null,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.discoverHike,
@@ -97,6 +123,7 @@ class _ExplorePageState extends State<ExplorePage> {
             letterSpacing: 0.55,
           ),
         ),
+        centerTitle: true,
       ),
       body: Column(
         children: [

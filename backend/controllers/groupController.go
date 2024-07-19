@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -64,7 +65,7 @@ func CreateGroup(c *gin.Context) {
 			continue
 		}
 		token = sub.User.FcmToken
-		title = sub.User.Username + " created a new group for the hike " + sub.Hike.Name + "! try to join it"
+		title = group.Organizer.Username + " created a new group for the hike " + sub.Hike.Name + "! try to join it"
 		body = "Join the group to meet new people and share your experience"
 		route = "/hike/" + strconv.Itoa(int(group.HikeID))
 		if token != "" {
@@ -193,6 +194,36 @@ func GetGroupsByHike(c *gin.Context) {
 	c.JSON(http.StatusOK, groups)
 }
 
+// GetMyGroupsHistory godoc
+// @Summary Get groups by user ID
+// @Description Get groups by user ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.Group
+// @Failure 500 {object} models.ErrorResponse
+// @Router /groups/user/{id} [get]
+func GetMyGroupsHistory(c *gin.Context) {
+	userIdParam := c.Param("id")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var groups []models.Group
+	today := time.Now().Format("2006-01-02")
+
+	err = db.DB.Preload("Hike").Preload("Users").Preload("Organizer").Preload("GroupImages").Joins("JOIN group_users ON group_users.group_id = groups.id").Order("start_date").Where("group_users.user_id = ?", userId).Where("start_date < ?", today).Find(&groups).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, groups)
+}
+
 // UpdateGroup godoc
 // @Summary Update a group by ID
 // @Description Update details of a group by its ID
@@ -234,50 +265,50 @@ func UpdateGroup(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /groups/{id} [delete]
 func DeleteGroup(c *gin.Context) {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})
-        return
-    }
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid group ID"})
+		return
+	}
 
-    tx := db.DB.Begin()
+	tx := db.DB.Begin()
 
-    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
+	if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.GroupUser{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 	if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.GroupImage{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 
+	if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Material{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Message{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	if err := tx.Delete(&models.Group{}, id).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 
-    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Material{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
-    if err := tx.Unscoped().Where("group_id = ?", id).Delete(&models.Message{}).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
-    if err := tx.Delete(&models.Group{}, id).Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 
-    if err := tx.Commit().Error; err != nil {
-        tx.Rollback()
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
-
-    c.JSON(http.StatusOK, models.SuccessResponse{Message: "Group and associated data deleted successfully"})
+	c.JSON(http.StatusOK, models.SuccessResponse{Message: "Group and associated data deleted successfully"})
 }
+
 // JoinGroup godoc
 // @Summary Join a group
 // @Description Join a group
@@ -397,8 +428,6 @@ func GetParticipants(c *gin.Context) {
 
 	var group models.Group
 
-
-
 	err = db.DB.Preload("Users").Where("id = ?", groupId).First(&group).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch participants"})
@@ -408,7 +437,7 @@ func GetParticipants(c *gin.Context) {
 	c.JSON(http.StatusOK, group)
 }
 
-func DeleteUserGroup (c *gin.Context){
+func DeleteUserGroup(c *gin.Context) {
 	groupIdParam := c.Param("groupId")
 	userIdParam := c.Param("userId")
 
@@ -419,7 +448,6 @@ func DeleteUserGroup (c *gin.Context){
 		return
 	}
 
-	
 	userId, err := strconv.Atoi(userIdParam)
 	if err != nil {
 		println("Failed to convert user ID")
@@ -429,9 +457,9 @@ func DeleteUserGroup (c *gin.Context){
 	}
 
 	if err := db.DB.Unscoped().Where("group_id = ?", groupId).Where("user_id = ?", userId).Delete(&models.GroupUser{}).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
-        return
-    }
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 	var material models.Material
 	if err := db.DB.Preload("Users").Where("group_id = ?", groupId).First(&material).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Material not found"})
@@ -445,6 +473,5 @@ func DeleteUserGroup (c *gin.Context){
 
 	db.DB.Model(&material).Association("Users").Delete(&user)
 	c.JSON(http.StatusOK, gin.H{"message": "User removed as bringer"})
-
 
 }

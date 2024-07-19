@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/providers/user_provider.dart';
 import 'package:frontend/shared/services/api_service.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +14,6 @@ import 'package:google_places_autocomplete_text_field/google_places_autocomplete
 import 'package:google_places_autocomplete_text_field/model/prediction.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CreateHikePage extends StatefulWidget {
   const CreateHikePage({super.key});
@@ -32,8 +34,8 @@ class _CreateHikePageState extends State<CreateHikePage> {
   final ApiService _apiService = ApiService();
   File? _image;
   File? _gpxFile;
-  final _lat= TextEditingController();
-  final _lng= TextEditingController();
+  final _lat = TextEditingController();
+  final _lng = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
 
@@ -47,22 +49,47 @@ class _CreateHikePageState extends State<CreateHikePage> {
         'duration': int.parse(_durationController.text),
         'image': _image,
         'gpx_file': _gpxFile,
-        'lat':  _lat.text,
+        'lat': _lat.text,
         'lng': _lng.text,
       };
 
-      await _apiService.createHike(
-        hike['name'],
-        hike['description'],
-        user!.id,
-        hike['difficulty'],
-        hike['duration'],
-        hike['image'],
-        hike['gpx_file'],
-        hike['lat'],
-        hike['lng'],
-        user.token
-      );
+      final res = await _apiService.createHike(
+          hike['name'],
+          hike['description'],
+          user!.id,
+          hike['difficulty'],
+          hike['duration'],
+          hike['image'],
+          hike['gpx_file'],
+          hike['lat'],
+          hike['lng'],
+          user.token);
+
+      if (res.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: AppLocalizations.of(context)!.successCreateHike,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+
+      if (res.statusCode == 405) {
+        final Map<String, dynamic> responseData = jsonDecode(res.body);
+        final String? errMessage = responseData['message'];
+        Fluttertoast.showToast(
+          msg: errMessage!,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
 
       GoRouter.of(context).push('/explore');
     }
@@ -74,8 +101,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
@@ -87,21 +112,12 @@ class _CreateHikePageState extends State<CreateHikePage> {
         allowedExtensions: ['gpx'],
       );
 
-      print('File picking result: $result');
-
       if (result != null && result.files.single.path != null) {
         setState(() {
           _gpxFile = File(result.files.single.path!);
-          print('GPX file path: ${_gpxFile!.path}');
         });
-      } else {
-        print('No GPX file selected.');
       }
     } catch (e) {
-      print('Error picking GPX file: $e');
-      print('Attempting to use FileType.any as a fallback');
-
-      // Fallback to FileType.any
       try {
         final result = await FilePicker.platform.pickFiles(
           type: FileType.any,
@@ -110,10 +126,7 @@ class _CreateHikePageState extends State<CreateHikePage> {
         if (result != null && result.files.single.path != null) {
           setState(() {
             _gpxFile = File(result.files.single.path!);
-            print('GPX file path with fallback: ${_gpxFile!.path}');
           });
-        } else {
-          print('No file selected in fallback.');
         }
       } catch (e) {
         print('Error picking file in fallback: $e');
@@ -221,17 +234,15 @@ class _CreateHikePageState extends State<CreateHikePage> {
                   textEditingController: _mapsController,
                   googleAPIKey: API_KEY!,
                   debounceTime: 400,
-                  isLatLngRequired:
-                      true,
+                  isLatLngRequired: true,
                   getPlaceDetailWithLatLng: (prediction) {
-                    print("Coordinates: (${prediction.lat},${prediction.lng})");
                     _lat.text = prediction.lat.toString();
                     _lng.text = prediction.lng.toString();
                   },
                   maxLines: 1,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your address',
-                    labelText: 'Address',
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.enterAdress,
+                    labelText: AppLocalizations.of(context)!.adress,
                   ),
                   itmClick: (Prediction prediction) {
                     _mapsController.text = prediction.description.toString();
@@ -260,12 +271,6 @@ class _CreateHikePageState extends State<CreateHikePage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          duration: const Duration(seconds: 2),
-                          content: Text(
-                              AppLocalizations.of(context)!.processingData)),
-                    );
                     _createHike();
                   }
                 },

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/shared/models/group_image.dart';
 import 'package:frontend/shared/models/message.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +14,6 @@ import 'config_service.dart';
 class GroupService {
   String baseUrl = ConfigService.baseUrl;
 
-  // get a group by id
   Future<Group> getGroupById(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId');
     final response = await http.get(
@@ -24,7 +24,6 @@ class GroupService {
     );
 
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
       return Group.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load group');
@@ -71,6 +70,27 @@ class GroupService {
     }
   }
 
+  Future<List<Group>> fetchMyGroupsHistory(String token, int userId, {bool past = false}) async {
+    final url = Uri.parse('$baseUrl/groups/user/$userId/history');
+
+    final response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> groupList = json.decode(response.body);
+      if (groupList == null) {
+        return [];
+      }
+      return groupList.map((json) => Group.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load groups');
+    }
+  }
+
   Future<List<Group>> fetchHikeGroups(
       String token, int hikeId, int userId) async {
     final url = Uri.parse('$baseUrl/groups/hike/$hikeId/$userId');
@@ -109,7 +129,6 @@ class GroupService {
     }
   }
 
-  // Add a method to delete a group
   Future<void> deleteGroup(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId');
     final response = await http.delete(
@@ -124,7 +143,6 @@ class GroupService {
     }
   }
 
-  // fetch group messages
   Future<List<Message>> fetchGroupMessages(String token, int groupId) async {
     final url = Uri.parse('$baseUrl/groups/$groupId/messages');
     final response = await http.get(
@@ -160,7 +178,7 @@ class GroupService {
     }
   }
 
-  Future<void> addGroupImages(
+  Future<http.Response> addGroupImages(
       String token, int groupId, int userId, List<XFile> images) async {
     var uri = Uri.parse('$baseUrl/groups/albums');
 
@@ -186,17 +204,15 @@ class GroupService {
     }
 
     var response = await request.send();
-
-    if (response.statusCode == 200) {
-      // Successfully uploaded images
-      var responseBody = await response.stream.bytesToString();
-      print('Response: $responseBody');
-    } else {
-      // Handle errors
-      var responseBody = await response.stream.bytesToString();
-      print('Error: ${response.statusCode}, Response: $responseBody');
-      throw Exception('Failed to upload images');
-    }
+    return http.Response.fromStream(response);
+    // if (response.statusCode == 200) {
+    //   // Successfully uploaded images
+    //   var responseBody = await response.stream.bytesToString();
+    //   print('Response: $responseBody');
+    // } else {
+    //   // Handle errors
+    //   Fluttertoast.showToast(msg: 'Failed to upload images');
+    // }
   }
 
   Future<void> deleteGroupImage(String token, int imageId) async {
@@ -210,8 +226,6 @@ class GroupService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete image');
-    } else {
-      print('Image deleted successfully');
     }
   }
 

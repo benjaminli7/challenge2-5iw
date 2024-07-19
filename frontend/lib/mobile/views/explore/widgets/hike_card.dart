@@ -77,13 +77,28 @@ class _HikeCardState extends State<HikeCard> {
                           return ScaleTransition(
                               scale: animation, child: child);
                         },
-                        child: Icon(
-                          isFavorite
-                              ? Icons.notifications_active
-                              : Icons.notifications_off,
-                          color: isFavorite ? Colors.redAccent : Colors.black26,
-                          size: 24.0,
-                          key: ValueKey<bool>(isFavorite),
+                        child: Container(
+                          padding: const EdgeInsets.all(6.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isFavorite ? Colors.white : Colors.grey[200],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isFavorite
+                                ? Icons.notifications_active
+                                : Icons.notifications_off,
+                            color: isFavorite ? Colors.redAccent : Colors.black26,
+                            size: 20.0,
+                            key: ValueKey<bool>(isFavorite),
+                          ),
                         ),
                       ),
                     ),
